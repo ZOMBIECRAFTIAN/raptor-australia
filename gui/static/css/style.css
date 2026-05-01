@@ -53,6 +53,80 @@ body {
 
 .nav-links a:hover { opacity: 1; }
 
+/* Language picker (dropdown inside the header nav) */
+.lang-picker {
+    position: relative;
+    display: inline-block;
+    margin-left: 1.5rem;
+    vertical-align: middle;
+}
+
+.lang-toggle {
+    background: rgba(255,255,255,0.15);
+    color: white;
+    border: 1px solid rgba(255,255,255,0.35);
+    border-radius: 22px;
+    padding: 0.25rem 0.85rem;
+    font-size: 0.85rem;
+    font-weight: 500;
+    cursor: pointer;
+    font-family: inherit;
+    transition: background 0.15s, border-color 0.15s;
+}
+
+.lang-toggle:hover {
+    background: rgba(255,255,255,0.25);
+    border-color: rgba(255,255,255,0.55);
+}
+
+.lang-menu {
+    position: absolute;
+    top: calc(100% + 6px);
+    right: 0;
+    z-index: 50;
+    min-width: 180px;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.18);
+    list-style: none;
+    padding: 0.35rem 0;
+    margin: 0;
+    max-height: 0;
+    overflow: hidden;
+    opacity: 0;
+    transition: max-height 0.2s ease, opacity 0.15s ease;
+}
+
+.lang-menu.open {
+    max-height: 600px;
+    opacity: 1;
+}
+
+.lang-menu li { padding: 0; }
+
+.lang-menu a {
+    display: flex;
+    gap: 0.6rem;
+    align-items: center;
+    padding: 0.5rem 0.95rem;
+    color: var(--dark) !important;
+    margin: 0;
+    font-size: 0.88rem;
+    text-decoration: none;
+    opacity: 1;
+    transition: background 0.12s;
+}
+
+.lang-menu a:hover { background: var(--teal-light); }
+.lang-menu a.active {
+    background: var(--blue);
+    color: white !important;
+    font-weight: 600;
+}
+
+/* Close menu when clicking outside (handled in CSS via :focus-within) */
+.lang-picker:not(:focus-within) .lang-menu:not(.open) { display: none; }
+
 /* ─── Contenedor principal ───────────────────────── */
 .container {
     max-width: 1100px;

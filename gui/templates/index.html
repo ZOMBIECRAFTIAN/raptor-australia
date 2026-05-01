@@ -139,46 +139,43 @@
 
         <div class="feedback-section" id="feedbackSection" style="display:none">
             <div id="feedbackPrompt">
-                <p class="feedback-question">Was this identification correct?</p>
+                <p class="feedback-question">{{ t('result.feedback_question') }}</p>
                 <div class="feedback-buttons">
                     <button class="btn-correct" onclick="markCorrect()">
-                        ✅ Yes, correct
+                        {{ t('result.feedback_correct') }}
                     </button>
                     <button class="btn-incorrect" onclick="showCorrectionPanel()">
-                        ❌ No, it was a different species
+                        {{ t('result.feedback_incorrect') }}
                     </button>
                 </div>
             </div>
 
             <div id="correctionPanel" style="display:none">
-                <p class="correction-label">🔍 What species was it actually?</p>
+                <p class="correction-label">🔍 {{ t('result.select_correct') }}</p>
                 <select id="correctSpeciesSelect" class="species-select">
-                    <option value="">-- Select the correct species --</option>
-                    <option value="aquila_audax">Wedge-tailed Eagle (Aquila audax)</option>
-                    <option value="falco_peregrinus">Peregrine Falcon (Falco peregrinus)</option>
-                    <option value="circus_assimilis">Spotted Harrier (Circus assimilis)</option>
-                    <option value="tachyspiza_fasciata">Brown Goshawk (Tachyspiza fasciata)</option>
-                    <option value="falco_cenchroides">Nankeen Kestrel (Falco cenchroides)</option>
-                    <option value="elanus_axillaris">Black-shouldered Kite (Elanus axillaris)</option>
-                    <option value="lophoictinia_isura">Square-tailed Kite (Lophoictinia isura)</option>
-                    <option value="hieraaetus_morphnoides">Little Eagle (Hieraaetus morphnoides)</option>
+                    <option value="">-- {{ t('result.select_correct') }} --</option>
+                    {% for key, info in species_info.items() %}
+                    <option value="{{ key }}">
+                        {{ info.common_name }} ({{ info.scientific_name }})
+                    </option>
+                    {% endfor %}
                 </select>
                 <div class="correction-actions">
                     <button class="btn-submit-correction" onclick="submitCorrection()">
-                        📤 Submit Correction
+                        {{ t('result.submit_correction') }}
                     </button>
                     <button class="btn-cancel-correction" onclick="cancelCorrection()">
-                        Cancel
+                        {{ t('result.cancel') }}
                     </button>
                 </div>
             </div>
 
             <div id="feedbackThanks" style="display:none">
                 <div class="thanks-correct" id="thanksCorrect" style="display:none">
-                    🎉 Great! Thank you for confirming.
+                    {{ t('result.thanks_correct') }}
                 </div>
                 <div class="thanks-incorrect" id="thanksIncorrect" style="display:none">
-                    🙏 Thank you for the correction! This helps improve the model.
+                    {{ t('result.thanks_incorrect') }}
                     <span id="feedbackCounter" class="counter-badge"></span>
                 </div>
             </div>
@@ -187,61 +184,66 @@
     </div>
 
     <div class="observation-form" id="observationForm">
-        <h3>📍 Save this Observation</h3>
+        <h3>{{ t('observation.save_title') }}</h3>
         <div class="form-grid">
             <div class="form-group">
-                <label>Latitude (optional)</label>
+                <label>{{ t('observation.latitude') }}</label>
                 <input type="number" id="obsLat" placeholder="-33.8688" step="any">
             </div>
             <div class="form-group">
-                <label>Longitude (optional)</label>
+                <label>{{ t('observation.longitude') }}</label>
                 <input type="number" id="obsLon" placeholder="151.2093" step="any">
             </div>
             <div class="form-group" style="grid-column:1/-1">
-                <label>Notes</label>
+                <label>{{ t('observation.notes') }}</label>
                 <textarea id="obsNotes"
-                    placeholder="Flight behavior, weather conditions, habitat...">
+                    placeholder="{{ t('observation.notes_placeholder') }}">
                 </textarea>
             </div>
         </div>
-        <button class="btn-save" onclick="saveObservation()">💾 Save Observation</button>
-        <button class="btn-new" onclick="resetApp()">🔄 New Identification</button>
+        <button class="btn-save" onclick="saveObservation()">
+            {{ t('observation.save_button') }}
+        </button>
+        <button class="btn-new" onclick="resetApp()">
+            {{ t('observation.new_button') }}
+        </button>
         <div class="success-msg" id="successMsg">
-            ✅ Observation saved to observations.csv
+            {{ t('observation.saved_message') }}
         </div>
     </div>
 
 </main>
 
 <footer class="footer">
-    <p>Australian Raptor CNN + AUSLAN | Brian Fernández Báez | MPhil Proposal — University of Queensland</p>
-    <p style="margin-top:0.3rem">
-        Model: EfficientNetB4 | Accuracy: 80.8% | F1-macro: 0.784 | Dataset: iNaturalist Australia
-    </p>
+    <p>{{ t('app.footer_credit') }}</p>
+    <p style="margin-top:0.3rem">{{ t('app.footer_model') }}</p>
 </footer>
 
 <script>
 let currentPrediction = null;
 
+// Species names are populated from server-side localized data so the
+// focus banner shows the user's locale-specific common name.
 const SPECIES_NAMES = {
-    "aquila_audax":           "Wedge-tailed Eagle",
-    "falco_peregrinus":       "Peregrine Falcon",
-    "circus_assimilis":       "Spotted Harrier",
-    "tachyspiza_fasciata":    "Brown Goshawk",
-    "falco_cenchroides":      "Nankeen Kestrel",
-    "elanus_axillaris":       "Black-shouldered Kite",
-    "lophoictinia_isura":     "Square-tailed Kite",
-    "hieraaetus_morphnoides": "Little Eagle"
+    {% for key, info in species_info.items() %}
+    "{{ key }}": "{{ info.common_name|escape }}"{% if not loop.last %},{% endif %}
+    {% endfor %}
 };
+const FOCUS_TPL = {{ t('home.focus_title')|tojson }};
 
 // If the user arrived from the catalogue with ?focus=<key>,
-// show a small banner above the upload zone.
+// show a localized banner above the upload zone.
 (function showFocusBanner() {
     const params = new URLSearchParams(window.location.search);
     const key    = params.get("focus");
     if (key && SPECIES_NAMES[key]) {
-        document.getElementById("focusName").textContent =
-            SPECIES_NAMES[key];
+        const name = SPECIES_NAMES[key];
+        document.getElementById("focusName").textContent = name;
+        const wrap = document.querySelector("#focusBanner [data-i18n-template]");
+        if (wrap) {
+            wrap.textContent = (wrap.getAttribute("data-i18n-template") || "")
+                .replace("{name}", name);
+        }
         document.getElementById("focusBanner").style.display = "flex";
     }
 })();

@@ -1,42 +1,57 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="{{ get_locale() }}">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Species Guide — Australian Raptor CNN</title>
+    <title>{{ t('nav.species_guide') }} — {{ t('app.title') }}</title>
     <link rel="stylesheet" href="/static/css/style.css">
 </head>
 <body>
 
 <header class="header">
     <div>
-        <h1>🦅 Australian Raptor CNN</h1>
-        <p>Species Guide — 8 raptors of southeast Australia</p>
+        <h1>🦅 {{ t('app.title') }}</h1>
+        <p>{{ t('header.subtitle_species') }}</p>
     </div>
     <nav class="nav-links">
-        <a href="/">Identify</a>
-        <a href="/species" class="active">Species Guide</a>
-        <a href="/data">Data</a>
+        <a href="/">{{ t('nav.identify') }}</a>
+        <a href="/species" class="active">{{ t('nav.species_guide') }}</a>
+        <a href="/data">{{ t('nav.data') }}</a>
+        <div class="lang-picker">
+            <button class="lang-toggle" type="button"
+                    onclick="document.getElementById('langMenu').classList.toggle('open')"
+                    aria-haspopup="true" aria-label="{{ t('nav.language') }}">
+                {{ LANGUAGES[get_locale()]['flag'] }}
+                {{ LANGUAGES[get_locale()]['native'] }} ▾
+            </button>
+            <ul class="lang-menu" id="langMenu">
+                {% for code, meta in LANGUAGES.items() %}
+                <li>
+                    <a href="/set_lang/{{ code }}?next={{ request.path }}"
+                       {% if code == get_locale() %}class="active"{% endif %}>
+                        <span>{{ meta.flag }}</span>
+                        <span>{{ meta.native }}</span>
+                    </a>
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
     </nav>
 </header>
 
 <main class="container">
 
     <section class="species-intro">
-        <h2>Field Reference Catalogue</h2>
-        <p>
-            Diagnostic field marks, ecology, conservation status and
-            AUSLAN sign description for every species the model
-            recognises. Cards are ordered by EPBC Act priority.
-        </p>
+        <h2>{{ t('species_guide.title') }}</h2>
+        <p>{{ t('species_guide.subtitle') }}</p>
         <div class="legend">
             <span class="legend-item">
                 <span class="legend-dot" style="background:#C0392B"></span>
-                Vulnerable / Endangered
+                {{ t('species_guide.legend_listed') }}
             </span>
             <span class="legend-item">
                 <span class="legend-dot" style="background:#27AE60"></span>
-                Not listed nationally
+                {{ t('species_guide.legend_stable') }}
             </span>
         </div>
     </section>
@@ -67,10 +82,12 @@
             <div class="species-card-body">
 
                 <div class="species-row">
-                    <span class="species-label">EPBC status</span>
+                    <span class="species-label">{{ t('result.epbc_status') }}</span>
                     <span class="species-value
                         {% if 'Vulnerable' in info.epbc_status
-                              or 'Endangered' in info.epbc_status %}
+                              or 'Endangered' in info.epbc_status
+                              or 'Vulnerable' in (info.epbc_status|lower)
+                              or 'endangered' in (info.epbc_status|lower) %}
                               status-listed
                         {% else %}
                               status-stable
@@ -80,34 +97,34 @@
                 </div>
 
                 <div class="species-row">
-                    <span class="species-label">Habitat</span>
+                    <span class="species-label">{{ t('result.habitat') }}</span>
                     <span class="species-value">{{ info.habitat }}</span>
                 </div>
 
                 <div class="species-row">
-                    <span class="species-label">Length</span>
+                    <span class="species-label">{{ t('result.length') }}</span>
                     <span class="species-value">{{ info.length_cm }}</span>
                 </div>
 
                 <div class="species-row">
-                    <span class="species-label">Wingspan</span>
+                    <span class="species-label">{{ t('result.wingspan') }}</span>
                     <span class="species-value">{{ info.wingspan_cm }}</span>
                 </div>
 
                 <div class="species-block">
-                    <span class="species-label">Field diagnostic</span>
+                    <span class="species-label">{{ t('result.diagnostic') }}</span>
                     <p class="species-text">{{ info.diagnostic }}</p>
                 </div>
 
                 {% set d = species_details.get(key) %}
                 {% if d %}
                 <details class="species-details" open>
-                    <summary>📖 Species profile</summary>
+                    <summary>{{ t('species_guide.profile_title') }}</summary>
 
                     <div class="detail-row">
                         <span class="detail-icon">📍</span>
                         <div>
-                            <span class="detail-label">Distribution</span>
+                            <span class="detail-label">{{ t('species_guide.distribution') }}</span>
                             <p>{{ d.distribution }}</p>
                         </div>
                     </div>
@@ -115,7 +132,7 @@
                     <div class="detail-row">
                         <span class="detail-icon">🍴</span>
                         <div>
-                            <span class="detail-label">Diet</span>
+                            <span class="detail-label">{{ t('species_guide.diet') }}</span>
                             <p>{{ d.diet }}</p>
                         </div>
                     </div>
@@ -123,15 +140,15 @@
                     <div class="detail-row">
                         <span class="detail-icon">🦅</span>
                         <div>
-                            <span class="detail-label">Behaviour</span>
-                            <p>{{ d.behavior }}</p>
+                            <span class="detail-label">{{ t('species_guide.behaviour') }}</span>
+                            <p>{{ d.behavior or d.behaviour }}</p>
                         </div>
                     </div>
 
                     <div class="detail-row">
                         <span class="detail-icon">✈️</span>
                         <div>
-                            <span class="detail-label">Migration</span>
+                            <span class="detail-label">{{ t('species_guide.migration') }}</span>
                             <p>{{ d.migration }}</p>
                         </div>
                     </div>
@@ -139,7 +156,7 @@
                     <div class="detail-row">
                         <span class="detail-icon">🪺</span>
                         <div>
-                            <span class="detail-label">Nesting</span>
+                            <span class="detail-label">{{ t('species_guide.nesting') }}</span>
                             <p>{{ d.nesting }}</p>
                         </div>
                     </div>
@@ -147,7 +164,7 @@
                     <div class="detail-row">
                         <span class="detail-icon">🥚</span>
                         <div>
-                            <span class="detail-label">Breeding season</span>
+                            <span class="detail-label">{{ t('species_guide.breeding_season') }}</span>
                             <p>{{ d.breeding_months }}</p>
                         </div>
                     </div>
@@ -155,20 +172,20 @@
                     <div class="detail-row">
                         <span class="detail-icon">👁️</span>
                         <div>
-                            <span class="detail-label">Best time to see</span>
+                            <span class="detail-label">{{ t('species_guide.best_time_to_see') }}</span>
                             <p>{{ d.best_months }}</p>
                         </div>
                     </div>
 
                     <div class="detail-fact">
-                        <span class="detail-fact-label">💡 Did you know</span>
+                        <span class="detail-fact-label">{{ t('species_guide.did_you_know') }}</span>
                         <p>{{ d.did_you_know }}</p>
                     </div>
                 </details>
                 {% endif %}
 
                 <div class="species-block species-auslan">
-                    <span class="species-label">🤟 AUSLAN sign</span>
+                    <span class="species-label">🤟 {{ t('result.auslan_sign') }}</span>
                     <p class="species-text">{{ info.auslan_sign }}</p>
                 </div>
 
@@ -196,14 +213,14 @@
                 {% endif %}
 
                 <div class="species-train-count">
-                    📸 Trained on
+                    {{ t('species_guide.trained_on') }}
                     <strong>{{ m.train_count or '—' }}</strong>
-                    images
+                    {{ t('species_guide.trained_on_suffix') }}
                 </div>
 
                 <a class="species-cta"
                    href="/?focus={{ key }}">
-                    Identify this species →
+                    {{ t('species_guide.identify_button') }}
                 </a>
 
             </div>
@@ -212,28 +229,16 @@
     </section>
 
     <section class="species-footer-note">
-        <h3>How the model recognises these species</h3>
-        <p>
-            The CNN was trained on 2,390 images sourced from
-            iNaturalist Australia and the Atlas of Living Australia,
-            using transfer learning over EfficientNetB4
-            (ImageNet pretrained) and fine-tuned for 30 epochs.
-            Validation accuracy reached 80.8% with an F1-macro of
-            0.784 across the 8 species shown above.
-        </p>
-        <p class="muted">
-            References: Olsen et al. (1993); Marchant & Higgins (1993);
-            Debus (1998); DAWE (2021); Atlas of Living Australia (2023).
-        </p>
+        <h3>{{ t('species_guide.footer_title') }}</h3>
+        <p>{{ t('species_guide.footer_text') }}</p>
+        <p class="muted">{{ t('species_guide.references') }}</p>
     </section>
 
 </main>
 
 <footer class="footer">
-    <p>Australian Raptor CNN + AUSLAN | Brian Fernández Báez | MPhil Proposal — University of Queensland</p>
-    <p style="margin-top:0.3rem">
-        Model: EfficientNetB4 | Accuracy: 80.8% | F1-macro: 0.784 | Dataset: iNaturalist Australia
-    </p>
+    <p>{{ t('app.footer_credit') }}</p>
+    <p style="margin-top:0.3rem">{{ t('app.footer_model') }}</p>
 </footer>
 
 </body>

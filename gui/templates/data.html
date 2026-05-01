@@ -1,48 +1,67 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="{{ get_locale() }}">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Data Export — Australian Raptor CNN</title>
+    <title>{{ t('nav.data') }} — {{ t('app.title') }}</title>
     <link rel="stylesheet" href="/static/css/style.css">
 </head>
 <body>
 
 <header class="header">
     <div>
-        <h1>🦅 Australian Raptor CNN</h1>
-        <p>Data Dashboard & Export</p>
+        <h1>🦅 {{ t('app.title') }}</h1>
+        <p>{{ t('header.subtitle_data') }}</p>
     </div>
     <nav class="nav-links">
-        <a href="/">Identify</a>
-        <a href="/species">Species Guide</a>
-        <a href="/data" class="active">Data</a>
+        <a href="/">{{ t('nav.identify') }}</a>
+        <a href="/species">{{ t('nav.species_guide') }}</a>
+        <a href="/data" class="active">{{ t('nav.data') }}</a>
+        <div class="lang-picker">
+            <button class="lang-toggle" type="button"
+                    onclick="document.getElementById('langMenu').classList.toggle('open')"
+                    aria-haspopup="true" aria-label="{{ t('nav.language') }}">
+                {{ LANGUAGES[get_locale()]['flag'] }}
+                {{ LANGUAGES[get_locale()]['native'] }} ▾
+            </button>
+            <ul class="lang-menu" id="langMenu">
+                {% for code, meta in LANGUAGES.items() %}
+                <li>
+                    <a href="/set_lang/{{ code }}?next={{ request.path }}"
+                       {% if code == get_locale() %}class="active"{% endif %}>
+                        <span>{{ meta.flag }}</span>
+                        <span>{{ meta.native }}</span>
+                    </a>
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
     </nav>
 </header>
 
 <main class="container">
 
     <section class="data-summary">
-        <h2>Observations summary</h2>
+        <h2>{{ t('data.summary_title') }}</h2>
         <div class="data-stats-grid">
             <div class="stat-card stat-card--blue">
                 <span class="stat-value">{{ total_observations }}</span>
-                <span class="stat-label">Total observations</span>
+                <span class="stat-label">{{ t('data.stat_total') }}</span>
             </div>
             <div class="stat-card stat-card--teal">
                 <span class="stat-value">{{ observations_by_species|length }}</span>
-                <span class="stat-label">Species recorded</span>
+                <span class="stat-label">{{ t('data.stat_species') }}</span>
             </div>
             <div class="stat-card stat-card--orange">
                 <span class="stat-value">{{ feedback_count }}</span>
-                <span class="stat-label">Model corrections</span>
+                <span class="stat-label">{{ t('data.stat_corrections') }}</span>
             </div>
         </div>
     </section>
 
     {% if observations_by_species %}
     <section class="data-by-species">
-        <h3>Observations by species</h3>
+        <h3>{{ t('data.by_species_title') }}</h3>
         <div class="species-bars">
             {% set max_count = (observations_by_species.values()|list|max) or 1 %}
             {% for key, info in species_info.items() %}
@@ -63,23 +82,15 @@
     {% endif %}
 
     <section class="data-export">
-        <h3>Export data</h3>
-        <p class="data-export-intro">
-            Download your observations for personal use, scientific
-            analysis, or submission to the Atlas of Living Australia
-            and global biodiversity platforms.
-        </p>
+        <h3>{{ t('data.export_title') }}</h3>
+        <p class="data-export-intro">{{ t('data.export_intro') }}</p>
 
         <div class="export-cards">
             <a class="export-card" href="/export/observations.csv">
                 <span class="export-icon">📊</span>
                 <div>
-                    <h4>Internal observations CSV</h4>
-                    <p>
-                        All your saved observations in the application's
-                        native format. Useful for personal logs and
-                        local analysis.
-                    </p>
+                    <h4>{{ t('data.export_internal_title') }}</h4>
+                    <p>{{ t('data.export_internal_desc') }}</p>
                     <span class="export-badge">CSV · UTF-8</span>
                 </div>
             </a>
@@ -88,14 +99,8 @@
                href="/export/observations_dwc.csv">
                 <span class="export-icon">🌏</span>
                 <div>
-                    <h4>Darwin Core CSV (for ALA / GBIF)</h4>
-                    <p>
-                        Standardised biodiversity format following
-                        the TDWG Darwin Core schema. Ready to upload
-                        to the Atlas of Living Australia's
-                        <em>Sightings</em> portal or any GBIF data
-                        publisher.
-                    </p>
+                    <h4>{{ t('data.export_dwc_title') }}</h4>
+                    <p>{{ t('data.export_dwc_desc') }}</p>
                     <span class="export-badge">DwC · CSV · UTF-8</span>
                 </div>
             </a>
@@ -103,51 +108,36 @@
             <a class="export-card" href="/export/feedback.csv">
                 <span class="export-icon">🛠️</span>
                 <div>
-                    <h4>Model corrections log</h4>
-                    <p>
-                        Every correction submitted via the feedback
-                        button. Used as the input for the next
-                        model retraining cycle.
-                    </p>
+                    <h4>{{ t('data.export_feedback_title') }}</h4>
+                    <p>{{ t('data.export_feedback_desc') }}</p>
                     <span class="export-badge">CSV · UTF-8</span>
                 </div>
             </a>
         </div>
 
         <div class="ala-howto">
-            <h4>How to upload to the Atlas of Living Australia</h4>
+            <h4>{{ t('data.ala_howto_title') }}</h4>
             <ol>
-                <li>Sign in (or create a free account) at
-                    <a href="https://www.ala.org.au"
-                       target="_blank" rel="noopener">www.ala.org.au</a>.</li>
-                <li>Go to <em>My Profile → My Sightings → Submit a
-                    sighting list</em>.</li>
-                <li>Upload the
-                    <code>raptor_au_observations_dwc.csv</code>
-                    you just downloaded.</li>
-                <li>ALA's pipeline will validate the records and
-                    integrate them into the national biodiversity
-                    database (turnaround ~24-72 hours).</li>
+                <li>{{ t('data.ala_howto_step1') }}</li>
+                <li>{{ t('data.ala_howto_step2') }}</li>
+                <li>{{ t('data.ala_howto_step3') }}</li>
+                <li>{{ t('data.ala_howto_step4') }}</li>
             </ol>
-            <p class="muted">
-                The <code>identifiedBy</code> column credits the
-                CNN model explicitly so reviewers can apply
-                appropriate weight to AI-assisted records.
-            </p>
+            <p class="muted">{{ t('data.ala_howto_note') }}</p>
         </div>
     </section>
 
     {% if recent_observations %}
     <section class="data-recent">
-        <h3>Recent observations (last {{ recent_observations|length }})</h3>
+        <h3>{{ t('data.recent_title') }}</h3>
         <table class="data-table">
             <thead>
                 <tr>
-                    <th>When</th>
-                    <th>Species</th>
-                    <th>Confidence</th>
-                    <th>Location</th>
-                    <th>Confirmed</th>
+                    <th>{{ t('data.th_when') }}</th>
+                    <th>{{ t('data.th_species') }}</th>
+                    <th>{{ t('data.th_confidence') }}</th>
+                    <th>{{ t('data.th_location') }}</th>
+                    <th>{{ t('data.th_confirmed') }}</th>
                 </tr>
             </thead>
             <tbody>
@@ -180,21 +170,15 @@
     </section>
     {% else %}
     <section class="data-empty">
-        <p>
-            No observations recorded yet. Identify a bird from the
-            <a href="/">home page</a> and save your first observation
-            to populate this dashboard.
-        </p>
+        <p>{{ t('data.no_obs_text') }}</p>
     </section>
     {% endif %}
 
 </main>
 
 <footer class="footer">
-    <p>Australian Raptor CNN + AUSLAN | Brian Fernández Báez | MPhil Proposal — University of Queensland</p>
-    <p style="margin-top:0.3rem">
-        Model: EfficientNetB4 | Accuracy: 80.8% | F1-macro: 0.784 | Dataset: iNaturalist Australia + ALA
-    </p>
+    <p>{{ t('app.footer_credit') }}</p>
+    <p style="margin-top:0.3rem">{{ t('app.footer_model') }}</p>
 </footer>
 
 </body>
