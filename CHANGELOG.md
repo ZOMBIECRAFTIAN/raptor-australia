@@ -6,12 +6,38 @@ and the project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
-- Re-train the model on the expanded ALA + iNaturalist dataset
-  (~5,000 images, target F1-macro ≥ 0.85).
 - Replace provisional AUSLAN SVG illustrations with consented
   videos produced with the Deaf community.
 - Spatial heatmap of saved observations.
 - Mobile-first responsive layout (PWA).
+- Run `notebooks/retrain.py` end-to-end on the expanded dataset
+  (queued; will refresh `models/best_model.pth` and the metrics in
+  `results/`).
+
+## [1.1.0] — 2026-05-01
+
+### Added
+- **Full multilingual support** (10 languages: en, es, fr, pt, it,
+  de, zh, ja, ko, ru). UI strings live in `gui/translations/<code>.json`;
+  per-species profiles live in `gui/species_data_i18n.py` with **100 %
+  coverage** (1,040 strings — 13 fields × 8 species × 10 languages).
+- **Language picker** in the header nav with native-name labels and
+  flags. Cookie-based persistence (`raptor_lang`, 1-year max-age).
+- **`notebooks/retrain.py`** — end-to-end retraining script that:
+    1. Re-splits the expanded `dataset/raw/` into 80/10/10
+       (stratified, seed=42) at 380 px,
+    2. Trains EfficientNetB4 with the same two-stage protocol
+       (10 epochs feature extraction → 20 epochs full fine-tune),
+    3. Saves the best checkpoint to `models/best_model.pth`,
+    4. Refreshes `results/reporte_final.json`, `test_report.csv`,
+       confusion matrix and learning-curve PNGs.
+- `i18n.py` helper with locale resolution from URL param, cookie or
+  `Accept-Language`; `t('dotted.path')` lookup with English fallback.
+
+### Changed
+- Hero images regenerated using `pick_hero_images.py --use-detector`
+  on the post-ALA dataset (Faster R-CNN bird-bbox scoring favours
+  full-body, well-framed photographs).
 
 ## [1.0.0] — 2026-05-01
 
