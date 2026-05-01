@@ -1,0 +1,67 @@
+# ─── Python ────────────────────────────────────────────
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+*.egg
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+
+# ─── Virtual environments ──────────────────────────────
+.venv/
+venv/
+env/
+raptor_env/
+ENV/
+env.bak/
+venv.bak/
+
+# ─── Jupyter ───────────────────────────────────────────
+.ipynb_checkpoints/
+
+# ─── IDEs / Editors ────────────────────────────────────
+.vscode/
+.idea/
+*.swp
+*~
+.DS_Store
+Thumbs.db
+
+# ─── Environment / secrets ─────────────────────────────
+.env
+.env.*
+*.key
+*.pem
+
+# ─── Project-specific: large datasets ──────────────────
+# Raw image dataset (re-downloadable via notebooks/download_ala_images.py
+# and the original iNaturalist scraper in 01_download_dataset.ipynb)
+dataset/raw/
+dataset/processed/
+dataset/feedback/
+
+# ─── Project-specific: model weights ───────────────────
+# .pth/.pt files exceed GitHub's 100 MB per-file limit.
+# Train via 03_training.ipynb to reproduce best_model.pth.
+models/*.pth
+models/*.pt
+models/checkpoints/
+
+# ─── Project-specific: user-generated CSVs ─────────────
+# These accumulate per-deployment user data; not part of the codebase.
+results/observations.csv
+results/feedback_log.csv
+
+# ─── Project-specific: regeneratable artefacts ─────────
+# Hero candidate contact sheets and scoring tables are produced by
+# notebooks/pick_hero_images.py — no need to version-control them.
+results/hero_candidates_*.jpg
+results/hero_scores.csv
+
+# ─── Flask uploads ─────────────────────────────────────
+gui/uploads/
+!gui/uploads/.gitkeep
+
+# ─── Conversation export (workspace artefact, not code) ─
+raptor_chat_export.md

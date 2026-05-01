@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 360"
+     preserveAspectRatio="xMidYMid meet"
+     role="img"
+     aria-label="AUSLAN sign motion — Square-tailed Kite">
+
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%"  stop-color="#16A085" />
+      <stop offset="100%" stop-color="#16A085DD" />
+    </linearGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="480" height="360" fill="url(#bg)" />
+
+  <!-- Header -->
+  <text x="240" y="40" text-anchor="middle" fill="white"
+        font-family="Segoe UI, Arial, sans-serif"
+        font-size="20" font-weight="700">
+    Square-tailed Kite
+  </text>
+  <text x="240" y="62" text-anchor="middle" fill="rgba(255,255,255,0.78)"
+        font-family="Segoe UI, Arial, sans-serif"
+        font-style="italic" font-size="13">
+    Lophoictinia isura
+  </text>
+
+  <!-- Motion guideline -->
+  <path d="M 80,200 Q 240,170 400,200" stroke="rgba(255,255,255,0.35)" stroke-width="2" stroke-dasharray="4 4" fill="none" />
+
+  <!-- Animated hand marker(s) -->
+  <g>
+    <circle r="14" fill="white" />
+    <text y="6" text-anchor="middle" font-family="Segoe UI Emoji,Apple Color Emoji,sans-serif" font-size="22">🤟</text>
+    <animateMotion dur="3.2s" repeatCount="indefinite" begin="0s" path="M 80,200 Q 240,170 400,200" />
+  </g>
+
+  <!-- Caption -->
+  <rect x="0" y="312" width="480" height="48"
+        fill="rgba(0,0,0,0.32)" />
+  <text x="240" y="335" text-anchor="middle" fill="white"
+        font-family="Segoe UI, Arial, sans-serif"
+        font-size="13">
+    Flat hand, slow glide with square tail demarcated
+  </text>
+  <text x="240" y="352" text-anchor="middle"
+        fill="rgba(255,255,255,0.65)"
+        font-family="Segoe UI, Arial, sans-serif"
+        font-size="10" font-style="italic">
+    PROVISIONAL ILLUSTRATION — pending Deaf community validation
+  </text>
+</svg>

@@ -1,0 +1,1283 @@
+/* ─── Variables de color ─────────────────────────── */
+:root {
+    --teal:        #1A7C6E;
+    --teal-light:  #D4EDEA;
+    --blue:        #1B4F72;
+    --orange:      #E67E22;
+    --dark:        #2C3E50;
+    --light-grey:  #F8F9FA;
+    --border:      #DEE2E6;
+    --shadow:      0 4px 20px rgba(0,0,0,0.1);
+}
+
+/* ─── Reset y base ───────────────────────────────── */
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+    font-family: 'Segoe UI', Arial, sans-serif;
+    background: var(--light-grey);
+    color: var(--dark);
+    line-height: 1.6;
+}
+
+/* ─── Header ─────────────────────────────────────── */
+.header {
+    background: linear-gradient(135deg,
+                var(--blue) 0%, var(--teal) 100%);
+    color: white;
+    padding: 1rem 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    box-shadow: var(--shadow);
+}
+
+.header h1 {
+    font-size: 1.4rem;
+    font-weight: 700;
+}
+
+.header p {
+    font-size: 0.85rem;
+    opacity: 0.85;
+}
+
+.nav-links a {
+    color: white;
+    text-decoration: none;
+    margin-left: 1.5rem;
+    font-size: 0.95rem;
+    opacity: 0.9;
+    transition: opacity 0.2s;
+}
+
+.nav-links a:hover { opacity: 1; }
+
+/* ─── Contenedor principal ───────────────────────── */
+.container {
+    max-width: 1100px;
+    margin: 2rem auto;
+    padding: 0 1.5rem;
+}
+
+/* ─── Zona de upload ─────────────────────────────── */
+.upload-zone {
+    background: white;
+    border: 3px dashed var(--teal);
+    border-radius: 16px;
+    padding: 3rem 2rem;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-bottom: 2rem;
+}
+
+.upload-zone:hover,
+.upload-zone.dragover {
+    background: var(--teal-light);
+    border-color: var(--blue);
+    transform: translateY(-2px);
+}
+
+.upload-icon {
+    font-size: 3.5rem;
+    margin-bottom: 1rem;
+}
+
+.upload-zone h2 {
+    color: var(--blue);
+    margin-bottom: 0.5rem;
+}
+
+.upload-zone p {
+    color: #666;
+    font-size: 0.9rem;
+    margin-bottom: 1.5rem;
+}
+
+.btn-upload {
+    background: var(--teal);
+    color: white;
+    border: none;
+    padding: 0.75rem 2rem;
+    border-radius: 8px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.btn-upload:hover { background: var(--blue); }
+
+/* ─── Preview de imagen ──────────────────────────── */
+.image-preview {
+    display: none;
+    margin-bottom: 1.5rem;
+    text-align: center;
+}
+
+.image-preview img {
+    max-height: 300px;
+    max-width: 100%;
+    border-radius: 12px;
+    box-shadow: var(--shadow);
+    object-fit: contain;
+}
+
+/* ─── Loading ─────────────────────────────────────── */
+.loading {
+    display: none;
+    text-align: center;
+    padding: 2rem;
+}
+
+.spinner {
+    width: 50px;
+    height: 50px;
+    border: 5px solid var(--teal-light);
+    border-top-color: var(--teal);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+    margin: 0 auto 1rem;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+/* ─── Resultados ─────────────────────────────────── */
+.results-panel {
+    display: none;
+    background: white;
+    border-radius: 16px;
+    box-shadow: var(--shadow);
+    overflow: hidden;
+    margin-bottom: 2rem;
+}
+
+.result-header {
+    padding: 1.5rem 2rem;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.result-header h2 {
+    font-size: 1.6rem;
+}
+
+.result-header .scientific {
+    font-style: italic;
+    opacity: 0.85;
+    font-size: 1rem;
+}
+
+.confidence-badge {
+    background: rgba(255,255,255,0.25);
+    padding: 0.4rem 1rem;
+    border-radius: 20px;
+    font-size: 1.1rem;
+    font-weight: 700;
+}
+
+.result-body {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+}
+
+/* ─── Info de especie ────────────────────────────── */
+.species-info {
+    padding: 1.5rem 2rem;
+    border-right: 1px solid var(--border);
+}
+
+.info-row {
+    display: flex;
+    align-items: flex-start;
+    margin-bottom: 0.75rem;
+    font-size: 0.95rem;
+}
+
+.info-label {
+    font-weight: 600;
+    color: var(--teal);
+    min-width: 130px;
+    flex-shrink: 0;
+}
+
+.epbc-badge {
+    display: inline-block;
+    padding: 0.2rem 0.6rem;
+    border-radius: 4px;
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+
+.epbc-vulnerable {
+    background: #FFF3CD;
+    color: #856404;
+}
+
+.epbc-ok {
+    background: #D1ECF1;
+    color: #0C5460;
+}
+
+/* ─── Módulo AUSLAN ──────────────────────────────── */
+.auslan-module {
+    padding: 1.5rem 2rem;
+    background: #FAFAFA;
+}
+
+.auslan-module h3 {
+    color: var(--blue);
+    margin-bottom: 0.5rem;
+    font-size: 1rem;
+}
+
+.auslan-module p {
+    color: #555;
+    font-size: 0.85rem;
+    margin-bottom: 1rem;
+}
+
+.sign-description {
+    background: var(--teal-light);
+    border-left: 4px solid var(--teal);
+    padding: 0.75rem 1rem;
+    border-radius: 0 8px 8px 0;
+    font-size: 0.9rem;
+    color: var(--dark);
+    margin-bottom: 1rem;
+    font-style: italic;
+}
+
+/* ─── Video AUSLAN ───────────────────────────────── */
+.auslan-video-container {
+    background: #1a1a2e;
+    border-radius: 10px;
+    overflow: hidden;
+    text-align: center;
+    padding: 1rem;
+    min-height: 180px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.auslan-video-container video {
+    max-width: 100%;
+    max-height: 200px;
+    border-radius: 6px;
+}
+
+.video-placeholder {
+    color: rgba(255,255,255,0.6);
+    font-size: 0.85rem;
+    text-align: center;
+}
+
+.video-placeholder .video-icon { font-size: 2.5rem; }
+
+/* ─── Top 3 ──────────────────────────────────────── */
+.top3-section {
+    padding: 1rem 2rem 1.5rem;
+    border-top: 1px solid var(--border);
+}
+
+.top3-section h4 {
+    color: var(--dark);
+    margin-bottom: 0.75rem;
+    font-size: 0.95rem;
+}
+
+.top3-bars {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.top3-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-size: 0.88rem;
+}
+
+.top3-name {
+    min-width: 180px;
+    font-weight: 500;
+}
+
+.top3-bar-wrap {
+    flex: 1;
+    background: #eee;
+    border-radius: 4px;
+    height: 18px;
+    overflow: hidden;
+}
+
+.top3-bar-fill {
+    height: 100%;
+    border-radius: 4px;
+    transition: width 0.8s ease;
+}
+
+.top3-pct {
+    min-width: 45px;
+    text-align: right;
+    font-weight: 600;
+}
+
+/* ─── Registro de observación ────────────────────── */
+.observation-form {
+    background: white;
+    border-radius: 16px;
+    box-shadow: var(--shadow);
+    padding: 1.5rem 2rem;
+    margin-bottom: 2rem;
+    display: none;
+}
+
+.observation-form h3 {
+    color: var(--blue);
+    margin-bottom: 1rem;
+}
+
+.form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+}
+
+.form-group label {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--teal);
+}
+
+.form-group input,
+.form-group textarea {
+    padding: 0.6rem 0.9rem;
+    border: 1.5px solid var(--border);
+    border-radius: 8px;
+    font-size: 0.9rem;
+    transition: border-color 0.2s;
+}
+
+.form-group input:focus,
+.form-group textarea:focus {
+    outline: none;
+    border-color: var(--teal);
+}
+
+.form-group textarea {
+    resize: vertical;
+    min-height: 70px;
+}
+
+.btn-save {
+    background: var(--teal);
+    color: white;
+    border: none;
+    padding: 0.7rem 1.8rem;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.btn-save:hover { background: var(--blue); }
+
+.btn-new {
+    background: white;
+    color: var(--teal);
+    border: 2px solid var(--teal);
+    padding: 0.7rem 1.8rem;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    cursor: pointer;
+    margin-left: 1rem;
+    transition: all 0.2s;
+}
+
+.btn-new:hover {
+    background: var(--teal);
+    color: white;
+}
+
+/* ─── Mensaje de éxito ───────────────────────────── */
+.success-msg {
+    display: none;
+    background: #D4EDDA;
+    color: #155724;
+    padding: 0.75rem 1rem;
+    border-radius: 8px;
+    margin-top: 0.75rem;
+    font-size: 0.9rem;
+}
+
+/* ─── Footer ─────────────────────────────────────── */
+.footer {
+    text-align: center;
+    padding: 2rem;
+    color: #888;
+    font-size: 0.85rem;
+    border-top: 1px solid var(--border);
+    margin-top: 2rem;
+}
+
+/* ─── Feedback Section ───────────────────────────── */
+.feedback-section {
+    padding: 1.2rem 2rem 1.4rem;
+    background: linear-gradient(135deg, #f8f9fa 0%, #eef7f6 100%);
+    border-top: 2px solid var(--teal-light);
+    border-radius: 0 0 16px 16px;
+}
+
+.feedback-question {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--blue);
+    margin-bottom: 0.9rem;
+    text-align: center;
+    letter-spacing: 0.01em;
+}
+
+.feedback-buttons {
+    display: flex;
+    gap: 0.75rem;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.btn-correct {
+    background: linear-gradient(135deg, #27AE60, #1E8449);
+    color: white;
+    border: none;
+    padding: 0.55rem 1.4rem;
+    border-radius: 20px;
+    font-size: 0.88rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 8px rgba(39,174,96,0.3);
+}
+
+.btn-correct:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(39,174,96,0.4);
+}
+
+.btn-incorrect {
+    background: white;
+    color: #C0392B;
+    border: 2px solid #C0392B;
+    padding: 0.55rem 1.4rem;
+    border-radius: 20px;
+    font-size: 0.88rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.btn-incorrect:hover {
+    background: #C0392B;
+    color: white;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(192,57,43,0.3);
+}
+
+.correction-label {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--blue);
+    margin-bottom: 0.7rem;
+    text-align: center;
+    margin-top: 0.5rem;
+}
+
+.species-select {
+    width: 100%;
+    padding: 0.6rem 1rem;
+    border: 2px solid var(--teal);
+    border-radius: 10px;
+    font-size: 0.88rem;
+    color: var(--dark);
+    background: white;
+    cursor: pointer;
+    margin-bottom: 0.8rem;
+    transition: border-color 0.2s;
+}
+
+.species-select:focus {
+    outline: none;
+    border-color: var(--blue);
+    box-shadow: 0 0 0 3px rgba(27,79,114,0.1);
+}
+
+.correction-actions {
+    display: flex;
+    gap: 0.6rem;
+    justify-content: center;
+}
+
+.btn-submit-correction {
+    background: linear-gradient(135deg, var(--teal), var(--blue));
+    color: white;
+    border: none;
+    padding: 0.55rem 1.4rem;
+    border-radius: 20px;
+    font-size: 0.88rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 8px rgba(26,124,110,0.3);
+}
+
+.btn-submit-correction:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(26,124,110,0.4);
+}
+
+.btn-cancel-correction {
+    background: white;
+    color: #888;
+    border: 2px solid #CCC;
+    padding: 0.55rem 1.2rem;
+    border-radius: 20px;
+    font-size: 0.88rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.btn-cancel-correction:hover {
+    border-color: #999;
+    color: #444;
+}
+
+.thanks-correct {
+    text-align: center;
+    color: #1E8449;
+    font-weight: 600;
+    font-size: 0.95rem;
+    padding: 0.6rem;
+    background: #D5F5E3;
+    border-radius: 10px;
+}
+
+.thanks-incorrect {
+    text-align: center;
+    color: var(--blue);
+    font-weight: 600;
+    font-size: 0.9rem;
+    padding: 0.6rem;
+    background: var(--teal-light);
+    border-radius: 10px;
+    line-height: 1.6;
+}
+
+.counter-badge {
+    display: inline-block;
+    background: var(--teal);
+    color: white;
+    padding: 0.15rem 0.7rem;
+    border-radius: 12px;
+    font-size: 0.78rem;
+    margin-left: 0.4rem;
+    vertical-align: middle;
+}
+
+/* ─── Focus banner (from /species CTA) ───────────── */
+.focus-banner {
+    display: flex;
+    align-items: center;
+    gap: 0.9rem;
+    background: linear-gradient(135deg, var(--teal-light), #fefefe);
+    border: 1px solid var(--teal);
+    border-left: 5px solid var(--teal);
+    border-radius: 12px;
+    padding: 0.9rem 1.2rem;
+    margin-bottom: 1.2rem;
+    box-shadow: 0 2px 10px rgba(26,124,110,0.12);
+}
+
+.focus-banner .focus-icon {
+    font-size: 1.6rem;
+    line-height: 1;
+}
+
+.focus-banner .focus-text { flex: 1; }
+
+.focus-banner .focus-text strong {
+    color: var(--blue);
+    display: block;
+    margin-bottom: 0.15rem;
+    font-size: 0.95rem;
+}
+
+.focus-banner .focus-text p {
+    color: #555;
+    font-size: 0.85rem;
+    margin: 0;
+}
+
+.focus-close {
+    background: transparent;
+    border: none;
+    color: #888;
+    font-size: 1.4rem;
+    cursor: pointer;
+    line-height: 1;
+    padding: 0 0.3rem;
+}
+
+.focus-close:hover { color: var(--blue); }
+
+/* ─── Species Catalogue ──────────────────────────── */
+.nav-links a.active {
+    opacity: 1;
+    border-bottom: 2px solid white;
+    padding-bottom: 2px;
+}
+
+.species-intro {
+    background: white;
+    padding: 1.6rem 2rem;
+    border-radius: 16px;
+    box-shadow: var(--shadow);
+    margin-bottom: 1.6rem;
+}
+
+.species-intro h2 {
+    color: var(--blue);
+    margin-bottom: 0.5rem;
+    font-size: 1.4rem;
+}
+
+.species-intro p {
+    color: #555;
+    font-size: 0.95rem;
+    margin-bottom: 1rem;
+}
+
+.legend {
+    display: flex;
+    gap: 1.4rem;
+    flex-wrap: wrap;
+    font-size: 0.85rem;
+    color: #555;
+}
+
+.legend-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+}
+
+.legend-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    display: inline-block;
+}
+
+.species-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 1.4rem;
+    margin-bottom: 2rem;
+}
+
+.species-card {
+    background: white;
+    border-radius: 14px;
+    overflow: hidden;
+    box-shadow: var(--shadow);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    border-top: 4px solid var(--card-accent, var(--teal));
+    display: flex;
+    flex-direction: column;
+}
+
+.species-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 28px rgba(0,0,0,0.12);
+}
+
+/* Hero image inside the card */
+.species-hero {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 3 / 2;
+    overflow: hidden;
+    background: var(--card-accent, var(--teal));
+}
+
+.species-hero img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.45s ease;
+}
+
+.species-card:hover .species-hero img {
+    transform: scale(1.04);
+}
+
+.species-hero-overlay {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: flex-end;
+    padding: 1rem 1.2rem;
+    color: white;
+    pointer-events: none;
+}
+
+.species-hero-overlay.hero-fallback {
+    background: var(--card-accent, var(--teal)) !important;
+    align-items: center;
+    justify-content: center;
+}
+
+.species-hero-text h3 {
+    font-size: 1.2rem;
+    font-weight: 700;
+    margin-bottom: 0.15rem;
+    text-shadow: 0 1px 4px rgba(0,0,0,0.5);
+    line-height: 1.2;
+}
+
+.species-hero-text .species-sci {
+    font-style: italic;
+    font-size: 0.85rem;
+    opacity: 0.95;
+    text-shadow: 0 1px 3px rgba(0,0,0,0.5);
+}
+
+.species-card-body {
+    padding: 1rem 1.3rem 1.2rem;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 0.55rem;
+}
+
+.species-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 0.8rem;
+    font-size: 0.85rem;
+    border-bottom: 1px dashed var(--border);
+    padding-bottom: 0.4rem;
+}
+
+.species-row:last-of-type { border-bottom: none; }
+
+.species-label {
+    color: #777;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    font-size: 0.72rem;
+    flex-shrink: 0;
+}
+
+.species-value {
+    color: var(--dark);
+    text-align: right;
+    flex: 1;
+    font-weight: 500;
+}
+
+.species-value.status-listed {
+    color: #C0392B;
+    font-weight: 700;
+}
+
+.species-value.status-stable {
+    color: #27AE60;
+    font-weight: 600;
+}
+
+.species-block {
+    margin-top: 0.5rem;
+    padding-top: 0.6rem;
+    border-top: 1px solid var(--border);
+}
+
+.species-block .species-label { display: block; margin-bottom: 0.3rem; }
+
+.species-text {
+    font-size: 0.88rem;
+    color: #444;
+    line-height: 1.55;
+}
+
+.species-auslan {
+    background: var(--teal-light);
+    border-radius: 10px;
+    padding: 0.7rem 0.9rem;
+    border-top: none;
+    margin-top: 0.6rem;
+}
+
+.species-auslan .species-label { color: var(--teal); }
+
+/* Species profile (Merlin-style detail) */
+.species-details {
+    margin-top: 0.6rem;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    background: #fbfcfd;
+    overflow: hidden;
+}
+
+.species-details summary {
+    padding: 0.65rem 0.9rem;
+    background: linear-gradient(135deg,
+                var(--blue) 0%, #2C3E50 100%);
+    color: white;
+    font-weight: 600;
+    font-size: 0.88rem;
+    cursor: pointer;
+    list-style: none;
+    user-select: none;
+}
+
+.species-details summary::-webkit-details-marker { display: none; }
+
+.species-details summary::after {
+    content: '▼';
+    float: right;
+    transition: transform 0.2s;
+    font-size: 0.7rem;
+    margin-top: 2px;
+}
+
+.species-details[open] summary::after { transform: rotate(180deg); }
+
+.species-details .detail-row {
+    display: flex;
+    gap: 0.7rem;
+    padding: 0.55rem 0.9rem;
+    border-bottom: 1px dashed var(--border);
+    align-items: flex-start;
+}
+
+.species-details .detail-row:last-of-type { border-bottom: none; }
+
+.species-details .detail-icon {
+    font-size: 1.1rem;
+    line-height: 1.4;
+    flex-shrink: 0;
+}
+
+.species-details .detail-label {
+    display: block;
+    font-size: 0.7rem;
+    color: var(--blue);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 0.15rem;
+}
+
+.species-details .detail-row p {
+    font-size: 0.83rem;
+    color: #444;
+    line-height: 1.5;
+    margin: 0;
+}
+
+.species-details .detail-fact {
+    background: linear-gradient(135deg,
+                var(--teal-light), #fff5e6);
+    padding: 0.7rem 0.9rem;
+    border-top: 2px solid var(--orange);
+}
+
+.species-details .detail-fact-label {
+    display: block;
+    color: #B7651A;
+    font-weight: 700;
+    font-size: 0.78rem;
+    margin-bottom: 0.25rem;
+}
+
+.species-details .detail-fact p {
+    font-size: 0.84rem;
+    color: #5C3A0F;
+    line-height: 1.55;
+    margin: 0;
+    font-style: italic;
+}
+
+.species-metrics {
+    display: flex;
+    gap: 0.45rem;
+    margin-top: 0.6rem;
+    flex-wrap: wrap;
+}
+
+.metric-pill {
+    flex: 1;
+    min-width: 70px;
+    background: var(--light-grey);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 0.35rem 0.5rem;
+    text-align: center;
+    line-height: 1.1;
+}
+
+.metric-pill .metric-label {
+    display: block;
+    font-size: 0.65rem;
+    color: #888;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    font-weight: 600;
+    margin-bottom: 0.15rem;
+}
+
+.metric-pill .metric-value {
+    display: block;
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--blue);
+}
+
+.metric-value.m-good { color: #1E8449; }
+.metric-value.m-mid  { color: var(--orange); }
+.metric-value.m-low  { color: #C0392B; }
+
+.species-train-count {
+    margin-top: 0.6rem;
+    padding: 0.4rem 0.7rem;
+    background: var(--teal-light);
+    color: var(--teal);
+    border-radius: 8px;
+    font-size: 0.8rem;
+    text-align: center;
+    font-weight: 500;
+}
+
+.species-train-count strong { font-weight: 700; color: var(--blue); }
+
+.species-cta {
+    margin-top: auto;
+    align-self: stretch;
+    text-align: center;
+    padding: 0.55rem 1rem;
+    background: linear-gradient(135deg, var(--teal), var(--blue));
+    color: white;
+    border-radius: 10px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.2s ease;
+    margin-top: 0.9rem;
+    box-shadow: 0 2px 8px rgba(26,124,110,0.3);
+}
+
+.species-cta:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(26,124,110,0.4);
+}
+
+.species-footer-note {
+    background: white;
+    padding: 1.4rem 1.8rem;
+    border-radius: 14px;
+    box-shadow: var(--shadow);
+    margin-bottom: 2rem;
+}
+
+.species-footer-note h3 {
+    color: var(--blue);
+    margin-bottom: 0.6rem;
+    font-size: 1.05rem;
+}
+
+.species-footer-note p {
+    font-size: 0.9rem;
+    color: #555;
+    margin-bottom: 0.6rem;
+    line-height: 1.65;
+}
+
+.species-footer-note p.muted {
+    color: #888;
+    font-size: 0.78rem;
+    font-style: italic;
+}
+
+/* ─── Data Dashboard ─────────────────────────────── */
+.data-summary, .data-by-species, .data-export,
+.data-recent, .data-empty {
+    background: white;
+    padding: 1.4rem 1.8rem;
+    border-radius: 14px;
+    box-shadow: var(--shadow);
+    margin-bottom: 1.4rem;
+}
+
+.data-summary h2 {
+    color: var(--blue);
+    margin-bottom: 1rem;
+    font-size: 1.3rem;
+}
+
+.data-by-species h3, .data-export h3, .data-recent h3 {
+    color: var(--blue);
+    margin-bottom: 0.9rem;
+    font-size: 1.1rem;
+}
+
+.data-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 1rem;
+}
+
+.stat-card {
+    border-radius: 12px;
+    padding: 1.2rem 1.4rem;
+    color: white;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+}
+
+.stat-card--blue   { background: linear-gradient(135deg, var(--blue), #2C3E50); }
+.stat-card--teal   { background: linear-gradient(135deg, var(--teal), #16A085); }
+.stat-card--orange { background: linear-gradient(135deg, var(--orange), #D35400); }
+
+.stat-card .stat-value {
+    font-size: 2.4rem;
+    font-weight: 800;
+    line-height: 1;
+}
+
+.stat-card .stat-label {
+    font-size: 0.85rem;
+    opacity: 0.92;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+
+.species-bars {
+    display: flex;
+    flex-direction: column;
+    gap: 0.55rem;
+}
+
+.species-bar-row {
+    display: grid;
+    grid-template-columns: 200px 1fr 50px;
+    align-items: center;
+    gap: 0.8rem;
+    font-size: 0.9rem;
+}
+
+.species-bar-label {
+    color: var(--dark);
+    font-weight: 500;
+    text-align: right;
+}
+
+.species-bar-track {
+    background: var(--light-grey);
+    border-radius: 8px;
+    height: 22px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+}
+
+.species-bar-fill {
+    height: 100%;
+    transition: width 0.4s ease;
+    border-radius: 8px 0 0 8px;
+}
+
+.species-bar-count {
+    font-weight: 700;
+    color: var(--blue);
+    text-align: right;
+}
+
+.data-export-intro {
+    color: #555;
+    font-size: 0.92rem;
+    margin-bottom: 1.1rem;
+    line-height: 1.6;
+}
+
+.export-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 0.9rem;
+    margin-bottom: 1.4rem;
+}
+
+.export-card {
+    display: flex;
+    gap: 0.9rem;
+    align-items: flex-start;
+    padding: 1rem 1.2rem;
+    border: 2px solid var(--border);
+    border-radius: 12px;
+    background: var(--light-grey);
+    text-decoration: none;
+    color: var(--dark);
+    transition: all 0.2s ease;
+}
+
+.export-card:hover {
+    border-color: var(--teal);
+    background: #fefefe;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 18px rgba(26,124,110,0.15);
+}
+
+.export-card--featured {
+    border-color: var(--teal);
+    background: linear-gradient(135deg, #fefefe, var(--teal-light));
+}
+
+.export-card .export-icon {
+    font-size: 1.8rem;
+    line-height: 1;
+}
+
+.export-card h4 {
+    color: var(--blue);
+    font-size: 1rem;
+    margin-bottom: 0.3rem;
+}
+
+.export-card p {
+    color: #555;
+    font-size: 0.84rem;
+    line-height: 1.5;
+    margin-bottom: 0.45rem;
+}
+
+.export-badge {
+    display: inline-block;
+    background: var(--teal);
+    color: white;
+    padding: 0.15rem 0.6rem;
+    border-radius: 8px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+
+.ala-howto {
+    background: var(--teal-light);
+    border-left: 4px solid var(--teal);
+    padding: 1rem 1.2rem;
+    border-radius: 8px;
+    margin-top: 0.8rem;
+}
+
+.ala-howto h4 {
+    color: var(--teal);
+    margin-bottom: 0.55rem;
+    font-size: 0.95rem;
+}
+
+.ala-howto ol {
+    padding-left: 1.4rem;
+    color: #444;
+    font-size: 0.88rem;
+    line-height: 1.65;
+    margin-bottom: 0.6rem;
+}
+
+.ala-howto code {
+    background: white;
+    padding: 1px 6px;
+    border-radius: 4px;
+    font-size: 0.84rem;
+    color: var(--blue);
+}
+
+.ala-howto a { color: var(--blue); font-weight: 600; }
+
+.ala-howto p.muted {
+    font-size: 0.78rem;
+    color: #777;
+    font-style: italic;
+}
+
+.data-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.88rem;
+}
+
+.data-table thead {
+    background: var(--light-grey);
+    color: var(--blue);
+}
+
+.data-table th {
+    text-align: left;
+    padding: 0.6rem 0.8rem;
+    border-bottom: 2px solid var(--border);
+    font-size: 0.78rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+
+.data-table td {
+    padding: 0.6rem 0.8rem;
+    border-bottom: 1px solid var(--border);
+    vertical-align: top;
+}
+
+.data-table small {
+    color: #777;
+    display: block;
+    font-size: 0.78rem;
+}
+
+.data-table .muted { color: #aaa; }
+
+.data-empty p { color: #666; font-size: 0.95rem; }
+.data-empty a { color: var(--blue); font-weight: 600; }
+
+/* ─── Responsive ─────────────────────────────────── */
+@media (max-width: 768px) {
+    .result-body { grid-template-columns: 1fr; }
+    .species-info { border-right: none;
+                    border-bottom: 1px solid var(--border); }
+    .form-grid { grid-template-columns: 1fr; }
+    .header { flex-direction: column; gap: 0.5rem; }
+    .species-grid { grid-template-columns: 1fr; }
+    .legend { flex-direction: column; gap: 0.4rem; }
+    .species-bar-row {
+        grid-template-columns: 110px 1fr 40px;
+        gap: 0.5rem; font-size: 0.8rem;
+    }
+    .data-stats-grid { grid-template-columns: 1fr 1fr; }
+    .export-cards { grid-template-columns: 1fr; }
+}

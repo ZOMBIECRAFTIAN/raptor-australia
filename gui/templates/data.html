@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data Export — Australian Raptor CNN</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+
+<header class="header">
+    <div>
+        <h1>🦅 Australian Raptor CNN</h1>
+        <p>Data Dashboard & Export</p>
+    </div>
+    <nav class="nav-links">
+        <a href="/">Identify</a>
+        <a href="/species">Species Guide</a>
+        <a href="/data" class="active">Data</a>
+    </nav>
+</header>
+
+<main class="container">
+
+    <section class="data-summary">
+        <h2>Observations summary</h2>
+        <div class="data-stats-grid">
+            <div class="stat-card stat-card--blue">
+                <span class="stat-value">{{ total_observations }}</span>
+                <span class="stat-label">Total observations</span>
+            </div>
+            <div class="stat-card stat-card--teal">
+                <span class="stat-value">{{ observations_by_species|length }}</span>
+                <span class="stat-label">Species recorded</span>
+            </div>
+            <div class="stat-card stat-card--orange">
+                <span class="stat-value">{{ feedback_count }}</span>
+                <span class="stat-label">Model corrections</span>
+            </div>
+        </div>
+    </section>
+
+    {% if observations_by_species %}
+    <section class="data-by-species">
+        <h3>Observations by species</h3>
+        <div class="species-bars">
+            {% set max_count = (observations_by_species.values()|list|max) or 1 %}
+            {% for key, info in species_info.items() %}
+                {% set count = observations_by_species.get(key, 0) %}
+                <div class="species-bar-row">
+                    <span class="species-bar-label">{{ info.common_name }}</span>
+                    <div class="species-bar-track">
+                        <div class="species-bar-fill"
+                             style="width: {{ (count / max_count * 100)|round(1) }}%;
+                                    background: {{ info.color }}">
+                        </div>
+                    </div>
+                    <span class="species-bar-count">{{ count }}</span>
+                </div>
+            {% endfor %}
+        </div>
+    </section>
+    {% endif %}
+
+    <section class="data-export">
+        <h3>Export data</h3>
+        <p class="data-export-intro">
+            Download your observations for personal use, scientific
+            analysis, or submission to the Atlas of Living Australia
+            and global biodiversity platforms.
+        </p>
+
+        <div class="export-cards">
+            <a class="export-card" href="/export/observations.csv">
+                <span class="export-icon">📊</span>
+                <div>
+                    <h4>Internal observations CSV</h4>
+                    <p>
+                        All your saved observations in the application's
+                        native format. Useful for personal logs and
+                        local analysis.
+                    </p>
+                    <span class="export-badge">CSV · UTF-8</span>
+                </div>
+            </a>
+
+            <a class="export-card export-card--featured"
+               href="/export/observations_dwc.csv">
+                <span class="export-icon">🌏</span>
+                <div>
+                    <h4>Darwin Core CSV (for ALA / GBIF)</h4>
+                    <p>
+                        Standardised biodiversity format following
+                        the TDWG Darwin Core schema. Ready to upload
+                        to the Atlas of Living Australia's
+                        <em>Sightings</em> portal or any GBIF data
+                        publisher.
+                    </p>
+                    <span class="export-badge">DwC · CSV · UTF-8</span>
+                </div>
+            </a>
+
+            <a class="export-card" href="/export/feedback.csv">
+                <span class="export-icon">🛠️</span>
+                <div>
+                    <h4>Model corrections log</h4>
+                    <p>
+                        Every correction submitted via the feedback
+                        button. Used as the input for the next
+                        model retraining cycle.
+                    </p>
+                    <span class="export-badge">CSV · UTF-8</span>
+                </div>
+            </a>
+        </div>
+
+        <div class="ala-howto">
+            <h4>How to upload to the Atlas of Living Australia</h4>
+            <ol>
+                <li>Sign in (or create a free account) at
+                    <a href="https://www.ala.org.au"
+                       target="_blank" rel="noopener">www.ala.org.au</a>.</li>
+                <li>Go to <em>My Profile → My Sightings → Submit a
+                    sighting list</em>.</li>
+                <li>Upload the
+                    <code>raptor_au_observations_dwc.csv</code>
+                    you just downloaded.</li>
+                <li>ALA's pipeline will validate the records and
+                    integrate them into the national biodiversity
+                    database (turnaround ~24-72 hours).</li>
+            </ol>
+            <p class="muted">
+                The <code>identifiedBy</code> column credits the
+                CNN model explicitly so reviewers can apply
+                appropriate weight to AI-assisted records.
+            </p>
+        </div>
+    </section>
+
+    {% if recent_observations %}
+    <section class="data-recent">
+        <h3>Recent observations (last {{ recent_observations|length }})</h3>
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>When</th>
+                    <th>Species</th>
+                    <th>Confidence</th>
+                    <th>Location</th>
+                    <th>Confirmed</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for r in recent_observations %}
+                <tr>
+                    <td>{{ r.timestamp[:19] }}</td>
+                    <td>
+                        <strong>{{ r.common_name }}</strong>
+                        <small><em>{{ r.scientific_name }}</em></small>
+                    </td>
+                    <td>{{ r.confidence }}%</td>
+                    <td>
+                        {% if r.latitude %}
+                            {{ r.latitude }}, {{ r.longitude }}
+                        {% else %}
+                            <span class="muted">—</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if r.observer_confirmed in ['True','true','1'] %}
+                            ✅
+                        {% else %}
+                            <span class="muted">pending</span>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </section>
+    {% else %}
+    <section class="data-empty">
+        <p>
+            No observations recorded yet. Identify a bird from the
+            <a href="/">home page</a> and save your first observation
+            to populate this dashboard.
+        </p>
+    </section>
+    {% endif %}
+
+</main>
+
+<footer class="footer">
+    <p>Australian Raptor CNN + AUSLAN | Brian Fernández Báez | MPhil Proposal — University of Queensland</p>
+    <p style="margin-top:0.3rem">
+        Model: EfficientNetB4 | Accuracy: 80.8% | F1-macro: 0.784 | Dataset: iNaturalist Australia + ALA
+    </p>
+</footer>
+
+</body>
+</html>

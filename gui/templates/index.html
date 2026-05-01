@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Australian Raptor CNN — Identify Birds of Prey</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+
+<header class="header">
+    <div>
+        <h1>🦅 Australian Raptor CNN</h1>
+        <p>Post-Bushfire Raptor Monitoring — CNN + AUSLAN</p>
+    </div>
+    <nav class="nav-links">
+        <a href="/" class="active">Identify</a>
+        <a href="/species">Species Guide</a>
+        <a href="/data">Data</a>
+    </nav>
+</header>
+
+<main class="container">
+
+    <div class="focus-banner" id="focusBanner" style="display:none">
+        <span class="focus-icon">🎯</span>
+        <div class="focus-text">
+            <strong>Looking for <span id="focusName">—</span>?</strong>
+            <p>Upload a photo and we'll confirm whether the model
+               recognises this species.</p>
+        </div>
+        <button class="focus-close"
+                onclick="document.getElementById('focusBanner').style.display='none'"
+                aria-label="Dismiss">×</button>
+    </div>
+
+    <div class="upload-zone" id="uploadZone">
+        <div class="upload-icon">📸</div>
+        <h2>Identify an Australian Raptor</h2>
+        <p>Upload a photo of a bird in flight to identify the species<br>
+           and learn the corresponding AUSLAN sign.</p>
+        <button class="btn-upload"
+                onclick="document.getElementById('fileInput').click()">
+            Choose Image
+        </button>
+        <p style="margin-top:0.75rem; font-size:0.8rem; color:#999">
+            Supported: JPG, PNG, TIFF, WebP — Max 16MB
+        </p>
+        <input type="file" id="fileInput" accept="image/*"
+               style="display:none"
+               onchange="handleFile(this.files[0])">
+    </div>
+
+    <div class="image-preview" id="imagePreview">
+        <img id="previewImg" src="" alt="Preview">
+    </div>
+
+    <div class="loading" id="loading">
+        <div class="spinner"></div>
+        <p>Analyzing image with CNN model...</p>
+    </div>
+
+    <div class="results-panel" id="resultsPanel">
+
+        <div class="result-header" id="resultHeader">
+            <div>
+                <h2 id="commonName">—</h2>
+                <p class="scientific" id="scientificName">—</p>
+            </div>
+            <div class="confidence-badge" id="confidence">—%</div>
+        </div>
+
+        <div class="result-body">
+            <div class="species-info">
+                <h3 style="color:var(--blue);margin-bottom:1rem">
+                    Species Information
+                </h3>
+                <div class="info-row">
+                    <span class="info-label">🏷️ EPBC Status</span>
+                    <span id="epbcStatus">—</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">🌿 Habitat</span>
+                    <span id="habitat">—</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">📏 Length</span>
+                    <span id="length">—</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">🪽 Wingspan</span>
+                    <span id="wingspan">—</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">🔍 Diagnostic</span>
+                    <span id="diagnostic">—</span>
+                </div>
+            </div>
+
+            <div class="auslan-module">
+                <h3>🤟 AUSLAN Sign</h3>
+                <p>Australian Sign Language vocabulary for this species:</p>
+                <div class="sign-description" id="auslanSign">—</div>
+                <div class="auslan-video-container" id="auslanContainer">
+                    <div class="video-placeholder">
+                        <div class="video-icon">🎥</div>
+                        <p>AUSLAN sign video<br>will appear here</p>
+                        <p style="font-size:0.75rem;margin-top:0.5rem;opacity:0.6">
+                            Add .mp4 files to static/auslan_videos/
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="top3-section">
+            <h4>📊 Model confidence — Top 3 predictions</h4>
+            <div class="top3-bars" id="top3Bars"></div>
+        </div>
+
+        <div class="feedback-section" id="feedbackSection" style="display:none">
+            <div id="feedbackPrompt">
+                <p class="feedback-question">Was this identification correct?</p>
+                <div class="feedback-buttons">
+                    <button class="btn-correct" onclick="markCorrect()">
+                        ✅ Yes, correct
+                    </button>
+                    <button class="btn-incorrect" onclick="showCorrectionPanel()">
+                        ❌ No, it was a different species
+                    </button>
+                </div>
+            </div>
+
+            <div id="correctionPanel" style="display:none">
+                <p class="correction-label">🔍 What species was it actually?</p>
+                <select id="correctSpeciesSelect" class="species-select">
+                    <option value="">-- Select the correct species --</option>
+                    <option value="aquila_audax">Wedge-tailed Eagle (Aquila audax)</option>
+                    <option value="falco_peregrinus">Peregrine Falcon (Falco peregrinus)</option>
+                    <option value="circus_assimilis">Spotted Harrier (Circus assimilis)</option>
+                    <option value="tachyspiza_fasciata">Brown Goshawk (Tachyspiza fasciata)</option>
+                    <option value="falco_cenchroides">Nankeen Kestrel (Falco cenchroides)</option>
+                    <option value="elanus_axillaris">Black-shouldered Kite (Elanus axillaris)</option>
+                    <option value="lophoictinia_isura">Square-tailed Kite (Lophoictinia isura)</option>
+                    <option value="hieraaetus_morphnoides">Little Eagle (Hieraaetus morphnoides)</option>
+                </select>
+                <div class="correction-actions">
+                    <button class="btn-submit-correction" onclick="submitCorrection()">
+                        📤 Submit Correction
+                    </button>
+                    <button class="btn-cancel-correction" onclick="cancelCorrection()">
+                        Cancel
+                    </button>
+                </div>
+            </div>
+
+            <div id="feedbackThanks" style="display:none">
+                <div class="thanks-correct" id="thanksCorrect" style="display:none">
+                    🎉 Great! Thank you for confirming.
+                </div>
+                <div class="thanks-incorrect" id="thanksIncorrect" style="display:none">
+                    🙏 Thank you for the correction! This helps improve the model.
+                    <span id="feedbackCounter" class="counter-badge"></span>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="observation-form" id="observationForm">
+        <h3>📍 Save this Observation</h3>
+        <div class="form-grid">
+            <div class="form-group">
+                <label>Latitude (optional)</label>
+                <input type="number" id="obsLat" placeholder="-33.8688" step="any">
+            </div>
+            <div class="form-group">
+                <label>Longitude (optional)</label>
+                <input type="number" id="obsLon" placeholder="151.2093" step="any">
+            </div>
+            <div class="form-group" style="grid-column:1/-1">
+                <label>Notes</label>
+                <textarea id="obsNotes"
+                    placeholder="Flight behavior, weather conditions, habitat...">
+                </textarea>
+            </div>
+        </div>
+        <button class="btn-save" onclick="saveObservation()">💾 Save Observation</button>
+        <button class="btn-new" onclick="resetApp()">🔄 New Identification</button>
+        <div class="success-msg" id="successMsg">
+            ✅ Observation saved to observations.csv
+        </div>
+    </div>
+
+</main>
+
+<footer class="footer">
+    <p>Australian Raptor CNN + AUSLAN | Brian Fernández Báez | MPhil Proposal — University of Queensland</p>
+    <p style="margin-top:0.3rem">
+        Model: EfficientNetB4 | Accuracy: 80.8% | F1-macro: 0.784 | Dataset: iNaturalist Australia
+    </p>
+</footer>
+
+<script>
+let currentPrediction = null;
+
+const SPECIES_NAMES = {
+    "aquila_audax":           "Wedge-tailed Eagle",
+    "falco_peregrinus":       "Peregrine Falcon",
+    "circus_assimilis":       "Spotted Harrier",
+    "tachyspiza_fasciata":    "Brown Goshawk",
+    "falco_cenchroides":      "Nankeen Kestrel",
+    "elanus_axillaris":       "Black-shouldered Kite",
+    "lophoictinia_isura":     "Square-tailed Kite",
+    "hieraaetus_morphnoides": "Little Eagle"
+};
+
+// If the user arrived from the catalogue with ?focus=<key>,
+// show a small banner above the upload zone.
+(function showFocusBanner() {
+    const params = new URLSearchParams(window.location.search);
+    const key    = params.get("focus");
+    if (key && SPECIES_NAMES[key]) {
+        document.getElementById("focusName").textContent =
+            SPECIES_NAMES[key];
+        document.getElementById("focusBanner").style.display = "flex";
+    }
+})();
+
+const uploadZone = document.getElementById("uploadZone");
+
+uploadZone.addEventListener("dragover", e => {
+    e.preventDefault();
+    uploadZone.classList.add("dragover");
+});
+
+uploadZone.addEventListener("dragleave", () => {
+    uploadZone.classList.remove("dragover");
+});
+
+uploadZone.addEventListener("drop", e => {
+    e.preventDefault();
+    uploadZone.classList.remove("dragover");
+    const file = e.dataTransfer.files[0];
+    if (file) handleFile(file);
+});
+
+function handleFile(file) {
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = e => {
+        document.getElementById("previewImg").src = e.target.result;
+        document.getElementById("imagePreview").style.display = "block";
+    };
+    reader.readAsDataURL(file);
+    uploadAndIdentify(file);
+}
+
+async function uploadAndIdentify(file) {
+    document.getElementById("resultsPanel").style.display    = "none";
+    document.getElementById("observationForm").style.display = "none";
+    document.getElementById("successMsg").style.display      = "none";
+    document.getElementById("loading").style.display         = "block";
+
+    const formData = new FormData();
+    formData.append("image", file);
+
+    try {
+        const response = await fetch("/identify", {
+            method: "POST",
+            body:   formData
+        });
+        const result = await response.json();
+        if (result.error) { alert("Error: " + result.error); return; }
+        currentPrediction = result;
+        displayResults(result);
+    } catch (error) {
+        alert("Connection error: " + error.message);
+    } finally {
+        document.getElementById("loading").style.display = "none";
+    }
+}
+
+function displayResults(result) {
+    document.getElementById("resultHeader").style.background = result.color;
+    document.getElementById("commonName").textContent        = result.common_name;
+    document.getElementById("scientificName").textContent    = result.scientific_name;
+    document.getElementById("confidence").textContent        = result.confidence + "%";
+    document.getElementById("epbcStatus").textContent        = result.epbc_status;
+    document.getElementById("habitat").textContent           = result.habitat;
+    document.getElementById("length").textContent            = result.length_cm;
+    document.getElementById("wingspan").textContent          = result.wingspan_cm;
+    document.getElementById("diagnostic").textContent        = result.diagnostic;
+    document.getElementById("auslanSign").textContent        = result.auslan_sign;
+
+    const container  = document.getElementById("auslanContainer");
+    const mediaPath  = `/auslan_videos/${result.auslan_video}`;
+    const isSvg      = result.auslan_video.endsWith(".svg");
+    const fallbackHtml =
+        `<div class=\'video-placeholder\'><div class=\'video-icon\'>🤟</div>` +
+        `<p>AUSLAN sign for<br><strong>${result.common_name}</strong></p>` +
+        `<p style=\'font-size:0.75rem;opacity:0.7;margin-top:0.5rem\'>` +
+        `Add ${result.auslan_video} to static/auslan_videos/</p></div>`;
+    const mediaTag = isSvg
+        ? `<img src="${mediaPath}"
+                alt="AUSLAN sign motion for ${result.common_name}"
+                style="max-width:100%;max-height:240px;
+                       border-radius:8px;background:rgba(0,0,0,0.15)"
+                onerror="this.parentElement.innerHTML=\`${fallbackHtml}\`">`
+        : `<video controls autoplay muted loop
+                  style="max-width:100%;max-height:240px;border-radius:8px"
+                  onerror="this.parentElement.innerHTML=\`${fallbackHtml}\`">
+              <source src="${mediaPath}" type="video/mp4">
+           </video>`;
+    container.innerHTML = `
+        <div style="text-align:center">
+            ${mediaTag}
+            <p style="color:rgba(255,255,255,0.78);font-size:0.8rem;
+                      margin-top:0.5rem">
+                AUSLAN sign motion — ${result.common_name}
+            </p>
+            <p style="color:rgba(255,255,255,0.55);font-size:0.7rem;
+                      font-style:italic;margin-top:0.2rem">
+                Provisional illustration · pending Deaf community validation
+            </p>
+        </div>`;
+
+    const top3Container = document.getElementById("top3Bars");
+    top3Container.innerHTML = "";
+    result.top3.forEach((item, i) => {
+        const div = document.createElement("div");
+        div.className = "top3-item";
+        div.innerHTML = `
+            <span class="top3-name">
+                ${i===0?"🥇":i===1?"🥈":"🥉"} ${item.common_name}
+            </span>
+            <div class="top3-bar-wrap">
+                <div class="top3-bar-fill"
+                     style="width:${item.confidence}%;background:${item.color}">
+                </div>
+            </div>
+            <span class="top3-pct">${item.confidence}%</span>`;
+        top3Container.appendChild(div);
+    });
+
+    document.getElementById("resultsPanel").style.display    = "block";
+    document.getElementById("observationForm").style.display = "block";
+    document.getElementById("feedbackSection").style.display = "block";
+    document.getElementById("feedbackPrompt").style.display  = "block";
+    document.getElementById("correctionPanel").style.display = "none";
+    document.getElementById("feedbackThanks").style.display  = "none";
+    document.getElementById("thanksCorrect").style.display   = "none";
+    document.getElementById("thanksIncorrect").style.display = "none";
+
+    document.getElementById("resultsPanel").scrollIntoView({
+        behavior: "smooth", block: "start"
+    });
+}
+
+async function saveObservation() {
+    if (!currentPrediction) return;
+    const data = {
+        species_key:     currentPrediction.species_key,
+        common_name:     currentPrediction.common_name,
+        scientific_name: currentPrediction.scientific_name,
+        confidence:      currentPrediction.confidence,
+        latitude:        document.getElementById("obsLat").value,
+        longitude:       document.getElementById("obsLon").value,
+        notes:           document.getElementById("obsNotes").value,
+        confirmed:       true
+    };
+    try {
+        await fetch("/save_observation", {
+            method: "POST",
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify(data)
+        });
+        document.getElementById("successMsg").style.display = "block";
+    } catch (error) {
+        alert("Error saving: " + error.message);
+    }
+}
+
+function resetApp() {
+    currentPrediction = null;
+    document.getElementById("imagePreview").style.display    = "none";
+    document.getElementById("resultsPanel").style.display    = "none";
+    document.getElementById("observationForm").style.display = "none";
+    document.getElementById("successMsg").style.display      = "none";
+    document.getElementById("feedbackSection").style.display = "none";
+    document.getElementById("feedbackPrompt").style.display  = "block";
+    document.getElementById("correctionPanel").style.display = "none";
+    document.getElementById("feedbackThanks").style.display  = "none";
+    document.getElementById("thanksCorrect").style.display   = "none";
+    document.getElementById("thanksIncorrect").style.display = "none";
+    document.getElementById("previewImg").src               = "";
+    document.getElementById("obsLat").value                 = "";
+    document.getElementById("obsLon").value                 = "";
+    document.getElementById("obsNotes").value               = "";
+    document.getElementById("fileInput").value              = "";
+    document.getElementById("correctSpeciesSelect").value   = "";
+    window.scrollTo({top: 0, behavior: "smooth"});
+}
+
+function markCorrect() {
+    document.getElementById("feedbackPrompt").style.display = "none";
+    document.getElementById("feedbackThanks").style.display = "block";
+    document.getElementById("thanksCorrect").style.display  = "block";
+}
+
+function showCorrectionPanel() {
+    document.getElementById("feedbackPrompt").style.display  = "none";
+    document.getElementById("correctionPanel").style.display = "block";
+}
+
+function cancelCorrection() {
+    document.getElementById("correctionPanel").style.display = "none";
+    document.getElementById("feedbackPrompt").style.display  = "block";
+}
+
+async function submitCorrection() {
+    if (!currentPrediction) return;
+    const select     = document.getElementById("correctSpeciesSelect");
+    const correctKey = select.value;
+    if (!correctKey) { alert("Please select the correct species."); return; }
+
+    const data = {
+        predicted_key:  currentPrediction.species_key,
+        predicted_name: currentPrediction.common_name,
+        correct_key:    correctKey,
+        correct_name:   SPECIES_NAMES[correctKey],
+        confidence:     currentPrediction.confidence
+    };
+
+    try {
+        await fetch("/feedback", {
+            method: "POST",
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify(data)
+        });
+
+        document.getElementById("correctionPanel").style.display = "none";
+        document.getElementById("feedbackThanks").style.display  = "block";
+        document.getElementById("thanksIncorrect").style.display = "block";
+
+        const statsResp = await fetch("/feedback_stats");
+        const stats     = await statsResp.json();
+        const counter   = document.getElementById("feedbackCounter");
+        counter.textContent = stats.total_corrections + " corrections recorded";
+        if (stats.ready_to_retrain) {
+            counter.textContent += " — ⚡ Ready to retrain model!";
+            counter.style.background = "#E67E22";
+        }
+    } catch (error) {
+        alert("Error submitting feedback: " + error.message);
+    }
+}
+</script>
+
+</body>
+</html>

@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Species Guide — Australian Raptor CNN</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+
+<header class="header">
+    <div>
+        <h1>🦅 Australian Raptor CNN</h1>
+        <p>Species Guide — 8 raptors of southeast Australia</p>
+    </div>
+    <nav class="nav-links">
+        <a href="/">Identify</a>
+        <a href="/species" class="active">Species Guide</a>
+        <a href="/data">Data</a>
+    </nav>
+</header>
+
+<main class="container">
+
+    <section class="species-intro">
+        <h2>Field Reference Catalogue</h2>
+        <p>
+            Diagnostic field marks, ecology, conservation status and
+            AUSLAN sign description for every species the model
+            recognises. Cards are ordered by EPBC Act priority.
+        </p>
+        <div class="legend">
+            <span class="legend-item">
+                <span class="legend-dot" style="background:#C0392B"></span>
+                Vulnerable / Endangered
+            </span>
+            <span class="legend-item">
+                <span class="legend-dot" style="background:#27AE60"></span>
+                Not listed nationally
+            </span>
+        </div>
+    </section>
+
+    <section class="species-grid">
+        {% for key, info in species_info.items() %}
+        <article class="species-card"
+                 style="--card-accent: {{ info.color }}">
+
+            <div class="species-hero">
+                <img src="/static/img/species/{{ key }}.jpg"
+                     alt="{{ info.common_name }} ({{ info.scientific_name }})"
+                     loading="lazy"
+                     onerror="this.style.display='none';
+                              this.nextElementSibling
+                                  .classList.add('hero-fallback');">
+                <div class="species-hero-overlay"
+                     style="background: linear-gradient(180deg,
+                            transparent 30%,
+                            {{ info.color }}DD 100%);">
+                    <div class="species-hero-text">
+                        <h3>{{ info.common_name }}</h3>
+                        <p class="species-sci">{{ info.scientific_name }}</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="species-card-body">
+
+                <div class="species-row">
+                    <span class="species-label">EPBC status</span>
+                    <span class="species-value
+                        {% if 'Vulnerable' in info.epbc_status
+                              or 'Endangered' in info.epbc_status %}
+                              status-listed
+                        {% else %}
+                              status-stable
+                        {% endif %}">
+                        {{ info.epbc_status }}
+                    </span>
+                </div>
+
+                <div class="species-row">
+                    <span class="species-label">Habitat</span>
+                    <span class="species-value">{{ info.habitat }}</span>
+                </div>
+
+                <div class="species-row">
+                    <span class="species-label">Length</span>
+                    <span class="species-value">{{ info.length_cm }}</span>
+                </div>
+
+                <div class="species-row">
+                    <span class="species-label">Wingspan</span>
+                    <span class="species-value">{{ info.wingspan_cm }}</span>
+                </div>
+
+                <div class="species-block">
+                    <span class="species-label">Field diagnostic</span>
+                    <p class="species-text">{{ info.diagnostic }}</p>
+                </div>
+
+                {% set d = species_details.get(key) %}
+                {% if d %}
+                <details class="species-details" open>
+                    <summary>📖 Species profile</summary>
+
+                    <div class="detail-row">
+                        <span class="detail-icon">📍</span>
+                        <div>
+                            <span class="detail-label">Distribution</span>
+                            <p>{{ d.distribution }}</p>
+                        </div>
+                    </div>
+
+                    <div class="detail-row">
+                        <span class="detail-icon">🍴</span>
+                        <div>
+                            <span class="detail-label">Diet</span>
+                            <p>{{ d.diet }}</p>
+                        </div>
+                    </div>
+
+                    <div class="detail-row">
+                        <span class="detail-icon">🦅</span>
+                        <div>
+                            <span class="detail-label">Behaviour</span>
+                            <p>{{ d.behavior }}</p>
+                        </div>
+                    </div>
+
+                    <div class="detail-row">
+                        <span class="detail-icon">✈️</span>
+                        <div>
+                            <span class="detail-label">Migration</span>
+                            <p>{{ d.migration }}</p>
+                        </div>
+                    </div>
+
+                    <div class="detail-row">
+                        <span class="detail-icon">🪺</span>
+                        <div>
+                            <span class="detail-label">Nesting</span>
+                            <p>{{ d.nesting }}</p>
+                        </div>
+                    </div>
+
+                    <div class="detail-row">
+                        <span class="detail-icon">🥚</span>
+                        <div>
+                            <span class="detail-label">Breeding season</span>
+                            <p>{{ d.breeding_months }}</p>
+                        </div>
+                    </div>
+
+                    <div class="detail-row">
+                        <span class="detail-icon">👁️</span>
+                        <div>
+                            <span class="detail-label">Best time to see</span>
+                            <p>{{ d.best_months }}</p>
+                        </div>
+                    </div>
+
+                    <div class="detail-fact">
+                        <span class="detail-fact-label">💡 Did you know</span>
+                        <p>{{ d.did_you_know }}</p>
+                    </div>
+                </details>
+                {% endif %}
+
+                <div class="species-block species-auslan">
+                    <span class="species-label">🤟 AUSLAN sign</span>
+                    <p class="species-text">{{ info.auslan_sign }}</p>
+                </div>
+
+                {% set m = species_metrics.get(key, {}) %}
+                {% if m.get('f1') is not none %}
+                <div class="species-metrics">
+                    <div class="metric-pill">
+                        <span class="metric-label">F1</span>
+                        <span class="metric-value
+                            {% if m.f1 >= 0.85 %}m-good
+                            {% elif m.f1 >= 0.75 %}m-mid
+                            {% else %}m-low{% endif %}">
+                            {{ '%.2f' % m.f1 }}
+                        </span>
+                    </div>
+                    <div class="metric-pill">
+                        <span class="metric-label">Precision</span>
+                        <span class="metric-value">{{ '%.0f' % (m.precision*100) }}%</span>
+                    </div>
+                    <div class="metric-pill">
+                        <span class="metric-label">Recall</span>
+                        <span class="metric-value">{{ '%.0f' % (m.recall*100) }}%</span>
+                    </div>
+                </div>
+                {% endif %}
+
+                <div class="species-train-count">
+                    📸 Trained on
+                    <strong>{{ m.train_count or '—' }}</strong>
+                    images
+                </div>
+
+                <a class="species-cta"
+                   href="/?focus={{ key }}">
+                    Identify this species →
+                </a>
+
+            </div>
+        </article>
+        {% endfor %}
+    </section>
+
+    <section class="species-footer-note">
+        <h3>How the model recognises these species</h3>
+        <p>
+            The CNN was trained on 2,390 images sourced from
+            iNaturalist Australia and the Atlas of Living Australia,
+            using transfer learning over EfficientNetB4
+            (ImageNet pretrained) and fine-tuned for 30 epochs.
+            Validation accuracy reached 80.8% with an F1-macro of
+            0.784 across the 8 species shown above.
+        </p>
+        <p class="muted">
+            References: Olsen et al. (1993); Marchant & Higgins (1993);
+            Debus (1998); DAWE (2021); Atlas of Living Australia (2023).
+        </p>
+    </section>
+
+</main>
+
+<footer class="footer">
+    <p>Australian Raptor CNN + AUSLAN | Brian Fernández Báez | MPhil Proposal — University of Queensland</p>
+    <p style="margin-top:0.3rem">
+        Model: EfficientNetB4 | Accuracy: 80.8% | F1-macro: 0.784 | Dataset: iNaturalist Australia
+    </p>
+</footer>
+
+</body>
+</html>
