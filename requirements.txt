@@ -1,0 +1,31 @@
+# Australian Raptor CNN + AUSLAN — Python dependencies
+# Tested with Python 3.10 on Windows 11 (CPU + CUDA 11.8).
+# Install with:  pip install -r requirements.txt
+
+# --- Web app (Flask backend) ---------------------------------
+Flask>=3.0,<4.0
+
+# --- Deep learning -------------------------------------------
+# PyTorch / torchvision: install separately if you need a
+# specific CUDA build. The plain pip install below grabs the
+# CPU build by default; for GPU follow the instructions at
+# https://pytorch.org/get-started/locally/
+torch>=2.1,<3.0
+torchvision>=0.16,<1.0
+
+# --- Image processing ----------------------------------------
+Pillow>=10.0,<12.0
+numpy>=1.24,<3.0
+
+# --- Notebook / training tooling -----------------------------
+# Optional but recommended for reproducing the training run.
+jupyter>=1.0
+ipykernel>=6.0
+matplotlib>=3.7
+scikit-learn>=1.3
+pandas>=2.0
+seaborn>=0.13
+
+# --- Standard library only used elsewhere (no install needed):
+#     csv, io, json, os, time, urllib, uuid, argparse,
+#     datetime, pathlib, typing

@@ -1,0 +1,48 @@
+MIT License
+
+Copyright (c) 2026 Brian Fernández Báez
+
+Permission is hereby granted, free of charge, to any person obtaining a
+copy of this software and associated documentation files (the
+"Software"), to deal in the Software without restriction, including
+without limitation the rights to use, copy, modify, merge, publish,
+distribute, sublicense, and/or sell copies of the Software, and to
+permit persons to whom the Software is furnished to do so, subject to
+the following conditions:
+
+The above copyright notice and this permission notice shall be included
+in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
+CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+---
+
+DATASET AND CONTENT NOTES
+=========================
+
+This MIT licence applies to the SOURCE CODE in this repository. The
+following content has separate licensing arrangements:
+
+1. **Bird images** in `dataset/raw/` and `dataset/processed/` are
+   sourced from iNaturalist Australia and the Atlas of Living
+   Australia (ALA). Each image retains its individual Creative Commons
+   licence (typically CC-BY or CC-BY-NC). Refer to ALA and iNaturalist
+   for per-image attribution.
+
+2. **AUSLAN sign descriptions and motion illustrations** in
+   `gui/static/auslan_videos/*.svg` and `docs/auslan_consultation/`
+   are the author's provisional work and are NOT validated AUSLAN
+   signs. They must not be reproduced or redistributed as authentic
+   AUSLAN until validated through the participatory protocol described
+   in `docs/auslan_consultation/validation_protocol.md`.
+
+3. **Trained model weights** (`models/best_model.pth`) are released
+   under the same MIT licence as the source code. Note that the model
+   was trained on Creative-Commons-licensed images (item 1 above) and
+   the resulting weights inherit no additional restrictions.

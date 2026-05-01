@@ -1,0 +1,119 @@
+{
+  "_meta": {
+    "name": "Spanish",
+    "native": "Español",
+    "code": "es"
+  },
+  "app": {
+    "title": "CNN de Aves Rapaces Australianas",
+    "footer_credit": "Australian Raptor CNN + AUSLAN | Brian Fernández Báez | Propuesta MPhil — University of Queensland",
+    "footer_model": "Modelo: EfficientNetB4 | Precisión: 80.8% | F1-macro: 0.784 | Dataset: iNaturalist Australia + ALA"
+  },
+  "nav": {
+    "identify": "Identificar",
+    "species_guide": "Guía de especies",
+    "data": "Datos",
+    "language": "Idioma"
+  },
+  "header": {
+    "subtitle_home": "Monitoreo de rapaces post-incendio — CNN + AUSLAN",
+    "subtitle_species": "Guía de especies — 8 rapaces del sudeste de Australia",
+    "subtitle_data": "Panel de datos y exportación"
+  },
+  "home": {
+    "title": "Identifica una rapaz australiana",
+    "subtitle": "Sube una foto de un ave en vuelo para identificar la especie y aprender la seña AUSLAN correspondiente.",
+    "choose_image": "Elegir imagen",
+    "supported": "Compatibles: JPG, PNG, TIFF, WebP — Máx. 16 MB",
+    "analyzing": "Analizando imagen con el modelo CNN...",
+    "focus_title": "¿Buscando un {name}?",
+    "focus_text": "Sube una foto y te confirmamos si el modelo reconoce esta especie."
+  },
+  "result": {
+    "species_information": "Información de la especie",
+    "epbc_status": "Estatus EPBC",
+    "habitat": "Hábitat",
+    "length": "Longitud",
+    "wingspan": "Envergadura",
+    "diagnostic": "Diagnóstico de campo",
+    "auslan_sign": "Seña AUSLAN",
+    "auslan_motion": "Movimiento de la seña AUSLAN",
+    "auslan_provisional": "Ilustración provisional · pendiente de validación con la comunidad sorda",
+    "top3": "Top-3 candidatos",
+    "feedback_question": "¿La identificación fue correcta?",
+    "feedback_correct": "✓ Correcta",
+    "feedback_incorrect": "✗ Incorrecta",
+    "thanks_correct": "🎉 ¡Excelente! Gracias por confirmar.",
+    "thanks_incorrect": "🙏 ¡Gracias por la corrección! Esto ayuda a mejorar el modelo.",
+    "select_correct": "Selecciona la especie correcta:",
+    "submit_correction": "Enviar corrección",
+    "cancel": "Cancelar"
+  },
+  "observation": {
+    "save_title": "📍 Guardar esta observación",
+    "latitude": "Latitud (opcional)",
+    "longitude": "Longitud (opcional)",
+    "notes": "Notas",
+    "notes_placeholder": "Comportamiento de vuelo, condiciones climáticas, hábitat...",
+    "save_button": "💾 Guardar observación",
+    "new_button": "🔄 Nueva identificación",
+    "saved_message": "✅ Observación guardada correctamente"
+  },
+  "species_guide": {
+    "title": "Catálogo de referencia de campo",
+    "subtitle": "Marcas diagnósticas de campo, ecología, estado de conservación y descripción de la seña AUSLAN para cada especie que el modelo reconoce. Las tarjetas están ordenadas por prioridad bajo la Ley EPBC.",
+    "legend_listed": "Vulnerable / En peligro",
+    "legend_stable": "No listada a nivel nacional",
+    "trained_on": "📸 Entrenado con",
+    "trained_on_suffix": "imágenes",
+    "identify_button": "Identificar esta especie →",
+    "footer_title": "Cómo el modelo reconoce estas especies",
+    "footer_text": "La CNN fue entrenada con cerca de 5.000 imágenes obtenidas de iNaturalist Australia y el Atlas of Living Australia, usando transferencia de aprendizaje sobre EfficientNetB4 (preentrenado en ImageNet) y ajuste fino durante 30 épocas. La precisión de validación alcanzó 80,8% con un F1-macro de 0,784 sobre las 8 especies mostradas arriba.",
+    "references": "Referencias: Olsen et al. (1993); Marchant & Higgins (1993); Debus (1998); DAWE (2021); Atlas of Living Australia (2023).",
+    "profile_title": "📖 Perfil de la especie",
+    "distribution": "Distribución",
+    "diet": "Dieta",
+    "behaviour": "Comportamiento",
+    "migration": "Migración",
+    "nesting": "Nidificación",
+    "breeding_season": "Temporada de cría",
+    "best_time_to_see": "Mejor temporada para verla",
+    "did_you_know": "💡 ¿Sabías que...?"
+  },
+  "data": {
+    "summary_title": "Resumen de observaciones",
+    "stat_total": "Total de observaciones",
+    "stat_species": "Especies registradas",
+    "stat_corrections": "Correcciones al modelo",
+    "by_species_title": "Observaciones por especie",
+    "export_title": "Exportar datos",
+    "export_intro": "Descarga tus observaciones para uso personal, análisis científico o envío al Atlas of Living Australia y otras plataformas globales de biodiversidad.",
+    "export_internal_title": "CSV interno de observaciones",
+    "export_internal_desc": "Todas tus observaciones guardadas en el formato nativo de la aplicación. Útil para registros personales y análisis local.",
+    "export_dwc_title": "CSV Darwin Core (para ALA / GBIF)",
+    "export_dwc_desc": "Formato estandarizado de biodiversidad que sigue el esquema TDWG Darwin Core. Listo para subir al portal de avistamientos del Atlas of Living Australia o a cualquier publicador de GBIF.",
+    "export_feedback_title": "Registro de correcciones del modelo",
+    "export_feedback_desc": "Cada corrección enviada mediante el botón de feedback. Se usa como entrada para el siguiente ciclo de reentrenamiento del modelo.",
+    "ala_howto_title": "Cómo subir al Atlas of Living Australia",
+    "ala_howto_step1": "Inicia sesión (o crea una cuenta gratuita) en www.ala.org.au.",
+    "ala_howto_step2": "Ve a My Profile → My Sightings → Submit a sighting list.",
+    "ala_howto_step3": "Sube el archivo raptor_au_observations_dwc.csv que acabas de descargar.",
+    "ala_howto_step4": "El pipeline de ALA validará los registros y los integrará en la base nacional de biodiversidad (tiempo de procesamiento ~24-72 horas).",
+    "ala_howto_note": "La columna identifiedBy acredita explícitamente al modelo CNN para que los revisores puedan ponderar adecuadamente los registros asistidos por IA.",
+    "recent_title": "Observaciones recientes",
+    "th_when": "Cuándo",
+    "th_species": "Especie",
+    "th_confidence": "Confianza",
+    "th_location": "Ubicación",
+    "th_confirmed": "Confirmada",
+    "no_obs_text": "Aún no hay observaciones registradas. Identifica un ave desde la página de inicio y guarda tu primera observación para poblar este panel."
+  },
+  "errors": {
+    "no_image": "No se subió ninguna imagen",
+    "no_file": "Ningún archivo seleccionado",
+    "format": "Formato no compatible: {ext}",
+    "connection": "Error de conexión",
+    "save_error": "Error al guardar",
+    "select_species": "Por favor selecciona la especie correcta."
+  }
+}

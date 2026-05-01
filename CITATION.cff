@@ -1,0 +1,44 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+title: "Australian Raptor CNN + AUSLAN: Deep-learning identification of Australian birds of prey with inclusive sign-language vocabulary"
+type: software
+version: "1.0.0"
+date-released: "2026-05-01"
+license: MIT
+repository-code: "https://github.com/ZOMBIECRAFTIAN/raptor-australia"
+abstract: >-
+  A convolutional neural network (EfficientNetB4 transfer learning)
+  for identifying eight raptor species of southeastern Australia,
+  paired with a provisional Australian Sign Language (AUSLAN)
+  vocabulary for accessible citizen science. The dataset is sourced
+  from iNaturalist Australia and the Atlas of Living Australia.
+  Observations can be exported in Darwin Core format for upload to
+  the Atlas of Living Australia and other GBIF data publishers.
+keywords:
+  - "computer vision"
+  - "convolutional neural networks"
+  - "biodiversity"
+  - "raptors"
+  - "Australia"
+  - "AUSLAN"
+  - "deep learning"
+  - "transfer learning"
+  - "Darwin Core"
+authors:
+  - family-names: "Fernández Báez"
+    given-names: "Brian"
+    affiliation: "Instituto Tecnológico de Úrsulo Galván, Mexico"
+preferred-citation:
+  type: software
+  title: "Australian Raptor CNN + AUSLAN"
+  authors:
+    - family-names: "Fernández Báez"
+      given-names: "Brian"
+  year: 2026
+  url: "https://github.com/ZOMBIECRAFTIAN/raptor-australia"
+  notes: >-
+    Underlying dataset images are sourced from iNaturalist Australia
+    (CC-BY-NC) and the Atlas of Living Australia (mixed licences,
+    typically CC-BY). Please respect the licence of each source
+    image. The AUSLAN vocabulary is provisional and pending
+    participatory validation with the Deaf community.

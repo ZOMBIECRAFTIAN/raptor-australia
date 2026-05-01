@@ -62,10 +62,12 @@ SPECIES_KEYS = [
     "lophoictinia_isura", "tachyspiza_fasciata",
 ]
 
-THUMB_SIZE         = (800, 540)        # final hero size — 3:2-ish, larger
+THUMB_SIZE         = (640, 426)        # final hero size — matches ALA 650 src
 CONTACT_THUMB      = (240, 160)        # candidate strip thumb size
 CONTACT_TOP_N      = 6                 # candidates to show
-MIN_DIM            = 800               # require ≥ 800 px on the short side
+MIN_DIM            = 480               # ALA 'large' endpoint returns 488 px;
+                                       # this filter keeps ALA in and drops
+                                       # the smallest iNaturalist images.
 MAX_PER_SPECIES    = 80                # cap candidate evaluation cost
 
 # Score weights (normalised features; sum doesn't need to be 1).

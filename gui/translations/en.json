@@ -1,0 +1,119 @@
+{
+  "_meta": {
+    "name": "English",
+    "native": "English",
+    "code": "en"
+  },
+  "app": {
+    "title": "Australian Raptor CNN",
+    "footer_credit": "Australian Raptor CNN + AUSLAN | Brian Fernández Báez | MPhil Proposal — University of Queensland",
+    "footer_model": "Model: EfficientNetB4 | Accuracy: 80.8% | F1-macro: 0.784 | Dataset: iNaturalist Australia + ALA"
+  },
+  "nav": {
+    "identify": "Identify",
+    "species_guide": "Species Guide",
+    "data": "Data",
+    "language": "Language"
+  },
+  "header": {
+    "subtitle_home": "Post-Bushfire Raptor Monitoring — CNN + AUSLAN",
+    "subtitle_species": "Species Guide — 8 raptors of southeast Australia",
+    "subtitle_data": "Data Dashboard & Export"
+  },
+  "home": {
+    "title": "Identify an Australian Raptor",
+    "subtitle": "Upload a photo of a bird in flight to identify the species and learn the corresponding AUSLAN sign.",
+    "choose_image": "Choose Image",
+    "supported": "Supported: JPG, PNG, TIFF, WebP — Max 16MB",
+    "analyzing": "Analyzing image with CNN model...",
+    "focus_title": "Looking for {name}?",
+    "focus_text": "Upload a photo and we'll confirm whether the model recognises this species."
+  },
+  "result": {
+    "species_information": "Species Information",
+    "epbc_status": "EPBC Status",
+    "habitat": "Habitat",
+    "length": "Length",
+    "wingspan": "Wingspan",
+    "diagnostic": "Field diagnostic",
+    "auslan_sign": "AUSLAN Sign",
+    "auslan_motion": "AUSLAN sign motion",
+    "auslan_provisional": "Provisional illustration · pending Deaf community validation",
+    "top3": "Top-3 candidates",
+    "feedback_question": "Was this identification correct?",
+    "feedback_correct": "✓ Correct",
+    "feedback_incorrect": "✗ Incorrect",
+    "thanks_correct": "🎉 Great! Thank you for confirming.",
+    "thanks_incorrect": "🙏 Thank you for the correction! This helps improve the model.",
+    "select_correct": "Select the correct species:",
+    "submit_correction": "Submit Correction",
+    "cancel": "Cancel"
+  },
+  "observation": {
+    "save_title": "📍 Save this Observation",
+    "latitude": "Latitude (optional)",
+    "longitude": "Longitude (optional)",
+    "notes": "Notes",
+    "notes_placeholder": "Flight behaviour, weather conditions, habitat...",
+    "save_button": "💾 Save Observation",
+    "new_button": "🔄 New Identification",
+    "saved_message": "✅ Observation saved successfully"
+  },
+  "species_guide": {
+    "title": "Field Reference Catalogue",
+    "subtitle": "Diagnostic field marks, ecology, conservation status and AUSLAN sign description for every species the model recognises. Cards are ordered by EPBC Act priority.",
+    "legend_listed": "Vulnerable / Endangered",
+    "legend_stable": "Not listed nationally",
+    "trained_on": "📸 Trained on",
+    "trained_on_suffix": "images",
+    "identify_button": "Identify this species →",
+    "footer_title": "How the model recognises these species",
+    "footer_text": "The CNN was trained on around 5,000 images sourced from iNaturalist Australia and the Atlas of Living Australia, using transfer learning over EfficientNetB4 (ImageNet pretrained) and fine-tuned for 30 epochs. Validation accuracy reached 80.8% with an F1-macro of 0.784 across the 8 species shown above.",
+    "references": "References: Olsen et al. (1993); Marchant & Higgins (1993); Debus (1998); DAWE (2021); Atlas of Living Australia (2023).",
+    "profile_title": "📖 Species profile",
+    "distribution": "Distribution",
+    "diet": "Diet",
+    "behaviour": "Behaviour",
+    "migration": "Migration",
+    "nesting": "Nesting",
+    "breeding_season": "Breeding season",
+    "best_time_to_see": "Best time to see",
+    "did_you_know": "💡 Did you know"
+  },
+  "data": {
+    "summary_title": "Observations summary",
+    "stat_total": "Total observations",
+    "stat_species": "Species recorded",
+    "stat_corrections": "Model corrections",
+    "by_species_title": "Observations by species",
+    "export_title": "Export data",
+    "export_intro": "Download your observations for personal use, scientific analysis, or submission to the Atlas of Living Australia and global biodiversity platforms.",
+    "export_internal_title": "Internal observations CSV",
+    "export_internal_desc": "All your saved observations in the application's native format. Useful for personal logs and local analysis.",
+    "export_dwc_title": "Darwin Core CSV (for ALA / GBIF)",
+    "export_dwc_desc": "Standardised biodiversity format following the TDWG Darwin Core schema. Ready to upload to the Atlas of Living Australia's Sightings portal or any GBIF data publisher.",
+    "export_feedback_title": "Model corrections log",
+    "export_feedback_desc": "Every correction submitted via the feedback button. Used as the input for the next model retraining cycle.",
+    "ala_howto_title": "How to upload to the Atlas of Living Australia",
+    "ala_howto_step1": "Sign in (or create a free account) at www.ala.org.au.",
+    "ala_howto_step2": "Go to My Profile → My Sightings → Submit a sighting list.",
+    "ala_howto_step3": "Upload the raptor_au_observations_dwc.csv you just downloaded.",
+    "ala_howto_step4": "ALA's pipeline will validate the records and integrate them into the national biodiversity database (turnaround ~24-72 hours).",
+    "ala_howto_note": "The identifiedBy column credits the CNN model explicitly so reviewers can apply appropriate weight to AI-assisted records.",
+    "recent_title": "Recent observations",
+    "th_when": "When",
+    "th_species": "Species",
+    "th_confidence": "Confidence",
+    "th_location": "Location",
+    "th_confirmed": "Confirmed",
+    "no_obs_text": "No observations recorded yet. Identify a bird from the home page and save your first observation to populate this dashboard."
+  },
+  "errors": {
+    "no_image": "No image uploaded",
+    "no_file": "No file selected",
+    "format": "Format not supported: {ext}",
+    "connection": "Connection error",
+    "save_error": "Error saving",
+    "select_species": "Please select the correct species."
+  }
+}

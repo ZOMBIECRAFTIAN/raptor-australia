@@ -1,0 +1,47 @@
+# ─── Python bytecode and caches ────────────────────────
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ipynb_checkpoints/
+
+# ─── Virtual environments ──────────────────────────────
+.venv/
+venv/
+env/
+raptor_env/
+
+# ─── Heavy data — must be mounted at runtime ───────────
+dataset/raw/
+dataset/processed/
+dataset/feedback/
+gui/uploads/*
+!gui/uploads/.gitkeep
+
+# ─── Heavy model weights — mounted at runtime ──────────
+models/*.pth
+models/*.pt
+
+# ─── Generated artefacts not needed in the image ───────
+results/observations.csv
+results/feedback_log.csv
+results/hero_candidates_*.jpg
+results/hero_scores.csv
+
+# ─── Editor / OS junk ──────────────────────────────────
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# ─── Git metadata ──────────────────────────────────────
+.git/
+.gitignore
+.gitattributes
+
+# ─── Workspace artefacts ───────────────────────────────
+raptor_chat_export.md
+
+# ─── Extra docs not needed inside the image ────────────
+CONTRIBUTING.md
+.github/
