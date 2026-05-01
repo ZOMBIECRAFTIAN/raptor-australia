@@ -1,22 +1,41 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="{{ get_locale() }}">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Australian Raptor CNN — Identify Birds of Prey</title>
+    <title>{{ t('app.title') }} — {{ t('nav.identify') }}</title>
     <link rel="stylesheet" href="/static/css/style.css">
 </head>
 <body>
 
 <header class="header">
     <div>
-        <h1>🦅 Australian Raptor CNN</h1>
-        <p>Post-Bushfire Raptor Monitoring — CNN + AUSLAN</p>
+        <h1>🦅 {{ t('app.title') }}</h1>
+        <p>{{ t('header.subtitle_home') }}</p>
     </div>
     <nav class="nav-links">
-        <a href="/" class="active">Identify</a>
-        <a href="/species">Species Guide</a>
-        <a href="/data">Data</a>
+        <a href="/" class="active">{{ t('nav.identify') }}</a>
+        <a href="/species">{{ t('nav.species_guide') }}</a>
+        <a href="/data">{{ t('nav.data') }}</a>
+        <div class="lang-picker">
+            <button class="lang-toggle" type="button"
+                    onclick="document.getElementById('langMenu').classList.toggle('open')"
+                    aria-haspopup="true" aria-label="{{ t('nav.language') }}">
+                {{ LANGUAGES[get_locale()]['flag'] }}
+                {{ LANGUAGES[get_locale()]['native'] }} ▾
+            </button>
+            <ul class="lang-menu" id="langMenu">
+                {% for code, meta in LANGUAGES.items() %}
+                <li>
+                    <a href="/set_lang/{{ code }}?next={{ request.path }}"
+                       {% if code == get_locale() %}class="active"{% endif %}>
+                        <span>{{ meta.flag }}</span>
+                        <span>{{ meta.native }}</span>
+                    </a>
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
     </nav>
 </header>
 
@@ -25,9 +44,10 @@
     <div class="focus-banner" id="focusBanner" style="display:none">
         <span class="focus-icon">🎯</span>
         <div class="focus-text">
-            <strong>Looking for <span id="focusName">—</span>?</strong>
-            <p>Upload a photo and we'll confirm whether the model
-               recognises this species.</p>
+            <strong data-i18n-template="{{ t('home.focus_title') }}">
+                <span id="focusName">—</span>
+            </strong>
+            <p>{{ t('home.focus_text') }}</p>
         </div>
         <button class="focus-close"
                 onclick="document.getElementById('focusBanner').style.display='none'"
@@ -36,15 +56,14 @@
 
     <div class="upload-zone" id="uploadZone">
         <div class="upload-icon">📸</div>
-        <h2>Identify an Australian Raptor</h2>
-        <p>Upload a photo of a bird in flight to identify the species<br>
-           and learn the corresponding AUSLAN sign.</p>
+        <h2>{{ t('home.title') }}</h2>
+        <p>{{ t('home.subtitle') }}</p>
         <button class="btn-upload"
                 onclick="document.getElementById('fileInput').click()">
-            Choose Image
+            {{ t('home.choose_image') }}
         </button>
         <p style="margin-top:0.75rem; font-size:0.8rem; color:#999">
-            Supported: JPG, PNG, TIFF, WebP — Max 16MB
+            {{ t('home.supported') }}
         </p>
         <input type="file" id="fileInput" accept="image/*"
                style="display:none"
@@ -57,7 +76,7 @@
 
     <div class="loading" id="loading">
         <div class="spinner"></div>
-        <p>Analyzing image with CNN model...</p>
+        <p>{{ t('home.analyzing') }}</p>
     </div>
 
     <div class="results-panel" id="resultsPanel">
@@ -73,40 +92,40 @@
         <div class="result-body">
             <div class="species-info">
                 <h3 style="color:var(--blue);margin-bottom:1rem">
-                    Species Information
+                    {{ t('result.species_information') }}
                 </h3>
                 <div class="info-row">
-                    <span class="info-label">🏷️ EPBC Status</span>
+                    <span class="info-label">🏷️ {{ t('result.epbc_status') }}</span>
                     <span id="epbcStatus">—</span>
                 </div>
                 <div class="info-row">
-                    <span class="info-label">🌿 Habitat</span>
+                    <span class="info-label">🌿 {{ t('result.habitat') }}</span>
                     <span id="habitat">—</span>
                 </div>
                 <div class="info-row">
-                    <span class="info-label">📏 Length</span>
+                    <span class="info-label">📏 {{ t('result.length') }}</span>
                     <span id="length">—</span>
                 </div>
                 <div class="info-row">
-                    <span class="info-label">🪽 Wingspan</span>
+                    <span class="info-label">🪽 {{ t('result.wingspan') }}</span>
                     <span id="wingspan">—</span>
                 </div>
                 <div class="info-row">
-                    <span class="info-label">🔍 Diagnostic</span>
+                    <span class="info-label">🔍 {{ t('result.diagnostic') }}</span>
                     <span id="diagnostic">—</span>
                 </div>
             </div>
 
             <div class="auslan-module">
-                <h3>🤟 AUSLAN Sign</h3>
-                <p>Australian Sign Language vocabulary for this species:</p>
+                <h3>🤟 {{ t('result.auslan_sign') }}</h3>
+                <p>{{ t('species_guide.subtitle') }}</p>
                 <div class="sign-description" id="auslanSign">—</div>
                 <div class="auslan-video-container" id="auslanContainer">
                     <div class="video-placeholder">
                         <div class="video-icon">🎥</div>
-                        <p>AUSLAN sign video<br>will appear here</p>
+                        <p>{{ t('result.auslan_motion') }}</p>
                         <p style="font-size:0.75rem;margin-top:0.5rem;opacity:0.6">
-                            Add .mp4 files to static/auslan_videos/
+                            {{ t('result.auslan_provisional') }}
                         </p>
                     </div>
                 </div>
@@ -114,7 +133,7 @@
         </div>
 
         <div class="top3-section">
-            <h4>📊 Model confidence — Top 3 predictions</h4>
+            <h4>📊 {{ t('result.top3') }}</h4>
             <div class="top3-bars" id="top3Bars"></div>
         </div>
 

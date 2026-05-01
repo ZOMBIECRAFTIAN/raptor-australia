@@ -12,11 +12,18 @@ import torch.nn as nn
 import torchvision.transforms as transforms
 from torchvision import models
 from flask import (Flask, render_template, request,
-                   jsonify, send_from_directory, Response)
+                   jsonify, send_from_directory, Response,
+                   redirect, url_for, make_response)
 import io
 
 # Detailed species profiles (Merlin-style content)
 from species_data import SPECIES_DETAILS
+from species_data_i18n import get_species_data, SPECIES_I18N
+
+# Internationalisation: 10-language UI + species data
+from i18n import (load_translations, t, get_locale,
+                  get_languages, COOKIE_NAME, LANGUAGES)
+
 from PIL import Image
 from pathlib import Path
 import numpy as np
@@ -32,6 +39,15 @@ UPLOAD_DIR.mkdir(exist_ok=True)
 
 app = Flask(__name__)
 app.config["MAX_CONTENT_LENGTH"] = 16 * 1024 * 1024  # 16MB max
+
+# Load all 10 translation files at startup, expose helpers to Jinja.
+load_translations()
+app.jinja_env.globals.update(
+    t=t,
+    get_locale=get_locale,
+    get_languages=get_languages,
+    LANGUAGES=LANGUAGES,
+)
 
 # ─── Dispositivo ──────────────────────────────────────
 device = torch.device("cuda" if torch.cuda.is_available()
@@ -238,10 +254,13 @@ def predict_image(img_path):
     # Top-3 predicciones
     top3_idx = np.argsort(probs_np)[::-1][:3]
 
+    # Use locale-specific common names, status, habitat, etc.
+    localized = _localized_species_info()
+
     top3 = []
     for idx in top3_idx:
         species_key = CLASS_ORDER[idx]
-        info = SPECIES_INFO[species_key]
+        info = localized[species_key]
         top3.append({
             "species_key":     species_key,
             "common_name":     info["common_name"],
@@ -252,7 +271,7 @@ def predict_image(img_path):
 
     # Predicción principal
     best_key  = CLASS_ORDER[top3_idx[0]]
-    best_info = SPECIES_INFO[best_key]
+    best_info = localized[best_key]
 
     return {
         "species_key":     best_key,
@@ -272,11 +291,47 @@ def predict_image(img_path):
 
 
 # ─── Rutas Flask ──────────────────────────────────────
+def _localized_species_info(lang: str | None = None) -> dict:
+    """
+    Merge non-translatable fields from SPECIES_INFO (class_idx,
+    wingspan_cm, length_cm, auslan_video, color, scientific_name)
+    with the locale-specific overrides (common_name, epbc_status,
+    habitat, diagnostic, auslan_sign + the Merlin profile fields).
+    """
+    lang = lang or get_locale()
+    loc  = get_species_data(lang)
+    out: dict = {}
+    for key, base in SPECIES_INFO.items():
+        merged = dict(base)
+        merged.update(loc.get(key, {}))
+        # 'behaviour' is the canonical field in SPECIES_I18N;
+        # templates use 'behavior' as alias for backward compat.
+        if "behaviour" in merged and "behavior" not in merged:
+            merged["behavior"] = merged["behaviour"]
+        out[key] = merged
+    return out
+
+
+@app.route("/set_lang/<code>")
+def set_lang(code: str):
+    """
+    Change the user's UI language by setting a long-lived cookie.
+    Falls through silently if the code is unknown.
+    """
+    target = request.args.get("next") or request.referrer or "/"
+    resp   = make_response(redirect(target))
+    if code in LANGUAGES:
+        # 1 year cookie
+        resp.set_cookie(COOKIE_NAME, code, max_age=60 * 60 * 24 * 365,
+                        samesite="Lax")
+    return resp
+
+
 @app.route("/")
 def index():
-    """Página principal."""
+    """Página principal — UI localizada."""
     return render_template("index.html",
-                           species_info=SPECIES_INFO)
+                           species_info=_localized_species_info())
 
 
 @app.route("/identify", methods=["POST"])
@@ -501,12 +556,15 @@ def _load_species_metrics():
 
 @app.route("/species")
 def species_list():
-    """Página de catálogo de especies con métricas y detalles."""
-    metrics = _load_species_metrics()
+    """Página de catálogo de especies con métricas + i18n."""
+    lang     = get_locale()
+    metrics  = _load_species_metrics()
+    info_loc = _localized_species_info(lang)
+    # species_data has the same fields and serves as 'details' too.
     return render_template("species.html",
-                           species_info=SPECIES_INFO,
+                           species_info=info_loc,
                            species_metrics=metrics,
-                           species_details=SPECIES_DETAILS)
+                           species_details=info_loc)
 
 
 # ─── Paso 8 — Exportación CSV / ALA ─────────────────────
@@ -615,7 +673,7 @@ def data_dashboard():
 
     return render_template(
         "data.html",
-        species_info=SPECIES_INFO,
+        species_info=_localized_species_info(),
         total_observations=len(rows),
         observations_by_species=by_species,
         feedback_count=feedback_count,
