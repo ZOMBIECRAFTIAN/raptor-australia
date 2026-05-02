@@ -7,7 +7,7 @@
   "app": {
     "title": "CNN de Aves Rapaces Australianas",
     "footer_credit": "Australian Raptor CNN + AUSLAN | Brian Fernández Báez | Propuesta MPhil — University of Queensland",
-    "footer_model": "Modelo: EfficientNetB4 | Precisión: 80.8% | F1-macro: 0.784 | Dataset: iNaturalist Australia + ALA"
+    "footer_model": "Modelo: EfficientNetB4 | Precisión: 75.6% | F1-macro: 0.76 | Dataset: iNaturalist Australia + ALA (~5.000 imágenes)"
   },
   "nav": {
     "identify": "Identificar",
@@ -68,8 +68,8 @@
     "trained_on_suffix": "imágenes",
     "identify_button": "Identificar esta especie →",
     "footer_title": "Cómo el modelo reconoce estas especies",
-    "footer_text": "La CNN fue entrenada con cerca de 5.000 imágenes obtenidas de iNaturalist Australia y el Atlas of Living Australia, usando transferencia de aprendizaje sobre EfficientNetB4 (preentrenado en ImageNet) y ajuste fino durante 30 épocas. La precisión de validación alcanzó 80,8% con un F1-macro de 0,784 sobre las 8 especies mostradas arriba.",
-    "references": "Referencias: Olsen et al. (1993); Marchant & Higgins (1993); Debus (1998); DAWE (2021); Atlas of Living Australia (2023).",
+    "footer_text": "La CNN se reentrenó con ~4.970 imágenes de iNaturalist Australia y el Atlas of Living Australia, usando transfer learning sobre EfficientNetB4 (preentrenada en ImageNet) y fine-tuning durante 30 épocas. La precisión en test es del 75,6 % con un F1-macro de 0,76 entre las 8 especies. El F1 por especie va de 0,69 (halcón peregrino) a 0,85 (milano de hombros negros).",
+    "references": "Referencias: Olsen et al. (1993); Marchant y Higgins (1993); Debus (1998); DAWE (2021); Atlas of Living Australia (2024).",
     "profile_title": "📖 Perfil de la especie",
     "distribution": "Distribución",
     "diet": "Dieta",

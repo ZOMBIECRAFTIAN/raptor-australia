@@ -258,21 +258,29 @@ Final test set: **490 images held out** during training (no leakage).
 
 | Metric | Value |
 |---|---|
-| Accuracy | **80.8 %** |
-| F1-macro | **0.784** |
-| F1-weighted | 0.804 |
+| Accuracy | **75.6 %** |
+| F1-macro | **0.758** |
+| F1-weighted | 0.756 |
 | Architecture | EfficientNetB4 (transfer learning) |
-| Training images | ~1,900 (after augmentation) |
-| Val / Test images | 490 / 490 |
-| Training time | ~52 min on RTX 3060 |
+| Training images | ~3,975 (80 % split, +augmentation) |
+| Val / Test images | 497 / 503 |
+| Training time | ~106 min on RTX 3060 |
 
-> **Note on dataset size.** Numbers above correspond to the
-> initial training set sourced from iNaturalist Australia
-> (~2,400 images). The dataset has since been expanded to
-> **~5,000 images** by adding the Atlas of Living Australia
-> downloader (`download_ala_images.py`). Re-training with the
-> expanded set is on the roadmap and is expected to lift
-> F1-macro towards 0.85.
+> **A note on the metric drop vs. v1.0.0.** The original model
+> trained only on iNaturalist Australia (~2,400 images) reached
+> F1-macro 0.78 on its own iNat-style test set. Retraining on
+> the *expanded* iNaturalist + Atlas of Living Australia dataset
+> (~5,000 images) brought F1-macro down to 0.76 — but this is
+> evaluated on a substantially **harder** test set that includes
+> habitat shots, juveniles in atypical plumage, and museum-record
+> photographs that the iNat-only model never had to handle. The
+> v1.1 model is therefore **more robust to real-world citizen
+> science conditions**, even if its headline F1 is slightly
+> lower than the v1.0 number. Per-species results show
+> Black-shouldered Kite and Little Eagle improved with the
+> larger dataset, while Spotted Harrier and Brown Goshawk
+> dropped because ALA contributes more juvenile records for
+> those species, which the model now needs to learn to handle.
 
 Per-class performance and learning curves are visualised in
 [`results/`](results/).

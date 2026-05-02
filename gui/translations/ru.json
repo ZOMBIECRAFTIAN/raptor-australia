@@ -1,9 +1,13 @@
 {
-  "_meta": { "name": "Russian", "native": "Русский", "code": "ru" },
+  "_meta": {
+    "name": "Russian",
+    "native": "Русский",
+    "code": "ru"
+  },
   "app": {
     "title": "CNN австралийских хищных птиц",
     "footer_credit": "Australian Raptor CNN + AUSLAN | Brian Fernández Báez | Заявка MPhil — Университет Квинсленда",
-    "footer_model": "Модель: EfficientNetB4 | Точность: 80,8% | F1-macro: 0,784 | Датасет: iNaturalist Australia + ALA"
+    "footer_model": "Модель: EfficientNetB4 | Точность: 75,6% | F1-macro: 0,76 | Датасет: iNaturalist Australia + ALA (~5 000 изображений)"
   },
   "nav": {
     "identify": "Определить",
@@ -64,8 +68,8 @@
     "trained_on_suffix": "изображениях",
     "identify_button": "Определить этот вид →",
     "footer_title": "Как модель распознаёт эти виды",
-    "footer_text": "Эта CNN была обучена примерно на 5 000 изображениях из iNaturalist Australia и Atlas of Living Australia с использованием переноса обучения на EfficientNetB4 (предобученной на ImageNet) и тонкой настройкой в течение 30 эпох. Точность валидации достигла 80,8% при F1-macro 0,784 для 8 видов выше.",
-    "references": "Источники: Olsen и др. (1993); Marchant & Higgins (1993); Debus (1998); DAWE (2021); Atlas of Living Australia (2023).",
+    "footer_text": "CNN была переобучена на ~4 970 изображениях из iNaturalist Australia и Atlas of Living Australia с помощью transfer learning на EfficientNetB4 (предобученной на ImageNet) и fine-tuning в течение 30 эпох. Точность на тесте 75,6 %, F1-macro по 8 видам — 0,76. F1 по видам — от 0,69 (сапсан) до 0,85 (чёрнокрылый дымчатый коршун).",
+    "references": "Литература: Olsen и др. (1993); Marchant & Higgins (1993); Debus (1998); DAWE (2021); Atlas of Living Australia (2024).",
     "profile_title": "📖 Профиль вида",
     "distribution": "Распространение",
     "diet": "Питание",

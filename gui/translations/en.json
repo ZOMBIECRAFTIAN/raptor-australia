@@ -7,7 +7,7 @@
   "app": {
     "title": "Australian Raptor CNN",
     "footer_credit": "Australian Raptor CNN + AUSLAN | Brian Fernández Báez | MPhil Proposal — University of Queensland",
-    "footer_model": "Model: EfficientNetB4 | Accuracy: 80.8% | F1-macro: 0.784 | Dataset: iNaturalist Australia + ALA"
+    "footer_model": "Model: EfficientNetB4 | Accuracy: 75.6% | F1-macro: 0.76 | Dataset: iNaturalist Australia + ALA (~5,000 images)"
   },
   "nav": {
     "identify": "Identify",
@@ -68,8 +68,8 @@
     "trained_on_suffix": "images",
     "identify_button": "Identify this species →",
     "footer_title": "How the model recognises these species",
-    "footer_text": "The CNN was trained on around 5,000 images sourced from iNaturalist Australia and the Atlas of Living Australia, using transfer learning over EfficientNetB4 (ImageNet pretrained) and fine-tuned for 30 epochs. Validation accuracy reached 80.8% with an F1-macro of 0.784 across the 8 species shown above.",
-    "references": "References: Olsen et al. (1993); Marchant & Higgins (1993); Debus (1998); DAWE (2021); Atlas of Living Australia (2023).",
+    "footer_text": "The CNN was retrained on ~4,970 images sourced from iNaturalist Australia and the Atlas of Living Australia, using transfer learning over EfficientNetB4 (ImageNet pretrained) and fine-tuned for 30 epochs. Test accuracy is 75.6 % with an F1-macro of 0.76 across the 8 species. Per-species F1 ranges from 0.69 (Peregrine Falcon) to 0.85 (Black-shouldered Kite).",
+    "references": "References: Olsen et al. (1993); Marchant & Higgins (1993); Debus (1998); DAWE (2021); Atlas of Living Australia (2024).",
     "profile_title": "📖 Species profile",
     "distribution": "Distribution",
     "diet": "Diet",

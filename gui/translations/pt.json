@@ -1,9 +1,13 @@
 {
-  "_meta": { "name": "Portuguese", "native": "Português", "code": "pt" },
+  "_meta": {
+    "name": "Portuguese",
+    "native": "Português",
+    "code": "pt"
+  },
   "app": {
     "title": "CNN de Aves de Rapina Australianas",
     "footer_credit": "Australian Raptor CNN + AUSLAN | Brian Fernández Báez | Proposta de MPhil — University of Queensland",
-    "footer_model": "Modelo: EfficientNetB4 | Acurácia: 80,8% | F1-macro: 0,784 | Conjunto de dados: iNaturalist Australia + ALA"
+    "footer_model": "Modelo: EfficientNetB4 | Precisão: 75,6% | F1-macro: 0,76 | Dataset: iNaturalist Australia + ALA (~5.000 imagens)"
   },
   "nav": {
     "identify": "Identificar",
@@ -64,8 +68,8 @@
     "trained_on_suffix": "imagens",
     "identify_button": "Identificar esta espécie →",
     "footer_title": "Como o modelo reconhece estas espécies",
-    "footer_text": "A CNN foi treinada com cerca de 5.000 imagens do iNaturalist Australia e do Atlas of Living Australia, usando aprendizado por transferência sobre EfficientNetB4 (pré-treinado no ImageNet) com fine-tuning por 30 épocas. A acurácia de validação atingiu 80,8% com F1-macro de 0,784 nas 8 espécies acima.",
-    "references": "Referências: Olsen et al. (1993); Marchant & Higgins (1993); Debus (1998); DAWE (2021); Atlas of Living Australia (2023).",
+    "footer_text": "A CNN foi retreinada com ~4.970 imagens do iNaturalist Australia e do Atlas of Living Australia, usando transfer learning sobre EfficientNetB4 (pré-treinada em ImageNet) e fine-tuning por 30 épocas. A precisão no teste é de 75,6 % com um F1-macro de 0,76 nas 8 espécies. O F1 por espécie varia de 0,69 (falcão-peregrino) a 0,85 (peneireiro-de-ombros-pretos).",
+    "references": "Referências: Olsen et al. (1993); Marchant e Higgins (1993); Debus (1998); DAWE (2021); Atlas of Living Australia (2024).",
     "profile_title": "📖 Perfil da espécie",
     "distribution": "Distribuição",
     "diet": "Dieta",

@@ -1,9 +1,13 @@
 {
-  "_meta": { "name": "Chinese", "native": "中文", "code": "zh" },
+  "_meta": {
+    "name": "Chinese",
+    "native": "中文",
+    "code": "zh"
+  },
   "app": {
     "title": "澳大利亚猛禽 CNN 识别系统",
     "footer_credit": "Australian Raptor CNN + AUSLAN | Brian Fernández Báez | 昆士兰大学 MPhil 研究计划",
-    "footer_model": "模型: EfficientNetB4 | 准确率: 80.8% | F1-macro: 0.784 | 数据集: iNaturalist Australia + ALA"
+    "footer_model": "模型:EfficientNetB4 | 准确率:75.6% | F1-macro:0.76 | 数据集:iNaturalist Australia + ALA(约5,000张图像)"
   },
   "nav": {
     "identify": "识别",
@@ -64,8 +68,8 @@
     "trained_on_suffix": "张图片",
     "identify_button": "识别此物种 →",
     "footer_title": "模型如何识别这些物种",
-    "footer_text": "该 CNN 在大约 5,000 张来自 iNaturalist Australia 和 Atlas of Living Australia 的图片上训练,采用 EfficientNetB4 (在 ImageNet 上预训练) 的迁移学习,微调 30 个轮次。验证准确率达到 80.8%,在以上 8 个物种上的 F1-macro 为 0.784。",
-    "references": "参考文献: Olsen 等 (1993);Marchant & Higgins (1993);Debus (1998);DAWE (2021);Atlas of Living Australia (2023)。",
+    "footer_text": "CNN 在来自 iNaturalist Australia 与 Atlas of Living Australia 的约 4,970 张图像上重新训练,采用 EfficientNetB4(ImageNet 预训练)的迁移学习方式,微调 30 个 epoch。测试集准确率 75.6%,8 个物种的 F1-macro 为 0.76。各物种 F1 介于 0.69(游隼)至 0.85(黑肩鸢)之间。",
+    "references": "参考文献:Olsen 等 (1993);Marchant 与 Higgins (1993);Debus (1998);DAWE (2021);Atlas of Living Australia (2024)。",
     "profile_title": "📖 物种档案",
     "distribution": "分布",
     "diet": "食物",

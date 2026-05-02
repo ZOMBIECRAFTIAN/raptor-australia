@@ -1,9 +1,13 @@
 {
-  "_meta": { "name": "French", "native": "Français", "code": "fr" },
+  "_meta": {
+    "name": "French",
+    "native": "Français",
+    "code": "fr"
+  },
   "app": {
     "title": "CNN des Rapaces Australiens",
     "footer_credit": "Australian Raptor CNN + AUSLAN | Brian Fernández Báez | Proposition MPhil — University of Queensland",
-    "footer_model": "Modèle : EfficientNetB4 | Précision : 80,8 % | F1-macro : 0,784 | Données : iNaturalist Australia + ALA"
+    "footer_model": "Modèle: EfficientNetB4 | Précision: 75,6% | F1-macro: 0,76 | Dataset: iNaturalist Australia + ALA (~5 000 images)"
   },
   "nav": {
     "identify": "Identifier",
@@ -64,8 +68,8 @@
     "trained_on_suffix": "images",
     "identify_button": "Identifier cette espèce →",
     "footer_title": "Comment le modèle reconnaît ces espèces",
-    "footer_text": "Le CNN a été entraîné sur environ 5 000 images provenant d'iNaturalist Australia et de l'Atlas of Living Australia, en utilisant l'apprentissage par transfert sur EfficientNetB4 (préentraîné sur ImageNet) avec un fine-tuning de 30 époques. La précision de validation a atteint 80,8 % avec un F1-macro de 0,784 sur les 8 espèces ci-dessus.",
-    "references": "Références : Olsen et al. (1993) ; Marchant & Higgins (1993) ; Debus (1998) ; DAWE (2021) ; Atlas of Living Australia (2023).",
+    "footer_text": "Le CNN a été ré-entraîné sur ~4 970 images issues d'iNaturalist Australia et de l'Atlas of Living Australia, par transfer learning sur EfficientNetB4 (pré-entraîné ImageNet) avec un fine-tuning de 30 époques. La précision sur le test est de 75,6 % avec un F1-macro de 0,76 sur les 8 espèces. Le F1 par espèce va de 0,69 (faucon pèlerin) à 0,85 (élanion d'Australie).",
+    "references": "Références : Olsen et al. (1993) ; Marchant et Higgins (1993) ; Debus (1998) ; DAWE (2021) ; Atlas of Living Australia (2024).",
     "profile_title": "📖 Fiche d'espèce",
     "distribution": "Répartition",
     "diet": "Régime alimentaire",

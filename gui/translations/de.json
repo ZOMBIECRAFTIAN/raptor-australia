@@ -1,9 +1,13 @@
 {
-  "_meta": { "name": "German", "native": "Deutsch", "code": "de" },
+  "_meta": {
+    "name": "German",
+    "native": "Deutsch",
+    "code": "de"
+  },
   "app": {
     "title": "CNN für Australische Greifvögel",
     "footer_credit": "Australian Raptor CNN + AUSLAN | Brian Fernández Báez | MPhil-Antrag — University of Queensland",
-    "footer_model": "Modell: EfficientNetB4 | Genauigkeit: 80,8 % | F1-macro: 0,784 | Datensatz: iNaturalist Australia + ALA"
+    "footer_model": "Modell: EfficientNetB4 | Genauigkeit: 75,6 % | F1-macro: 0,76 | Datensatz: iNaturalist Australia + ALA (~5 000 Bilder)"
   },
   "nav": {
     "identify": "Identifizieren",
@@ -64,8 +68,8 @@
     "trained_on_suffix": "Bildern",
     "identify_button": "Diese Art identifizieren →",
     "footer_title": "Wie das Modell diese Arten erkennt",
-    "footer_text": "Das CNN wurde mit etwa 5.000 Bildern aus iNaturalist Australia und dem Atlas of Living Australia trainiert, mittels Transfer Learning auf EfficientNetB4 (auf ImageNet vortrainiert) und 30 Epochen Fine-Tuning. Die Validierungsgenauigkeit erreichte 80,8 % bei einem F1-macro von 0,784 über die 8 oben gezeigten Arten.",
-    "references": "Quellen: Olsen et al. (1993); Marchant & Higgins (1993); Debus (1998); DAWE (2021); Atlas of Living Australia (2023).",
+    "footer_text": "Das CNN wurde auf ~4 970 Bildern aus iNaturalist Australia und dem Atlas of Living Australia neu trainiert, mittels Transfer-Learning auf EfficientNetB4 (ImageNet-vortrainiert) und Fine-Tuning über 30 Epochen. Die Testgenauigkeit beträgt 75,6 % bei einem F1-macro von 0,76 über die 8 Arten. Der F1 je Art reicht von 0,69 (Wanderfalke) bis 0,85 (Australischer Gleitaar).",
+    "references": "Quellen: Olsen et al. (1993); Marchant & Higgins (1993); Debus (1998); DAWE (2021); Atlas of Living Australia (2024).",
     "profile_title": "📖 Artprofil",
     "distribution": "Verbreitung",
     "diet": "Nahrung",

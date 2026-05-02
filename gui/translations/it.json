@@ -1,9 +1,13 @@
 {
-  "_meta": { "name": "Italian", "native": "Italiano", "code": "it" },
+  "_meta": {
+    "name": "Italian",
+    "native": "Italiano",
+    "code": "it"
+  },
   "app": {
     "title": "CNN dei Rapaci Australiani",
     "footer_credit": "Australian Raptor CNN + AUSLAN | Brian Fernández Báez | Proposta MPhil — University of Queensland",
-    "footer_model": "Modello: EfficientNetB4 | Accuratezza: 80,8% | F1-macro: 0,784 | Dataset: iNaturalist Australia + ALA"
+    "footer_model": "Modello: EfficientNetB4 | Accuratezza: 75,6% | F1-macro: 0,76 | Dataset: iNaturalist Australia + ALA (~5 000 immagini)"
   },
   "nav": {
     "identify": "Identifica",
@@ -64,8 +68,8 @@
     "trained_on_suffix": "immagini",
     "identify_button": "Identifica questa specie →",
     "footer_title": "Come il modello riconosce queste specie",
-    "footer_text": "La CNN è stata addestrata su circa 5.000 immagini provenienti da iNaturalist Australia e Atlas of Living Australia, usando il transfer learning su EfficientNetB4 (pre-addestrato su ImageNet) con fine-tuning per 30 epoche. L'accuratezza di validazione ha raggiunto l'80,8% con F1-macro di 0,784 sulle 8 specie sopra.",
-    "references": "Riferimenti: Olsen et al. (1993); Marchant & Higgins (1993); Debus (1998); DAWE (2021); Atlas of Living Australia (2023).",
+    "footer_text": "La CNN è stata ri-addestrata su ~4.970 immagini provenienti da iNaturalist Australia e dall'Atlas of Living Australia, mediante transfer learning su EfficientNetB4 (pre-addestrata su ImageNet) e fine-tuning per 30 epoche. L'accuratezza sul test è del 75,6 % con un F1-macro di 0,76 sulle 8 specie. L'F1 per specie va da 0,69 (falco pellegrino) a 0,85 (nibbio bianco australiano).",
+    "references": "Riferimenti: Olsen et al. (1993); Marchant e Higgins (1993); Debus (1998); DAWE (2021); Atlas of Living Australia (2024).",
     "profile_title": "📖 Scheda della specie",
     "distribution": "Distribuzione",
     "diet": "Dieta",

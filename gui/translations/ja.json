@@ -1,9 +1,13 @@
 {
-  "_meta": { "name": "Japanese", "native": "日本語", "code": "ja" },
+  "_meta": {
+    "name": "Japanese",
+    "native": "日本語",
+    "code": "ja"
+  },
   "app": {
     "title": "オーストラリア猛禽類 CNN",
     "footer_credit": "Australian Raptor CNN + AUSLAN | Brian Fernández Báez | クイーンズランド大学 MPhil 研究計画",
-    "footer_model": "モデル: EfficientNetB4 | 精度: 80.8% | F1-macro: 0.784 | データセット: iNaturalist Australia + ALA"
+    "footer_model": "モデル:EfficientNetB4 | 精度:75.6% | F1-macro:0.76 | データセット:iNaturalist Australia + ALA(約5,000枚)"
   },
   "nav": {
     "identify": "識別",
@@ -64,8 +68,8 @@
     "trained_on_suffix": "枚",
     "identify_button": "この種を識別 →",
     "footer_title": "モデルがこれらの種をどう認識するか",
-    "footer_text": "この CNN は、iNaturalist Australia と Atlas of Living Australia から収集した約 5,000 枚の画像でトレーニングされ、EfficientNetB4 (ImageNet で事前学習済み) を用いた転移学習で 30 エポックのファインチューニングを行いました。検証精度は 80.8%、上記 8 種に対する F1-macro は 0.784 に達しています。",
-    "references": "参考文献: Olsen ら (1993); Marchant & Higgins (1993); Debus (1998); DAWE (2021); Atlas of Living Australia (2023)。",
+    "footer_text": "CNN は iNaturalist Australia と Atlas of Living Australia の合計約 4,970 枚で再学習され、EfficientNetB4(ImageNet 事前学習)による転移学習で 30 epoch ファインチューニングしました。テスト精度は 75.6 %、8 種の F1-macro は 0.76 です。種別の F1 は 0.69(ハヤブサ)〜 0.85(クロカタシロガシラトビ)です。",
+    "references": "参考文献:Olsen ほか (1993);Marchant & Higgins (1993);Debus (1998);DAWE (2021);Atlas of Living Australia (2024)。",
     "profile_title": "📖 種プロファイル",
     "distribution": "分布",
     "diet": "食性",
