@@ -27,7 +27,9 @@
     "supported": "Compatíveis: JPG, PNG, TIFF, WebP — Máx. 16 MB",
     "analyzing": "Analisando imagem com o modelo CNN...",
     "focus_title": "Procurando um(a) {name}?",
-    "focus_text": "Envie uma foto e nós confirmaremos se o modelo reconhece esta espécie."
+    "focus_text": "Envie uma foto e nós confirmaremos se o modelo reconhece esta espécie.",
+    "choose_video": "Escolher vídeo",
+    "video_results": "Análise de vídeo"
   },
   "result": {
     "species_information": "Informações da espécie",
@@ -78,7 +80,9 @@
     "nesting": "Nidificação",
     "breeding_season": "Estação reprodutiva",
     "best_time_to_see": "Melhor época para observar",
-    "did_you_know": "💡 Você sabia"
+    "did_you_know": "💡 Você sabia",
+    "behavior_video": "Voo e comportamento",
+    "no_behavior_video": "Ainda sem vídeo de comportamento — coloque um em:"
   },
   "data": {
     "summary_title": "Resumo de observações",

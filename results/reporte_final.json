@@ -1,64 +1,64 @@
 {
   "modelo": "EfficientNetB4",
   "dataset": "iNaturalist + ALA (post-expansion)",
-  "total_test_images": 503,
+  "total_test_images": 67,
   "metricas_globales": {
-    "accuracy": 0.7555,
-    "f1_macro": 0.7576,
-    "f1_weighted": 0.756
+    "accuracy": 0.8358,
+    "f1_macro": 0.8348,
+    "f1_weighted": 0.8394
   },
   "objetivos": {
-    "accuracy_80": false,
+    "accuracy_80": true,
     "f1_macro_85": false
   },
   "por_especie": {
     "Wedge-tailed Eagle": {
-      "precision": 0.6962,
-      "recall": 0.7143,
-      "f1": 0.7051,
-      "support": 77
+      "precision": 1.0,
+      "recall": 0.75,
+      "f1": 0.8571,
+      "support": 8
     },
     "Spotted Harrier": {
-      "precision": 0.8302,
-      "recall": 0.7213,
-      "f1": 0.7719,
-      "support": 61
+      "precision": 0.8,
+      "recall": 0.8889,
+      "f1": 0.8421,
+      "support": 9
     },
     "Black-shouldered Kite": {
-      "precision": 0.8387,
-      "recall": 0.8525,
-      "f1": 0.8455,
-      "support": 61
+      "precision": 1.0,
+      "recall": 0.9,
+      "f1": 0.9474,
+      "support": 10
     },
     "Nankeen Kestrel": {
-      "precision": 0.8235,
-      "recall": 0.6885,
-      "f1": 0.75,
-      "support": 61
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "support": 8
     },
     "Peregrine Falcon": {
-      "precision": 0.6429,
-      "recall": 0.75,
-      "f1": 0.6923,
-      "support": 60
+      "precision": 0.6,
+      "recall": 0.8571,
+      "f1": 0.7059,
+      "support": 7
     },
     "Little Eagle": {
-      "precision": 0.7812,
-      "recall": 0.8197,
-      "f1": 0.8,
-      "support": 61
+      "precision": 0.625,
+      "recall": 0.8333,
+      "f1": 0.7143,
+      "support": 6
     },
     "Square-tailed Kite": {
-      "precision": 0.7344,
-      "recall": 0.7705,
-      "f1": 0.752,
-      "support": 61
+      "precision": 0.875,
+      "recall": 0.875,
+      "f1": 0.875,
+      "support": 8
     },
     "Brown Goshawk": {
-      "precision": 0.75,
-      "recall": 0.7377,
-      "f1": 0.7438,
-      "support": 61
+      "precision": 0.875,
+      "recall": 0.6364,
+      "f1": 0.7368,
+      "support": 11
     }
   },
   "training_config": {

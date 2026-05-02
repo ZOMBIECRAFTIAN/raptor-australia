@@ -1,0 +1,7 @@
+Quality filter run — 2026-05-02T08:40:43
+Detector: True · Dry run: True
+
+Total kept:     594
+Total archived: 0
+
+Removals by reason:

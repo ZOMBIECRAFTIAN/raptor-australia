@@ -27,7 +27,9 @@
     "supported": "対応形式: JPG、PNG、TIFF、WebP — 最大 16 MB",
     "analyzing": "CNN モデルで画像を解析中...",
     "focus_title": "{name} を探していますか?",
-    "focus_text": "写真をアップロードして、モデルがこの種を認識できるか確認します。"
+    "focus_text": "写真をアップロードして、モデルがこの種を認識できるか確認します。",
+    "choose_video": "動画を選択",
+    "video_results": "動画解析"
   },
   "result": {
     "species_information": "種情報",
@@ -78,7 +80,9 @@
     "nesting": "営巣",
     "breeding_season": "繁殖期",
     "best_time_to_see": "観察に適した時期",
-    "did_you_know": "💡 ご存知ですか"
+    "did_you_know": "💡 ご存知ですか",
+    "behavior_video": "飛翔と行動",
+    "no_behavior_video": "行動動画はまだありません — ここに配置:"
   },
   "data": {
     "summary_title": "観察の概要",

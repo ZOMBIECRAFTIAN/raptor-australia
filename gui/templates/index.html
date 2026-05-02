@@ -58,16 +58,32 @@
         <div class="upload-icon">📸</div>
         <h2>{{ t('home.title') }}</h2>
         <p>{{ t('home.subtitle') }}</p>
-        <button class="btn-upload"
-                onclick="document.getElementById('fileInput').click()">
-            {{ t('home.choose_image') }}
-        </button>
+        <div class="upload-buttons">
+            <button class="btn-upload"
+                    onclick="document.getElementById('fileInput').click()">
+                {{ t('home.choose_image') }}
+            </button>
+            <button class="btn-upload btn-upload--video"
+                    onclick="document.getElementById('videoInput').click()">
+                🎞️ {{ t('home.choose_video') }}
+            </button>
+        </div>
         <p style="margin-top:0.75rem; font-size:0.8rem; color:#999">
             {{ t('home.supported') }}
         </p>
         <input type="file" id="fileInput" accept="image/*"
                style="display:none"
                onchange="handleFile(this.files[0])">
+        <input type="file" id="videoInput" accept="video/*"
+               style="display:none"
+               onchange="handleVideo(this.files[0])">
+    </div>
+
+    <div class="video-results" id="videoResults" style="display:none">
+        <h3 id="videoResultsTitle">🎞️ {{ t('home.video_results') }}</h3>
+        <p class="video-meta" id="videoMeta"></p>
+        <div class="video-summary" id="videoSummary"></div>
+        <div class="video-timeline" id="videoTimeline"></div>
     </div>
 
     <div class="image-preview" id="imagePreview">
@@ -268,6 +284,7 @@ uploadZone.addEventListener("drop", e => {
 
 function handleFile(file) {
     if (!file) return;
+    document.getElementById("videoResults").style.display = "none";
     const reader = new FileReader();
     reader.onload = e => {
         document.getElementById("previewImg").src = e.target.result;
@@ -275,6 +292,85 @@ function handleFile(file) {
     };
     reader.readAsDataURL(file);
     uploadAndIdentify(file);
+}
+
+async function handleVideo(file) {
+    if (!file) return;
+    // Hide image-side outputs, show loading
+    document.getElementById("resultsPanel").style.display    = "none";
+    document.getElementById("observationForm").style.display = "none";
+    document.getElementById("imagePreview").style.display    = "none";
+    document.getElementById("loading").style.display         = "block";
+    document.getElementById("videoResults").style.display    = "none";
+
+    const formData = new FormData();
+    formData.append("video", file);
+    try {
+        const r = await fetch("/identify_video", {
+            method: "POST", body: formData
+        });
+        const data = await r.json();
+        if (data.error) { alert("Error: " + data.error); return; }
+        renderVideoResults(data, file.name);
+    } catch (e) {
+        alert("Connection error: " + e.message);
+    } finally {
+        document.getElementById("loading").style.display = "none";
+    }
+}
+
+function renderVideoResults(data, filename) {
+    const meta = document.getElementById("videoMeta");
+    meta.textContent =
+        `${filename} · ${data.duration_seconds}s @ ${data.video_fps} fps · `
+        + `${data.frames_sampled} frames analysed`;
+
+    // Summary cards: one per species detected
+    const sumWrap = document.getElementById("videoSummary");
+    sumWrap.innerHTML = "";
+    if (data.summary.length === 0) {
+        sumWrap.innerHTML = "<p>No birds detected in any frame.</p>";
+    } else {
+        data.summary.forEach(s => {
+            const c = document.createElement("div");
+            c.className = "video-summary-card";
+            c.style.borderLeftColor = s.color;
+            c.innerHTML = `
+                <div class="video-summary-header" style="color:${s.color}">
+                    ${s.common_name}
+                </div>
+                <em>${s.scientific}</em>
+                <div class="video-summary-count">
+                    ${s.frames_with_species} frame${s.frames_with_species===1?"":"s"}
+                </div>
+            `;
+            sumWrap.appendChild(c);
+        });
+    }
+
+    // Timeline strip — one ribbon per sampled frame
+    const tl = document.getElementById("videoTimeline");
+    tl.innerHTML = "";
+    data.timeline.forEach(frame => {
+        const cell = document.createElement("div");
+        cell.className = "video-timeline-cell";
+        cell.title = `t=${frame.t_seconds}s — ${frame.n_birds} bird(s)`;
+        if (frame.n_birds === 0) {
+            cell.style.background = "#dcdcdc";
+        } else {
+            // pick the highest-confidence species in this frame as the colour
+            const best = frame.detections.reduce(
+                (a,b) => a.confidence>b.confidence?a:b);
+            cell.style.background = best.color;
+            cell.textContent = frame.n_birds > 1 ? `×${frame.n_birds}` : "";
+        }
+        tl.appendChild(cell);
+    });
+
+    document.getElementById("videoResults").style.display = "block";
+    document.getElementById("videoResults").scrollIntoView({
+        behavior: "smooth", block: "start"
+    });
 }
 
 async function uploadAndIdentify(file) {

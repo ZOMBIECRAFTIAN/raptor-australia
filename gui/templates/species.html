@@ -184,9 +184,36 @@
                 </details>
                 {% endif %}
 
-                <div class="species-block species-auslan">
-                    <span class="species-label">🤟 {{ t('result.auslan_sign') }}</span>
-                    <p class="species-text">{{ info.auslan_sign }}</p>
+                {% set bv = behavior_videos.get(key, {}) %}
+                <div class="species-media-pair">
+                    <div class="media-tile media-tile--behavior">
+                        <span class="media-tile-label">🦅 {{ t('species_guide.behavior_video') }}</span>
+                        {% if bv.exists %}
+                        <video controls preload="metadata"
+                               playsinline muted>
+                            <source src="/behavior_videos/{{ bv.filename }}"
+                                    type="video/mp4">
+                        </video>
+                        <p class="media-tile-meta">
+                            {{ bv.filename }} · {{ bv.size_mb }} MB
+                        </p>
+                        {% else %}
+                        <div class="media-tile-empty">
+                            <span class="media-tile-icon">📹</span>
+                            <p>{{ t('species_guide.no_behavior_video') }}</p>
+                            <code>gui/static/behavior_videos/{{ key }}.mp4</code>
+                        </div>
+                        {% endif %}
+                    </div>
+
+                    <div class="media-tile media-tile--auslan"
+                         style="--tile-accent: var(--teal)">
+                        <span class="media-tile-label">🤟 {{ t('result.auslan_sign') }}</span>
+                        <img src="/auslan_videos/{{ info.auslan_video }}"
+                             alt="AUSLAN sign for {{ info.common_name }}"
+                             onerror="this.style.display='none';">
+                        <p class="media-tile-text">{{ info.auslan_sign }}</p>
+                    </div>
                 </div>
 
                 {% set m = species_metrics.get(key, {}) %}

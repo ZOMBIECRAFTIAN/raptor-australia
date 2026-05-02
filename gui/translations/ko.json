@@ -27,7 +27,9 @@
     "supported": "지원 형식: JPG, PNG, TIFF, WebP — 최대 16 MB",
     "analyzing": "CNN 모델로 이미지 분석 중...",
     "focus_title": "{name}을(를) 찾고 계신가요?",
-    "focus_text": "사진을 업로드하면 모델이 이 종을 인식하는지 확인해 드립니다."
+    "focus_text": "사진을 업로드하면 모델이 이 종을 인식하는지 확인해 드립니다.",
+    "choose_video": "동영상 선택",
+    "video_results": "동영상 분석"
   },
   "result": {
     "species_information": "종 정보",
@@ -78,7 +80,9 @@
     "nesting": "둥지",
     "breeding_season": "번식기",
     "best_time_to_see": "관찰 적기",
-    "did_you_know": "💡 알고 계셨나요"
+    "did_you_know": "💡 알고 계셨나요",
+    "behavior_video": "비행 및 행동",
+    "no_behavior_video": "행동 영상이 아직 없음 — 여기에 두세요:"
   },
   "data": {
     "summary_title": "관찰 요약",

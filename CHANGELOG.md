@@ -10,9 +10,23 @@ and the project adheres to [Semantic Versioning](https://semver.org/).
   videos produced with the Deaf community.
 - Spatial heatmap of saved observations.
 - Mobile-first responsive layout (PWA).
-- Quality-aware re-curation of the ALA download (filter by bird
-  bbox area, prefer adults over juveniles) to claw back F1 on the
-  Spotted Harrier and Brown Goshawk classes that regressed in v1.2.
+- After running `filter_ala_quality.py --use-detector`, retrain
+  via `notebooks/retrain.py` to recover F1 on the Spotted Harrier
+  and Brown Goshawk classes that regressed in v1.2.
+
+### Added (tooling, not yet retrained)
+- **`notebooks/pick_hero_manual.py`** — interactive Tk GUI for
+  picking the catalogue hero per species manually (4×3 thumbnail
+  grid, click to apply). Faster and more accurate than any
+  heuristic for the 8 hero images. Logs each pick to
+  `results/hero_picks_manual.csv`.
+- **`notebooks/filter_ala_quality.py`** — pre-training dataset
+  curator. Filters images by:
+  resolution, aspect ratio, and (with `--use-detector`) Faster
+  R-CNN bird detection — bbox area in [10 %, 78 %] of frame,
+  not clipped at edges. Catches feather close-ups, museum
+  specimens lying flat, and distant habitat shots. Archives
+  failures to `dataset/raw_archive/` (non-destructive).
 
 ## [1.2.0] — 2026-05-01
 

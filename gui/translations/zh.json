@@ -27,7 +27,9 @@
     "supported": "支持格式: JPG、PNG、TIFF、WebP — 最大 16 MB",
     "analyzing": "正在使用 CNN 模型分析图片...",
     "focus_title": "正在寻找 {name}?",
-    "focus_text": "上传一张照片,我们将确认模型是否能识别此物种。"
+    "focus_text": "上传一张照片,我们将确认模型是否能识别此物种。",
+    "choose_video": "选择视频",
+    "video_results": "视频分析"
   },
   "result": {
     "species_information": "物种信息",
@@ -78,7 +80,9 @@
     "nesting": "筑巢",
     "breeding_season": "繁殖季节",
     "best_time_to_see": "最佳观察时间",
-    "did_you_know": "💡 你知道吗"
+    "did_you_know": "💡 你知道吗",
+    "behavior_video": "飞行与行为",
+    "no_behavior_video": "尚无行为视频 — 在此放置一个:"
   },
   "data": {
     "summary_title": "观察摘要",

@@ -17,6 +17,11 @@ torchvision>=0.16,<1.0
 Pillow>=10.0,<12.0
 numpy>=1.24,<3.0
 
+# --- Video analysis (multi-species detection) ----------------
+# Required by the /identify_video endpoint for sampling frames
+# from user-uploaded clips.
+opencv-python>=4.8,<5.0
+
 # --- Notebook / training tooling -----------------------------
 # Optional but recommended for reproducing the training run.
 jupyter>=1.0

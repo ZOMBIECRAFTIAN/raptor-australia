@@ -564,7 +564,8 @@ def species_list():
     return render_template("species.html",
                            species_info=info_loc,
                            species_metrics=metrics,
-                           species_details=info_loc)
+                           species_details=info_loc,
+                           behavior_videos=_behavior_video_status())
 
 
 # ─── Paso 8 — Exportación CSV / ALA ─────────────────────
@@ -737,6 +738,220 @@ def auslan_video(filename):
         str(BASE_DIR / "static" / "auslan_videos"),
         filename
     )
+
+
+# ─── Video analysis (multi-species, multi-bird) ──────────
+_video_detector = None
+
+
+def _lazy_video_detector():
+    """
+    Faster R-CNN bird detector reused across video frames. Loads
+    weights only on first call to keep startup fast.
+    """
+    global _video_detector
+    if _video_detector is None:
+        from torchvision.models.detection import (
+            fasterrcnn_resnet50_fpn,
+            FasterRCNN_ResNet50_FPN_Weights,
+        )
+        weights = FasterRCNN_ResNet50_FPN_Weights.DEFAULT
+        m = fasterrcnn_resnet50_fpn(
+            weights=weights, box_score_thresh=0.45)
+        m.eval().to(device)
+        m._ra_categories = weights.meta["categories"]
+        _video_detector = m
+    return _video_detector
+
+
+def _classify_crop(crop_pil) -> dict:
+    """Run the trained classifier on a single bird crop (PIL.Image)."""
+    tensor = inference_transform(crop_pil).unsqueeze(0).to(device)
+    with torch.no_grad():
+        probs = torch.softmax(raptor_model(tensor), dim=1)[0].cpu().numpy()
+    idx = int(np.argmax(probs))
+    sp_key = CLASS_ORDER[idx]
+    return {
+        "species_key":  sp_key,
+        "common_name":  SPECIES_INFO[sp_key]["common_name"],
+        "scientific":   SPECIES_INFO[sp_key]["scientific_name"],
+        "color":        SPECIES_INFO[sp_key]["color"],
+        "confidence":   round(float(probs[idx]) * 100, 1),
+    }
+
+
+@app.route("/identify_video", methods=["POST"])
+def identify_video():
+    """
+    Multi-species video analysis.
+
+    Pipeline (per uploaded video):
+      1. Sample frames at ~1 fps using OpenCV.
+      2. Run Faster R-CNN on each frame to find bird bboxes.
+      3. Crop each detected bird and classify with the CNN.
+      4. Return a per-frame timeline + a per-species summary.
+
+    Heavy operation — typical 30-second clip @ 1 fps yields
+    ~30 frames; runtime is dominated by the detector
+    (~0.5-2 s per frame on CPU; ~0.1 s on GPU).
+    """
+    try:
+        import cv2
+    except Exception:
+        return jsonify({"error": "OpenCV (cv2) is not installed. "
+                                  "Run: pip install opencv-python"}), 500
+
+    if "video" not in request.files:
+        return jsonify({"error": "No video uploaded"}), 400
+    file = request.files["video"]
+    if not file.filename:
+        return jsonify({"error": "No file selected"}), 400
+
+    allowed_ext = {"mp4", "mov", "webm", "mkv", "avi"}
+    ext = file.filename.rsplit(".", 1)[-1].lower()
+    if ext not in allowed_ext:
+        return jsonify({"error": f"Format not supported: {ext}"}), 400
+
+    tmp_path = UPLOAD_DIR / f"{uuid.uuid4()}.{ext}"
+    file.save(str(tmp_path))
+
+    try:
+        cap = cv2.VideoCapture(str(tmp_path))
+        if not cap.isOpened():
+            return jsonify({"error": "Could not open video"}), 500
+
+        fps      = cap.get(cv2.CAP_PROP_FPS) or 30.0
+        n_frames = int(cap.get(cv2.CAP_PROP_FRAME_COUNT) or 0)
+        duration = n_frames / fps if fps > 0 else 0
+        # Sample roughly one frame per second; cap at 60 frames total.
+        step     = max(1, int(round(fps)))
+        max_frames = 60
+        sampled  = 0
+
+        from torchvision.transforms.functional import to_tensor
+        detector = _lazy_video_detector()
+        cats     = detector._ra_categories
+
+        timeline: list[dict] = []
+        per_species: dict[str, int] = {}
+        frame_idx = 0
+
+        while sampled < max_frames:
+            ret, bgr = cap.read()
+            if not ret:
+                break
+            if frame_idx % step != 0:
+                frame_idx += 1
+                continue
+
+            rgb = cv2.cvtColor(bgr, cv2.COLOR_BGR2RGB)
+            pil = Image.fromarray(rgb)
+            W, H = pil.size
+
+            with torch.no_grad():
+                out = detector([to_tensor(pil).to(device)])[0]
+
+            birds: list[dict] = []
+            for i in range(len(out["labels"])):
+                if cats[int(out["labels"][i])] != "bird":
+                    continue
+                if float(out["scores"][i]) < 0.5:
+                    continue
+                x0, y0, x1, y1 = [float(v) for v in out["boxes"][i]]
+                # Add a 5% margin for the classifier to use context
+                m = 0.05 * min(W, H)
+                cx0 = max(0, int(x0 - m))
+                cy0 = max(0, int(y0 - m))
+                cx1 = min(W, int(x1 + m))
+                cy1 = min(H, int(y1 + m))
+                crop = pil.crop((cx0, cy0, cx1, cy1))
+                # Skip near-zero crops
+                if min(crop.size) < 32:
+                    continue
+                pred = _classify_crop(crop)
+                pred["bbox"] = [cx0, cy0, cx1, cy1]
+                pred["bbox_score"] = round(float(out["scores"][i]), 3)
+                birds.append(pred)
+                per_species[pred["species_key"]] = (
+                    per_species.get(pred["species_key"], 0) + 1)
+
+            timeline.append({
+                "t_seconds":  round(frame_idx / fps, 2),
+                "frame_idx":  frame_idx,
+                "n_birds":    len(birds),
+                "detections": birds,
+            })
+            sampled += 1
+            frame_idx += 1
+            # cv2 is a streaming decoder — fast skip instead of grab loop
+            for _ in range(step - 1):
+                cap.grab()
+                frame_idx += 1
+
+        cap.release()
+
+        # Aggregate into a friendly summary
+        summary = sorted(
+            [{
+                "species_key": k,
+                "common_name": SPECIES_INFO[k]["common_name"],
+                "scientific":  SPECIES_INFO[k]["scientific_name"],
+                "color":       SPECIES_INFO[k]["color"],
+                "frames_with_species": per_species[k],
+            } for k in per_species],
+            key=lambda x: -x["frames_with_species"],
+        )
+
+        return jsonify({
+            "duration_seconds": round(duration, 2),
+            "video_fps":        round(fps, 2),
+            "frames_sampled":   sampled,
+            "timeline":         timeline,
+            "summary":          summary,
+        })
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+    finally:
+        try:
+            tmp_path.unlink()
+        except Exception:
+            pass
+
+
+@app.route("/behavior_videos/<filename>")
+def behavior_video(filename):
+    """
+    Sirve los videos de comportamiento por especie.
+    Los archivos viven en gui/static/behavior_videos/<species_key>.mp4
+    Si el archivo no existe, devuelve 404; el frontend cae a un
+    placeholder con instrucciones para subir el video.
+    """
+    return send_from_directory(
+        str(BASE_DIR / "static" / "behavior_videos"),
+        filename
+    )
+
+
+def _behavior_video_status() -> dict[str, dict]:
+    """
+    Returns, per species_key, whether a behavior video file is present
+    on disk. Used by templates to conditionally render the video tile.
+    """
+    folder = BASE_DIR / "static" / "behavior_videos"
+    out = {}
+    for key in SPECIES_INFO:
+        # Accept .mp4, .webm, .mov in this order of preference.
+        for ext in ("mp4", "webm", "mov"):
+            p = folder / f"{key}.{ext}"
+            if p.exists():
+                out[key] = {"exists": True, "filename": p.name,
+                            "size_mb": round(p.stat().st_size / 1e6, 1)}
+                break
+        else:
+            out[key] = {"exists": False, "filename": f"{key}.mp4",
+                        "size_mb": 0}
+    return out
 
 
 if __name__ == "__main__":

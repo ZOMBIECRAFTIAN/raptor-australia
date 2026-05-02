@@ -27,7 +27,9 @@
     "supported": "Supported: JPG, PNG, TIFF, WebP — Max 16MB",
     "analyzing": "Analyzing image with CNN model...",
     "focus_title": "Looking for {name}?",
-    "focus_text": "Upload a photo and we'll confirm whether the model recognises this species."
+    "focus_text": "Upload a photo and we'll confirm whether the model recognises this species.",
+    "choose_video": "Choose Video",
+    "video_results": "Video analysis"
   },
   "result": {
     "species_information": "Species Information",
@@ -78,7 +80,9 @@
     "nesting": "Nesting",
     "breeding_season": "Breeding season",
     "best_time_to_see": "Best time to see",
-    "did_you_know": "💡 Did you know"
+    "did_you_know": "💡 Did you know",
+    "behavior_video": "Flight & behaviour",
+    "no_behavior_video": "No behaviour video yet — drop one here:"
   },
   "data": {
     "summary_title": "Observations summary",

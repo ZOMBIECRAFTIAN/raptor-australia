@@ -27,7 +27,9 @@
     "supported": "Unterstützt: JPG, PNG, TIFF, WebP — max. 16 MB",
     "analyzing": "Bild wird mit dem CNN-Modell analysiert...",
     "focus_title": "Suchen Sie einen {name}?",
-    "focus_text": "Laden Sie ein Foto hoch und wir bestätigen, ob das Modell diese Art erkennt."
+    "focus_text": "Laden Sie ein Foto hoch und wir bestätigen, ob das Modell diese Art erkennt.",
+    "choose_video": "Video auswählen",
+    "video_results": "Videoanalyse"
   },
   "result": {
     "species_information": "Artinformationen",
@@ -78,7 +80,9 @@
     "nesting": "Brut",
     "breeding_season": "Brutzeit",
     "best_time_to_see": "Beste Beobachtungszeit",
-    "did_you_know": "💡 Wussten Sie schon"
+    "did_you_know": "💡 Wussten Sie schon",
+    "behavior_video": "Flug & Verhalten",
+    "no_behavior_video": "Noch kein Verhaltensvideo — leg eines hier ab:"
   },
   "data": {
     "summary_title": "Beobachtungsübersicht",
