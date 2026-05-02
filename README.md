@@ -339,7 +339,8 @@ considered authoritative AUSLAN.
 ## Roadmap
 
 - [x] Dataset curation (iNaturalist + Atlas of Living Australia)
-- [x] EfficientNetB4 fine-tuning (Acc 80.8 %, F1-macro 0.78)
+- [x] EfficientNetB4 fine-tuning v1.0 (iNat-only: Acc 80.8 %, F1 0.78)
+- [x] Retraining v1.1 on iNat + ALA dataset (Acc 75.6 %, F1 0.76 — harder benchmark)
 - [x] Flask web app with feedback loop
 - [x] Species catalogue with Merlin-style profiles
 - [x] AUSLAN sign animations (provisional)

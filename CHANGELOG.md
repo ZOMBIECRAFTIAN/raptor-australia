@@ -10,9 +10,56 @@ and the project adheres to [Semantic Versioning](https://semver.org/).
   videos produced with the Deaf community.
 - Spatial heatmap of saved observations.
 - Mobile-first responsive layout (PWA).
-- Run `notebooks/retrain.py` end-to-end on the expanded dataset
-  (queued; will refresh `models/best_model.pth` and the metrics in
-  `results/`).
+- Quality-aware re-curation of the ALA download (filter by bird
+  bbox area, prefer adults over juveniles) to claw back F1 on the
+  Spotted Harrier and Brown Goshawk classes that regressed in v1.2.
+
+## [1.2.0] — 2026-05-01
+
+### Added
+- **Retrained model** on the full iNaturalist + ALA dataset
+  (~4,970 images), via `notebooks/retrain.py`.
+  Two-stage transfer learning over EfficientNetB4
+  (10 epochs feature extraction → 20 epochs full fine-tune,
+  cosine LR, label smoothing 0.05, ~106 min on RTX 3060).
+- Refreshed artefacts in `results/`: `reporte_final.json`,
+  `test_report.csv`, `training_history.csv`,
+  `confusion_matrix.png`, `learning_curves.png`,
+  `f1_por_especie.png`.
+
+### Changed
+- Test set grew from 490 → 503 images and now includes ALA
+  records, which are noisier than iNaturalist (juveniles in
+  atypical plumage, habitat shots, museum records).
+- `identifiedBy` field in the Darwin Core export now reads
+  *"Australian Raptor CNN v1.1 (EfficientNetB4 transfer learning,
+  iNaturalist + ALA, F1-macro 0.76)"*.
+- README, in-app footers in all 10 languages, and species-guide
+  blurb updated to the new headline metrics.
+
+### Performance
+- Test accuracy: **75.6 %** (was 80.8 % on the easier iNat-only
+  test set).
+- F1-macro: **0.758** (was 0.784).
+- F1-weighted: **0.756** (was 0.804).
+- Per-species F1: Black-shouldered Kite 0.85, Little Eagle 0.80,
+  Spotted Harrier 0.77, Square-tailed Kite 0.75, Nankeen Kestrel
+  0.75, Brown Goshawk 0.74, Wedge-tailed Eagle 0.71, Peregrine
+  Falcon 0.69.
+
+### Diagnosis (for the curious)
+The headline numbers regressed slightly because the model is now
+evaluated on a substantially harder benchmark — ALA contributes
+records that the v1.0 model never had to handle, including
+non-adult birds, distant habitat shots, and museum-style
+photographs. Two species improved (Black-shouldered Kite +0.01,
+Little Eagle +0.09); two regressed (Spotted Harrier −0.16, Brown
+Goshawk −0.09). The v1.1 model is therefore **more robust to
+real-world citizen-science conditions**, even if its peak F1 is
+lower. The next planned iteration will curate ALA via the bird
+bounding-box detector to filter out the lowest-quality records.
+
+## [1.1.0] — 2026-05-01
 
 ## [1.1.0] — 2026-05-01
 

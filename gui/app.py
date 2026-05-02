@@ -601,8 +601,9 @@ def _to_dwc_rows(obs_rows: list[dict]) -> list[dict]:
                         else "unverified")
 
         identified_by = (
-            "Australian Raptor CNN v1.0 "
-            "(EfficientNetB4 transfer learning, F1-macro 0.78)"
+            "Australian Raptor CNN v1.1 "
+            "(EfficientNetB4 transfer learning, "
+            "iNaturalist + ALA, F1-macro 0.76)"
         )
 
         out.append({
