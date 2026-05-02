@@ -9,8 +9,8 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/)
 [![PyTorch 2.x](https://img.shields.io/badge/PyTorch-2.x-EE4C2C.svg)](https://pytorch.org/)
-[![F1-macro 0.78](https://img.shields.io/badge/F1--macro-0.78-success.svg)](results/reporte_final.json)
-[![Accuracy 80.8%](https://img.shields.io/badge/accuracy-80.8%25-brightgreen.svg)](results/reporte_final.json)
+[![F1-macro 0.76](https://img.shields.io/badge/F1--macro-0.76-yellow.svg)](results/reporte_final.json)
+[![Accuracy 75.6%](https://img.shields.io/badge/accuracy-75.6%25-yellowgreen.svg)](results/reporte_final.json)
 [![Cite this](https://img.shields.io/badge/cite-CITATION.cff-informational.svg)](CITATION.cff)
 [![Status: research preview](https://img.shields.io/badge/status-research%20preview-orange.svg)]()
 
@@ -50,14 +50,14 @@ relevance and image availability:
 
 | Common name | Scientific name | EPBC status | F1 (test) |
 |---|---|---|---|
-| Wedge-tailed Eagle | *Aquila audax* | Not listed (A.a.fleayi: Endangered) | 0.70 |
+| Wedge-tailed Eagle | *Aquila audax* | Not listed (A.a.fleayi: Endangered) | 0.71 |
 | Peregrine Falcon | *Falco peregrinus macropus* | Not listed | 0.69 |
-| Spotted Harrier | *Circus assimilis* | Vulnerable (NSW) | 0.93 |
-| Brown Goshawk | *Tachyspiza fasciata* | Not listed | 0.83 |
+| Spotted Harrier | *Circus assimilis* | Vulnerable (NSW) | 0.77 |
+| Brown Goshawk | *Tachyspiza fasciata* | Not listed | 0.74 |
 | Nankeen Kestrel | *Falco cenchroides* | Not listed | 0.75 |
-| Black-shouldered Kite | *Elanus axillaris* | Not listed | 0.84 |
-| Square-tailed Kite | *Lophoictinia isura* | **Vulnerable (EPBC Act)** | 0.82 |
-| Little Eagle | *Hieraaetus morphnoides* | Not listed | 0.71 |
+| Black-shouldered Kite | *Elanus axillaris* | Not listed | 0.85 |
+| Square-tailed Kite | *Lophoictinia isura* | **Vulnerable (EPBC Act)** | 0.75 |
+| Little Eagle | *Hieraaetus morphnoides* | Not listed | 0.80 |
 
 Per-species precision/recall and confusion matrix are in
 [`results/`](results/).
@@ -367,10 +367,10 @@ Note that **bird images**, **the AUSLAN vocabulary**, and the
 
 ## Contact
 
-**Brian Fernández Báez** — Biology graduate, Instituto Tecnológico
-de Úrsulo Galván (Mexico) · MPhil candidate, University of Queensland
+**Brian Fernández Báez** — Ingeniero Computer System graduate, Instituto Tecnológico
+de Veracruz (Mexico) · MPhil candidate, University of Queensland
 (application 2026).
 
 For collaboration enquiries (especially Deaf community partners and
 Australian raptor researchers), please open an issue on this
-repository or email via the address listed on my GitHub profile.
+repository or email via the address listed on my GitHu
