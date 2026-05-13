@@ -1,11 +1,11 @@
 {
   "modelo": "EfficientNetB4",
   "dataset": "iNaturalist + ALA (post-expansion)",
-  "total_test_images": 67,
+  "total_test_images": 206,
   "metricas_globales": {
-    "accuracy": 0.8358,
-    "f1_macro": 0.8348,
-    "f1_weighted": 0.8394
+    "accuracy": 0.8495,
+    "f1_macro": 0.8478,
+    "f1_weighted": 0.8477
   },
   "objetivos": {
     "accuracy_80": true,
@@ -13,52 +13,52 @@
   },
   "por_especie": {
     "Wedge-tailed Eagle": {
-      "precision": 1.0,
-      "recall": 0.75,
-      "f1": 0.8571,
-      "support": 8
+      "precision": 0.8846,
+      "recall": 1.0,
+      "f1": 0.9388,
+      "support": 23
     },
     "Spotted Harrier": {
-      "precision": 0.8,
-      "recall": 0.8889,
-      "f1": 0.8421,
-      "support": 9
+      "precision": 0.8966,
+      "recall": 0.8125,
+      "f1": 0.8525,
+      "support": 32
     },
     "Black-shouldered Kite": {
-      "precision": 1.0,
-      "recall": 0.9,
-      "f1": 0.9474,
-      "support": 10
+      "precision": 0.75,
+      "recall": 0.8889,
+      "f1": 0.8136,
+      "support": 27
     },
     "Nankeen Kestrel": {
-      "precision": 1.0,
-      "recall": 1.0,
-      "f1": 1.0,
-      "support": 8
-    },
-    "Peregrine Falcon": {
-      "precision": 0.6,
-      "recall": 0.8571,
-      "f1": 0.7059,
-      "support": 7
-    },
-    "Little Eagle": {
-      "precision": 0.625,
-      "recall": 0.8333,
-      "f1": 0.7143,
-      "support": 6
-    },
-    "Square-tailed Kite": {
-      "precision": 0.875,
-      "recall": 0.875,
-      "f1": 0.875,
-      "support": 8
-    },
-    "Brown Goshawk": {
       "precision": 0.875,
       "recall": 0.6364,
       "f1": 0.7368,
-      "support": 11
+      "support": 22
+    },
+    "Peregrine Falcon": {
+      "precision": 0.9048,
+      "recall": 0.8261,
+      "f1": 0.8636,
+      "support": 23
+    },
+    "Little Eagle": {
+      "precision": 0.8261,
+      "recall": 0.8636,
+      "f1": 0.8444,
+      "support": 22
+    },
+    "Square-tailed Kite": {
+      "precision": 0.8846,
+      "recall": 0.92,
+      "f1": 0.902,
+      "support": 25
+    },
+    "Brown Goshawk": {
+      "precision": 0.8182,
+      "recall": 0.8438,
+      "f1": 0.8308,
+      "support": 32
     }
   },
   "training_config": {

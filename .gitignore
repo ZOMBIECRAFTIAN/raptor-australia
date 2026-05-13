@@ -40,6 +40,7 @@ Thumbs.db
 dataset/raw/
 dataset/processed/
 dataset/feedback/
+dataset/raw_archive/        # quality-filter rejects — re-derivable
 
 # ─── Project-specific: model weights ───────────────────
 # .pth/.pt files exceed GitHub's 100 MB per-file limit.

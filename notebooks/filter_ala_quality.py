@@ -60,10 +60,13 @@ DATASET_DIR  = BASE_DIR / "dataset" / "raw"
 ARCHIVE_DIR  = BASE_DIR / "dataset" / "raw_archive"
 METADATA_DIR = BASE_DIR / "dataset" / "metadata"
 
-MIN_DIM      = 224         # matches retrain.py — anything ≥ EfficientNetB4
-                           # input (380px after centre-crop) is fine; iNat
-                           # images are typically 333-500px, so this keeps
-                           # them in.
+MIN_DIM      = 160         # Lowered from 224 after the v1.2 filter run
+                           # archived 88% of the dataset — many ALA &
+                           # iNat images come in at 200-300px on the
+                           # short side and are still usable when
+                           # up-scaled to 380px for EfficientNetB4.
+                           # Below 160px the up-scaling artefacts hurt
+                           # more than they help.
 ASPECT_LO    = 0.45
 ASPECT_HI    = 2.20
 BBOX_MIN     = 0.08        # 8% of frame — excludes habitat shots

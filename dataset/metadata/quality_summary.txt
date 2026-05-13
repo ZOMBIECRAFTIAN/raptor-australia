@@ -1,7 +1,12 @@
-Quality filter run — 2026-05-02T08:40:43
-Detector: True · Dry run: True
+Quality filter run — 2026-05-06T07:35:38
+Detector: True · Dry run: False
 
-Total kept:     594
-Total archived: 0
+Total kept:     1992
+Total archived: 2978
 
 Removals by reason:
+  too_small_bird           2375
+  no_bird_detected         535
+  bbox_clipped_at_edge     63
+  aspect                   4
+  too_close_up             1
