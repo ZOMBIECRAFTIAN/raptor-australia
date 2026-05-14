@@ -2,35 +2,131 @@
   "_meta": {
     "region": "AU",
     "back_days": 30,
-    "fetched_at": "2026-05-13T06:08:35",
+    "fetched_at": "2026-05-13T20:16:42",
     "source": "eBird API v2 — observations endpoint",
     "note": "Recent observation metadata only. eBird does not provide images via the public API; those live in Macaulay Library under separate terms."
   },
   "species": {
     "aquila_audax": {
-      "recent_count": 0,
-      "last_seen": null,
-      "top_locations": [],
-      "top_states": [],
-      "last_observer": null,
+      "recent_count": 500,
+      "last_seen": {
+        "date": "2026-05-14 09:17",
+        "location": "Lake George--Badcoe VC Rest Area",
+        "state": null,
+        "lat": -35.03565,
+        "lng": 149.37753,
+        "count": 2
+      },
+      "top_locations": [
+        {
+          "location": "Dajarra",
+          "count": 9
+        },
+        {
+          "location": "Kangaroo Beach Lodges",
+          "count": 5
+        },
+        {
+          "location": "Great Alpine Road, Tongio, Victoria, AU (-37.166, 147.668)",
+          "count": 5
+        },
+        {
+          "location": "Little Llangothlin Nature Reserve",
+          "count": 5
+        },
+        {
+          "location": "Honeyeater Survey Site 8 (Angle Crossing) 35.57704, 149.10952",
+          "count": 5
+        }
+      ],
+      "top_states": [
+        {
+          "state": "",
+          "count": 741
+        }
+      ],
       "scientific_name": "Aquila audax",
       "species_code": "weteag1"
     },
     "falco_peregrinus": {
-      "recent_count": 0,
-      "last_seen": null,
-      "top_locations": [],
-      "top_states": [],
-      "last_observer": null,
+      "recent_count": 381,
+      "last_seen": {
+        "date": "2026-05-14 08:43",
+        "location": "Armidale",
+        "state": null,
+        "lat": -30.51096,
+        "lng": 151.66734,
+        "count": 1
+      },
+      "top_locations": [
+        {
+          "location": "King George River",
+          "count": 6
+        },
+        {
+          "location": "Glycosmis Bay",
+          "count": 3
+        },
+        {
+          "location": "The Nobbies",
+          "count": 2
+        },
+        {
+          "location": "Logan City Council Administration Centre Precinct",
+          "count": 2
+        },
+        {
+          "location": "Seal Rocks",
+          "count": 2
+        }
+      ],
+      "top_states": [
+        {
+          "state": "",
+          "count": 444
+        }
+      ],
       "scientific_name": "Falco peregrinus",
       "species_code": "perfal"
     },
     "circus_assimilis": {
-      "recent_count": 0,
-      "last_seen": null,
-      "top_locations": [],
-      "top_states": [],
-      "last_observer": null,
+      "recent_count": 179,
+      "last_seen": {
+        "date": "2026-05-13 16:41",
+        "location": "Casuarinas Rd, Allanooka AU-WA -29.01671, 115.12445",
+        "state": null,
+        "lat": -29.016708,
+        "lng": 115.124451,
+        "count": 1
+      },
+      "top_locations": [
+        {
+          "location": "State Route 11, Tablelands, Northern Territory, AU (-19.046, 136.085)",
+          "count": 4
+        },
+        {
+          "location": "Coorabulka Homestead",
+          "count": 2
+        },
+        {
+          "location": "Burtons Road, Bli Bli",
+          "count": 2
+        },
+        {
+          "location": "Wooljim Road, Kununurra, Western Australia, AU (-15.442, 128.926)",
+          "count": 2
+        },
+        {
+          "location": "Western Treatment Plant--Geelong (restricted access)",
+          "count": 2
+        }
+      ],
+      "top_states": [
+        {
+          "state": "",
+          "count": 195
+        }
+      ],
       "scientific_name": "Circus assimilis",
       "species_code": "spohar1"
     },
@@ -40,38 +136,166 @@
       "error": "species code lookup failed"
     },
     "falco_cenchroides": {
-      "recent_count": 0,
-      "last_seen": null,
-      "top_locations": [],
-      "top_states": [],
-      "last_observer": null,
+      "recent_count": 500,
+      "last_seen": {
+        "date": "2026-05-14 09:24",
+        "location": "17411 Capricorn Highway, Bluff, Queensland, AU (-23.586, 149.049)",
+        "state": null,
+        "lat": -23.585694,
+        "lng": 149.0488224,
+        "count": 1
+      },
+      "top_locations": [
+        {
+          "location": "Coorabulka Homestead",
+          "count": 22
+        },
+        {
+          "location": "Boulia",
+          "count": 12
+        },
+        {
+          "location": "Warri Gate Rd",
+          "count": 10
+        },
+        {
+          "location": "Northern End of Coorabulka Road",
+          "count": 8
+        },
+        {
+          "location": "Jump up Loop Rd, Connie Creek at -29.21248, 141.89683",
+          "count": 7
+        }
+      ],
+      "top_states": [
+        {
+          "state": "",
+          "count": 723
+        }
+      ],
       "scientific_name": "Falco cenchroides",
       "species_code": "auskes1"
     },
     "elanus_axillaris": {
-      "recent_count": 0,
-      "last_seen": null,
-      "top_locations": [],
-      "top_states": [],
-      "last_observer": null,
+      "recent_count": 500,
+      "last_seen": {
+        "date": "2026-05-14 09:12",
+        "location": "Truganina Swamp and Mt St Joseph Pond and Wetland",
+        "state": null,
+        "lat": -37.8656266,
+        "lng": 144.8059354,
+        "count": 1
+      },
+      "top_locations": [
+        {
+          "location": "Pickford Rd - Peters Causeway",
+          "count": 7
+        },
+        {
+          "location": "Hartins Trail, Hexham Swamp Nature Reserve",
+          "count": 5
+        },
+        {
+          "location": "Pitt Town Bottoms",
+          "count": 5
+        },
+        {
+          "location": "Gwydir Wetlands--Watercourse Rd",
+          "count": 5
+        },
+        {
+          "location": "Mitchell River Walk",
+          "count": 4
+        }
+      ],
+      "top_states": [
+        {
+          "state": "",
+          "count": 616
+        }
+      ],
       "scientific_name": "Elanus axillaris",
       "species_code": "auskit1"
     },
     "lophoictinia_isura": {
-      "recent_count": 0,
-      "last_seen": null,
-      "top_locations": [],
-      "top_states": [],
-      "last_observer": null,
+      "recent_count": 141,
+      "last_seen": {
+        "date": "2026-05-13 15:59",
+        "location": "Griffith Univeristy Logan Campus--Arboretum/Slacks Creek",
+        "state": null,
+        "lat": -27.6649143,
+        "lng": 153.1560026,
+        "count": 1
+      },
+      "top_locations": [
+        {
+          "location": "Mona Vale Reserve",
+          "count": 3
+        },
+        {
+          "location": "Bonville",
+          "count": 2
+        },
+        {
+          "location": "backyard (private property)",
+          "count": 2
+        },
+        {
+          "location": "Crowdy Bay National Park--Diamond Head Campground",
+          "count": 2
+        },
+        {
+          "location": "Wakehurst Parkway, Frenchs Forest AU-NSW (-33.7506,151.2343)",
+          "count": 2
+        }
+      ],
+      "top_states": [
+        {
+          "state": "",
+          "count": 150
+        }
+      ],
       "scientific_name": "Lophoictinia isura",
       "species_code": "sqtkit1"
     },
     "hieraaetus_morphnoides": {
-      "recent_count": 0,
-      "last_seen": null,
-      "top_locations": [],
-      "top_states": [],
-      "last_observer": null,
+      "recent_count": 229,
+      "last_seen": {
+        "date": "2026-05-13 15:38",
+        "location": "Greenhills Primary School, Greensborough AU-VIC -37.69203, 145.11837",
+        "state": null,
+        "lat": -37.692031,
+        "lng": 145.118366,
+        "count": 1
+      },
+      "top_locations": [
+        {
+          "location": "Dans Nature Reserve",
+          "count": 4
+        },
+        {
+          "location": "Woodlands Historic Park",
+          "count": 3
+        },
+        {
+          "location": "Auto selected -32.27058, 148.61798",
+          "count": 3
+        },
+        {
+          "location": "Western Treatment Plant--Geelong (restricted access)",
+          "count": 3
+        },
+        {
+          "location": "Serendip Sanctuary",
+          "count": 2
+        }
+      ],
+      "top_states": [
+        {
+          "state": "",
+          "count": 256
+        }
+      ],
       "scientific_name": "Hieraaetus morphnoides",
       "species_code": "liteag1"
     }

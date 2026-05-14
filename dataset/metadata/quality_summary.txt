@@ -1,5 +1,5 @@
-Quality filter run — 2026-05-13T17:05:03
-Detector: True · Dry run: True
+Quality filter run — 2026-05-13T20:05:16
+Detector: True · Dry run: False
 
 Total kept:     1992
 Total archived: 2978
