@@ -105,6 +105,9 @@
             <div class="confidence-badge" id="confidence">—%</div>
         </div>
 
+        <div class="confidence-banner" id="confidenceBanner"
+             style="display:none"></div>
+
         <div class="result-body">
             <div class="species-info">
                 <h3 style="color:var(--blue);margin-bottom:1rem">
@@ -168,14 +171,34 @@
 
             <div id="correctionPanel" style="display:none">
                 <p class="correction-label">🔍 {{ t('result.select_correct') }}</p>
-                <select id="correctSpeciesSelect" class="species-select">
+                <select id="correctSpeciesSelect" class="species-select"
+                        onchange="onCorrectionSelectChange()">
                     <option value="">-- {{ t('result.select_correct') }} --</option>
                     {% for key, info in species_info.items() %}
                     <option value="{{ key }}">
                         {{ info.common_name }} ({{ info.scientific_name }})
                     </option>
                     {% endfor %}
+                    <option value="other_not_listed">
+                        ⚠️ {{ t('result.feedback_not_in_8') }}
+                    </option>
                 </select>
+
+                <div id="otherSpeciesInput"
+                     class="other-species-input" style="display:none">
+                    <label class="other-species-label">
+                        {{ t('result.feedback_other_name_label') }}
+                    </label>
+                    <input type="text"
+                           id="otherSpeciesName"
+                           class="other-species-text"
+                           placeholder="{{ t('result.feedback_other_name_placeholder') }}"
+                           maxlength="120">
+                    <p class="other-species-hint">
+                        {{ t('result.feedback_other_name_hint') }}
+                    </p>
+                </div>
+
                 <div class="correction-actions">
                     <button class="btn-submit-correction" onclick="submitCorrection()">
                         {{ t('result.submit_correction') }}
@@ -410,6 +433,40 @@ function displayResults(result) {
     document.getElementById("diagnostic").textContent        = result.diagnostic;
     document.getElementById("auslanSign").textContent        = result.auslan_sign;
 
+    // Merlin Bird ID-style confidence banner.
+    //   ≥ 85 % top-1            → certain         (no banner)
+    //   70-85 %                  → probable
+    //   60-70 %  OR top1−top2<10 → uncertain
+    //   < 60 %                   → out-of-domain warning
+    const top1 = result.confidence;
+    const top2 = (result.top3 && result.top3[1])
+                  ? result.top3[1].confidence : 0;
+    const banner = document.getElementById("confidenceBanner");
+    if (banner) {
+        banner.classList.remove("conf-probable", "conf-uncertain",
+                                "conf-ood");
+        let label = "", cls = "", show = false;
+        if (top1 < 60) {
+            label = {{ t('result.conf_ood')|tojson }};
+            cls = "conf-ood"; show = true;
+        } else if (top1 < 70 || (top1 - top2) < 10) {
+            label = {{ t('result.conf_uncertain')|tojson }};
+            cls = "conf-uncertain"; show = true;
+        } else if (top1 < 85) {
+            label = {{ t('result.conf_probable')|tojson }};
+            cls = "conf-probable"; show = true;
+        }
+        if (show) {
+            banner.classList.add(cls);
+            banner.textContent = label
+                .replace("{species}", result.common_name)
+                .replace("{conf}",    top1.toFixed(1));
+            banner.style.display = "block";
+        } else {
+            banner.style.display = "none";
+        }
+    }
+
     const container  = document.getElementById("auslanContainer");
     const mediaPath  = `/auslan_videos/${result.auslan_video}`;
     const isSvg      = result.auslan_video.endsWith(".svg");
@@ -535,17 +592,35 @@ function cancelCorrection() {
     document.getElementById("feedbackPrompt").style.display  = "block";
 }
 
+function onCorrectionSelectChange() {
+    // Reveal the free-text input only for "other_not_listed".
+    const sel  = document.getElementById("correctSpeciesSelect").value;
+    const wrap = document.getElementById("otherSpeciesInput");
+    wrap.style.display = (sel === "other_not_listed") ? "block" : "none";
+}
+
 async function submitCorrection() {
     if (!currentPrediction) return;
     const select     = document.getElementById("correctSpeciesSelect");
     const correctKey = select.value;
     if (!correctKey) { alert("Please select the correct species."); return; }
 
+    // For out-of-domain reports, capture the free-text species name.
+    let correctName = SPECIES_NAMES[correctKey] || "";
+    if (correctKey === "other_not_listed") {
+        correctName = document.getElementById("otherSpeciesName")
+                              .value.trim();
+        if (!correctName) {
+            alert("Please type the species name you recognise.");
+            return;
+        }
+    }
+
     const data = {
         predicted_key:  currentPrediction.species_key,
         predicted_name: currentPrediction.common_name,
         correct_key:    correctKey,
-        correct_name:   SPECIES_NAMES[correctKey],
+        correct_name:   correctName,
         confidence:     currentPrediction.confidence
     };
 

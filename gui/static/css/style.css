@@ -1531,3 +1531,72 @@ body {
     .data-stats-grid { grid-template-columns: 1fr 1fr; }
     .export-cards { grid-template-columns: 1fr; }
 }
+/* ─── Confidence banner (Merlin-style uncertainty cue) ── */
+.confidence-banner {
+    margin: 0.4rem 2rem 0;
+    padding: 0.7rem 1rem;
+    border-radius: 8px;
+    font-size: 0.88rem;
+    font-weight: 500;
+    line-height: 1.4;
+    border-left: 4px solid;
+}
+
+.confidence-banner.conf-probable {
+    background: #FEF5E7;
+    color: #7E5109;
+    border-color: var(--orange);
+}
+
+.confidence-banner.conf-uncertain {
+    background: #FDEDEC;
+    color: #922B21;
+    border-color: #C0392B;
+}
+
+.confidence-banner.conf-ood {
+    background: #1B4F72;
+    color: white;
+    border-color: white;
+    font-weight: 600;
+}
+
+/* ─── Out-of-domain feedback input ─────────────────── */
+.other-species-input {
+    margin: 0.6rem 0;
+    padding: 0.8rem;
+    background: var(--light-grey);
+    border-left: 3px solid var(--orange);
+    border-radius: 6px;
+}
+
+.other-species-label {
+    display: block;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--dark);
+    margin-bottom: 0.3rem;
+}
+
+.other-species-text {
+    width: 100%;
+    padding: 0.5rem 0.7rem;
+    font-size: 0.95rem;
+    font-family: inherit;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    margin-bottom: 0.3rem;
+}
+
+.other-species-text:focus {
+    outline: none;
+    border-color: var(--teal);
+    box-shadow: 0 0 0 2px rgba(26,124,110,0.15);
+}
+
+.other-species-hint {
+    font-size: 0.75rem;
+    color: #777;
+    font-style: italic;
+    margin: 0;
+}

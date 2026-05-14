@@ -10,9 +10,46 @@ and the project adheres to [Semantic Versioning](https://semver.org/).
   videos produced with the Deaf community.
 - Spatial heatmap of saved observations.
 - Mobile-first responsive layout (PWA).
-- After running `filter_ala_quality.py --use-detector`, retrain
-  via `notebooks/retrain.py` to recover F1 on the Spotted Harrier
-  and Brown Goshawk classes that regressed in v1.2.
+- Periodic retrain to grow the model to a 9th "other / out-of-
+  domain" class trained on the accumulated `out_of_domain_log.csv`.
+
+## [1.3.0] — 2026-05-12
+
+### Added
+- **Out-of-domain feedback option** in the correction dropdown:
+  *"Other — not one of the 8 trained species"*. When picked, the
+  user types the species they actually recognise (free text). These
+  reports go to a separate `results/out_of_domain_log.csv` so they
+  do not contaminate the in-domain retraining set, and can later
+  drive an expansion of the class list.
+- **Merlin-style confidence banner** on identification results,
+  with four tiers:
+    * Almost certain (top-1 >= 85 %) — no banner
+    * Probable (70-85 %) — orange banner
+    * Uncertain (60-70 %, OR top-1 minus top-2 < 10 %) — red banner
+    * Low confidence / out-of-domain (< 60 %) — dark banner
+  Lets users know when the model is guessing instead of recognising,
+  which is critical for citizen-science integrity.
+- **`docs/SETUP.md`** — step-by-step Anaconda + Git guide for new
+  contributors and for the thesis appendix.
+- **`notebooks/fetch_ebird_data.py`** — pulls eBird observation
+  metadata (last 30 days per species) via a `.env`-based API key.
+- **`notebooks/download_ala_videos.py`** — fetches CC-licensed
+  behaviour videos from ALA into `gui/static/behavior_videos/`.
+- **`notebooks/restore_archived.py`** — restores images previously
+  moved to `dataset/raw_archive/` by the quality filter.
+
+### Changed
+- All 10 translation JSONs gained 7 new keys covering the
+  out-of-domain feedback + confidence-tier banners.
+- CI workflow now uses a Flask app context + i18n globals + the
+  `behavior_videos` mock so template rendering tests mirror
+  production. `CITATION.cff` regenerated to strip trailing NULL
+  bytes that caused the YAML validator to fail.
+
+### Fixed
+- `dataset/raw_archive/` added to `.gitignore` to prevent
+  re-tracking the quality-filter rejects.
 
 ### Added (tooling, not yet retrained)
 - **`notebooks/pick_hero_manual.py`** — interactive Tk GUI for

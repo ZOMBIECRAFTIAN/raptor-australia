@@ -49,7 +49,14 @@
     "thanks_incorrect": "🙏 Danke für die Korrektur! Das hilft, das Modell zu verbessern.",
     "select_correct": "Wählen Sie die richtige Art:",
     "submit_correction": "Korrektur senden",
-    "cancel": "Abbrechen"
+    "cancel": "Abbrechen",
+    "feedback_not_in_8": "Andere — nicht eine der 8 trainierten Arten",
+    "feedback_other_name_label": "Welche Art erkennst du?",
+    "feedback_other_name_placeholder": "z.B. Elanoides forficatus",
+    "feedback_other_name_hint": "Diese Meldungen werden separat protokolliert, damit das Modell in einem späteren Trainingszyklus um Out-of-Domain-Arten erweitert werden kann.",
+    "conf_probable": "Vermutlich {species} ({conf}%). Bestätige mit Feldmerkmalen vor dem Eintragen.",
+    "conf_uncertain": "Unsichere Identifizierung. Top-1: {species} ({conf}%), aber der zweite Kandidat ist nah — siehe Top-3 unten.",
+    "conf_ood": "⚠️ Geringe Konfidenz ({conf}%). Möglicherweise ein Jungvogel, ungewöhnlicher Winkel oder eine nicht trainierte Art."
   },
   "observation": {
     "save_title": "📍 Diese Beobachtung speichern",

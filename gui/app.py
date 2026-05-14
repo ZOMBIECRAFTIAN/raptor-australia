@@ -422,22 +422,32 @@ def save_feedback():
         data = request.get_json()
         if not data:
             return jsonify({"error": "No data received"}), 400
-        # Carpeta donde guardamos el registro
-        feedback_dir = (PROJECT_ROOT / "dataset" / "feedback"
-                        / data.get("correct_key", "unknown"))
-        feedback_dir.mkdir(parents=True, exist_ok=True)
-        # Guardar registro en CSV
-        feedback_file = PROJECT_ROOT / "results" / "feedback_log.csv"
-        file_exists   = feedback_file.exists()
+
+        correct_key = data.get("correct_key", "")
+        is_out_of_domain = (correct_key == "other_not_listed")
+
+        # Folder for retraining material — only for known classes.
+        if not is_out_of_domain and correct_key:
+            feedback_dir = (PROJECT_ROOT / "dataset" / "feedback"
+                            / correct_key)
+            feedback_dir.mkdir(parents=True, exist_ok=True)
+
+        # Out-of-domain corrections go to a separate audit log so they
+        # are not confused with in-domain retraining material.
+        if is_out_of_domain:
+            log_file = PROJECT_ROOT / "results" / "out_of_domain_log.csv"
+        else:
+            log_file = PROJECT_ROOT / "results" / "feedback_log.csv"
+        file_exists = log_file.exists()
+
         feedback_id = str(uuid.uuid4())[:8]
         timestamp   = datetime.now().isoformat()
-        with open(feedback_file, "a", newline="",
-                  encoding="utf-8") as f:
+        with open(log_file, "a", newline="", encoding="utf-8") as f:
             fieldnames = [
                 "feedback_id", "timestamp",
                 "predicted_key", "predicted_name",
                 "correct_key", "correct_name",
-                "confidence"
+                "confidence",
             ]
             writer = csv.DictWriter(f, fieldnames=fieldnames)
             if not file_exists:
@@ -447,14 +457,17 @@ def save_feedback():
                 "timestamp":      timestamp,
                 "predicted_key":  data.get("predicted_key", ""),
                 "predicted_name": data.get("predicted_name", ""),
-                "correct_key":    data.get("correct_key", ""),
+                "correct_key":    correct_key,
                 "correct_name":   data.get("correct_name", ""),
-                "confidence":     data.get("confidence", "")
+                "confidence":     data.get("confidence", ""),
             })
         return jsonify({
-            "status":      "saved",
-            "feedback_id": feedback_id,
-            "message":     "Correction saved successfully."
+            "status":           "saved",
+            "feedback_id":      feedback_id,
+            "out_of_domain":    is_out_of_domain,
+            "message":          ("Out-of-domain report saved." if
+                                  is_out_of_domain else
+                                  "Correction saved successfully."),
         })
     except Exception as e:
         # Siempre devolver JSON aunque haya error

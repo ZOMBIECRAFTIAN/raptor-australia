@@ -49,7 +49,14 @@
     "thanks_incorrect": "🙏 Merci de la correction ! Cela aide à améliorer le modèle.",
     "select_correct": "Sélectionnez la bonne espèce :",
     "submit_correction": "Envoyer la correction",
-    "cancel": "Annuler"
+    "cancel": "Annuler",
+    "feedback_not_in_8": "Autre — pas une des 8 espèces entraînées",
+    "feedback_other_name_label": "Quelle espèce reconnaissez-vous ?",
+    "feedback_other_name_placeholder": "ex. Elanoides forficatus",
+    "feedback_other_name_hint": "Ces signalements sont enregistrés séparément pour étendre le modèle à des espèces hors domaine dans un futur cycle d'entraînement.",
+    "conf_probable": "Probablement {species} ({conf}%). Confirmez avec des indices de terrain avant d'enregistrer.",
+    "conf_uncertain": "Identification incertaine. Premier choix : {species} ({conf}%), mais le second est proche — voir le Top-3 ci-dessous.",
+    "conf_ood": "⚠️ Confiance faible ({conf}%). Peut être un juvénile, un angle inhabituel ou une espèce hors des 8 entraînées."
   },
   "observation": {
     "save_title": "📍 Enregistrer cette observation",

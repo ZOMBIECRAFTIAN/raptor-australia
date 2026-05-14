@@ -49,7 +49,14 @@
     "thanks_incorrect": "🙏 Thank you for the correction! This helps improve the model.",
     "select_correct": "Select the correct species:",
     "submit_correction": "Submit Correction",
-    "cancel": "Cancel"
+    "cancel": "Cancel",
+    "feedback_not_in_8": "Other — not one of the 8 trained species",
+    "feedback_other_name_label": "What species do you recognise?",
+    "feedback_other_name_placeholder": "e.g. Elanoides forficatus",
+    "feedback_other_name_hint": "We log these reports separately so the model can be expanded with out-of-domain species in a future training cycle.",
+    "conf_probable": "Probably {species} ({conf}%). Confirm with field marks before recording.",
+    "conf_uncertain": "Uncertain identification. Top guess is {species} ({conf}%) but the second candidate is close — check the Top-3 below.",
+    "conf_ood": "⚠️ Low confidence ({conf}%). This bird may be a juvenile, an unusual angle, or a species not in the 8 trained classes."
   },
   "observation": {
     "save_title": "📍 Save this Observation",

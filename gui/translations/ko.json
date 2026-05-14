@@ -49,7 +49,14 @@
     "thanks_incorrect": "🙏 수정해 주셔서 감사합니다! 모델 개선에 도움이 됩니다.",
     "select_correct": "올바른 종을 선택하세요:",
     "submit_correction": "수정 제출",
-    "cancel": "취소"
+    "cancel": "취소",
+    "feedback_not_in_8": "기타 — 학습된 8종에 해당하지 않음",
+    "feedback_other_name_label": "어떤 종으로 인식했나요?",
+    "feedback_other_name_placeholder": "예: Elanoides forficatus",
+    "feedback_other_name_hint": "이러한 보고는 별도로 기록되며, 향후 학습 주기에서 도메인 외 종으로 모델을 확장하는 데 사용됩니다.",
+    "conf_probable": "아마도 {species} ({conf}%). 기록 전에 현장 특징으로 확인하세요.",
+    "conf_uncertain": "식별이 불확실합니다. 1순위는 {species} ({conf}%)이지만 2순위가 가깝습니다 — 아래 Top-3를 확인하세요.",
+    "conf_ood": "⚠️ 낮은 신뢰도 ({conf}%). 어린 개체, 비정형 각도, 또는 학습된 8종에 없는 종일 수 있습니다."
   },
   "observation": {
     "save_title": "📍 이 관찰 저장",

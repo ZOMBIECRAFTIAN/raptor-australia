@@ -49,7 +49,14 @@
     "thanks_incorrect": "🙏 修正ありがとうございます!モデル改善に役立ちます。",
     "select_correct": "正しい種を選択してください:",
     "submit_correction": "修正を送信",
-    "cancel": "キャンセル"
+    "cancel": "キャンセル",
+    "feedback_not_in_8": "その他 — 学習済み 8 種に該当しない",
+    "feedback_other_name_label": "あなたが認識した種は?",
+    "feedback_other_name_placeholder": "例 Elanoides forficatus",
+    "feedback_other_name_hint": "これらの報告は別個に記録し、将来の学習サイクルでモデルをドメイン外の種へ拡張するために利用します。",
+    "conf_probable": "おそらく {species} ({conf}%)。記録前にフィールド特徴で確認してください。",
+    "conf_uncertain": "識別が不確実です。最有力候補は {species} ({conf}%) ですが、第 2 候補も近いです — 下の Top-3 を確認してください。",
+    "conf_ood": "⚠️ 信頼度が低い ({conf}%)。若鳥、特異な角度、または学習済み 8 種に含まれない種の可能性があります。"
   },
   "observation": {
     "save_title": "📍 この観察を保存",

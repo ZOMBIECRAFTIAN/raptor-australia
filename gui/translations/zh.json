@@ -49,7 +49,14 @@
     "thanks_incorrect": "🙏 感谢您的更正!这有助于改进模型。",
     "select_correct": "请选择正确的物种:",
     "submit_correction": "提交更正",
-    "cancel": "取消"
+    "cancel": "取消",
+    "feedback_not_in_8": "其他 — 不属于已训练的 8 种",
+    "feedback_other_name_label": "你认出的是哪个物种?",
+    "feedback_other_name_placeholder": "例如 Elanoides forficatus",
+    "feedback_other_name_hint": "我们将这些报告单独记录,以便在未来训练周期中将模型扩展到域外物种。",
+    "conf_probable": "可能是 {species} ({conf}%)。记录前请用野外特征确认。",
+    "conf_uncertain": "识别不确定。首选 {species} ({conf}%),但第二候选很接近 — 请查看下方 Top-3。",
+    "conf_ood": "⚠️ 置信度低 ({conf}%)。可能是幼鸟、不寻常的角度,或不在已训练 8 种中的物种。"
   },
   "observation": {
     "save_title": "📍 保存此次观察",
