@@ -59,6 +59,8 @@ SPECIES_INFO = {
         "common_name":     "Wedge-tailed Eagle",
         "scientific_name": "Aquila audax",
         "class_idx":       0,
+
+        "family":          "Accipitridae",
         "epbc_status":     "Not listed (A. a. fleayi: Endangered)",
         "habitat":         "Open woodland, scrubland, grassland",
         "wingspan_cm":     "182-232 cm",
@@ -74,6 +76,8 @@ SPECIES_INFO = {
         "common_name":     "Peregrine Falcon",
         "scientific_name": "Falco peregrinus macropus",
         "class_idx":       1,
+
+        "family":          "Falconidae",
         "epbc_status":     "Not listed",
         "habitat":         "Cliffs, urban areas, coastlines",
         "wingspan_cm":     "74-120 cm",
@@ -89,6 +93,8 @@ SPECIES_INFO = {
         "common_name":     "Spotted Harrier",
         "scientific_name": "Circus assimilis",
         "class_idx":       2,
+
+        "family":          "Accipitridae",
         "epbc_status":     "Vulnerable (NSW)",
         "habitat":         "Grassland, scrubland, open farmland",
         "wingspan_cm":     "110-148 cm",
@@ -104,6 +110,8 @@ SPECIES_INFO = {
         "common_name":     "Brown Goshawk",
         "scientific_name": "Tachyspiza fasciata",
         "class_idx":       3,
+
+        "family":          "Accipitridae",
         "epbc_status":     "Not listed",
         "habitat":         "Dense forest, woodland",
         "wingspan_cm":     "75-95 cm",
@@ -119,6 +127,8 @@ SPECIES_INFO = {
         "common_name":     "Nankeen Kestrel",
         "scientific_name": "Falco cenchroides",
         "class_idx":       4,
+
+        "family":          "Falconidae",
         "epbc_status":     "Not listed",
         "habitat":         "Open habitats, grassland, farmland",
         "wingspan_cm":     "66-78 cm",
@@ -134,6 +144,8 @@ SPECIES_INFO = {
         "common_name":     "Black-shouldered Kite",
         "scientific_name": "Elanus axillaris",
         "class_idx":       5,
+
+        "family":          "Accipitridae",
         "epbc_status":     "Not listed",
         "habitat":         "Grassland, agricultural areas, "
                            "wetland edges",
@@ -150,6 +162,8 @@ SPECIES_INFO = {
         "common_name":     "Square-tailed Kite",
         "scientific_name": "Lophoictinia isura",
         "class_idx":       6,
+
+        "family":          "Accipitridae",
         "epbc_status":     "Vulnerable (EPBC Act)",
         "habitat":         "Mature eucalyptus forest, woodland",
         "wingspan_cm":     "120-145 cm",
@@ -165,6 +179,8 @@ SPECIES_INFO = {
         "common_name":     "Little Eagle",
         "scientific_name": "Hieraaetus morphnoides",
         "class_idx":       7,
+
+        "family":          "Accipitridae",
         "epbc_status":     "Not listed",
         "habitat":         "Open woodland, forest edges",
         "wingspan_cm":     "85-110 cm",

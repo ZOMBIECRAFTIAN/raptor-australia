@@ -376,9 +376,12 @@ Note that **bird images**, **the AUSLAN vocabulary**, and the
 
 ## Contact
 
-**Brian Fernández Báez** — Ingeniero Computer System graduate, Instituto Tecnológico
-de Veracruz (Mexico) · MPhil candidate, University of Queensland
-(application 2026).
+**Brian Fernández Báez** — Computer Systems Engineer
+(Ingeniero en Sistemas Computacionales, with a specialisation in
+Advanced Computational Concurrency), Instituto Tecnológico Nacional
+de México — Campus Veracruz. Independent researcher building deep
+learning + accessibility tools for biodiversity. MPhil candidate,
+University of Queensland (application 2026).
 
 For collaboration enquiries (especially Deaf community partners and
 Australian raptor researchers), please open an issue on this

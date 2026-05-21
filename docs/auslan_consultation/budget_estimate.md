@@ -8,7 +8,7 @@ rates. Adjust before any final submission to a funding body.
 | Item | Hours | Rate | Subtotal |
 |---|---|---|---|
 | Deaf consultant (sessions 1+2) | 3 | $80 | $240 |
-| AUSLAN-fluent biologist | 3 | $80 | $240 |
+| AUSLAN-fluent ornithology consultant | 3 | $80 | $240 |
 | AUSLAN interpreter (Phase A only if needed) | 3 | $90 | $270 |
 | Venue / coffee / printing | — | — | $80 |
 | **Phase A subtotal** | | | **$830** |

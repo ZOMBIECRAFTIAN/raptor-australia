@@ -10,7 +10,7 @@ and adapts the validation procedure used by Quinto-Pozos & Reynolds
 ## Phase A — Iterative refinement (2-3 sessions)
 
 **Participants:** 1 Deaf consultant fluent in AUSLAN, 1 hearing
-ornithologist or biology teacher fluent in AUSLAN, the project
+ornithology consultant fluent in AUSLAN, the project
 investigator.
 
 **Session 1 (90 min):**

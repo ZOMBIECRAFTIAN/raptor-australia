@@ -34,17 +34,17 @@ Research collaboration: AUSLAN vocabulary for Australian raptors
 ```
 Dear [Title and Name],
 
-My name is Brian Fernández Báez, a biologist applying to a Master
-of Philosophy at the University of Queensland. My MPhil project
-combines convolutional neural networks for raptor identification
-with the development of a specialised AUSLAN vocabulary for the
-eight raptor species of southeast Australia. The motivation comes
-from my undergraduate thesis in Mexico, where I built a parallel
-system using Mexican Sign Language (LSM) for the Veracruz raptor
-migration corridor — there are equivalent gaps in scientific
-vocabulary in both Australia and Mexico, and Australia is the
-project's natural next step given the Black Summer recovery
-context.
+My name is Brian Fernández Báez, a Computer Systems Engineer
+(Instituto Tecnológico Nacional de México — Campus Veracruz)
+applying to a Master of Philosophy at the University of
+Queensland. My MPhil project combines convolutional neural
+networks for raptor identification with the development of a
+specialised AUSLAN vocabulary for the raptor species of
+Australia. The motivation comes from prior independent work
+adapting deep-learning identification pipelines to biodiversity
+applications, with Australia as the focus given the Black Summer
+recovery context and the absence of accessible identification
+tools designed for the Deaf community.
 
 I am writing because I have prepared a draft of eight proposed
 signs (one per species), each derived from the diagnostic flight or

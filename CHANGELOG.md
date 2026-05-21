@@ -12,6 +12,32 @@ and the project adheres to [Semantic Versioning](https://semver.org/).
 - Mobile-first responsive layout (PWA).
 - Periodic retrain to grow the model to a 9th "other / out-of-
   domain" class trained on the accumulated `out_of_domain_log.csv`.
+- v2.0 — expansion to 14 species (Tier 2 raptors per
+  `docs/SPECIES_ROADMAP.md`).
+- Family-level head (Accipitridae vs Falconidae) before species
+  classification (now that `family` field is in `SPECIES_INFO`).
+
+## [1.3.1] — 2026-05-12
+
+### Added
+- **`docs/SPECIES_ROADMAP.md`** — formal expansion plan listing the
+  24 diurnal raptors of Australia in three tiers, with citation
+  sources, the v2.0 / v3.0 / v4.0 milestones, and how the plan maps
+  to a multi-year MPhil research programme.
+- **`family` field** added to every species in `SPECIES_INFO`
+  (Accipitridae or Falconidae). Prepares the codebase for a future
+  hierarchical family→species head and for the family-aware
+  identification UI.
+
+### Changed
+- Coherence audit: author's affiliation is now stated correctly as
+  **Computer Systems Engineer (Ingeniero en Sistemas Computacionales)
+  — Instituto Tecnológico Nacional de México, Campus Veracruz**
+  across `README.md`, `CITATION.cff`, and
+  `docs/auslan_consultation/`. The earlier "biologist" framing in
+  the consultation email template and budget has been replaced with
+  "ornithology consultant" where the role refers to an external
+  collaborator, and removed where it referred to the project author.
 
 ## [1.3.0] — 2026-05-12
 

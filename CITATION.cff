@@ -28,6 +28,11 @@ authors:
   - family-names: "Fernandez Baez"
     given-names: "Brian"
     affiliation: "Instituto Tecnologico Nacional de Mexico, Campus Veracruz"
+    orcid: ""
+    # Computer Systems Engineer with a specialisation in Advanced
+    # Computational Concurrency. Independent researcher applying
+    # deep-learning identification methods to Australian raptor
+    # biodiversity and inclusive science (AUSLAN).
 preferred-citation:
   type: software
   title: "Australian Raptor CNN + AUSLAN"
