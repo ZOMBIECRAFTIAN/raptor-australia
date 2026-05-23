@@ -17,6 +17,36 @@ and the project adheres to [Semantic Versioning](https://semver.org/).
 - Family-level head (Accipitridae vs Falconidae) before species
   classification (now that `family` field is in `SPECIES_INFO`).
 
+## [1.4.0] — 2026-05-12
+
+Inspired by methodology ported from the author's prior project
+`raptors-cnn` (Veracruz, México). Same author; legitimate transfer
+of own intellectual work.
+
+### Added
+- **`notebooks/gradcam.py`** — Grad-CAM interpretability tool
+  (Selvaraju et al. 2017). Generates a 3-panel figure per input:
+  original image, Grad-CAM heat-map overlay, top-3 confidence bars.
+  Supports all four architectures of the v2.0 comparison
+  (`--arch efficientnet_b4|resnet50|mobilenet_v3_large|convnext_tiny`).
+- **Multi-architecture training** in `notebooks/retrain.py`. New
+  `--arch` CLI argument and `build_model()` / `get_feature_layers()`
+  helpers. Each non-default architecture writes its own
+  `models/best_model_<arch>.pth` and `results/reporte_final_<arch>.json`
+  to enable the four-architecture comparison documented in Thesis
+  Chapter 3.4.
+- **`code` field** (2-3 letter codes WTE / PRF / SPH / BRG / NKK /
+  BSK / SQK / LIE) in `SPECIES_INFO`, aligned with HawkWatch
+  banding-code conventions and matching the author's Veracruz
+  catalogue codes (e.g. STK for Swallow-tailed Kite).
+- **`docs/CHAPTERS_OUTLINE.md`** — full thesis chapter scaffolding
+  (Chapters 1-5) for the MPhil submission, mirroring the Veracruz
+  thesis structure but adapted to the Australian scope.
+- **`docs/TAXONOMY_VERSIONING.md`** — formal audit log of every
+  taxonomic reclassification applied to the project
+  (Accipiter → Tachyspiza per IOC 2024; Aquila audax fleayi
+  subspecies handling) and the process for future updates.
+
 ## [1.3.1] — 2026-05-12
 
 ### Added

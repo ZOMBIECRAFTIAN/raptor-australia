@@ -24,8 +24,19 @@ Usage (from project root):
     python notebooks/retrain.py --epochs-stage1 5 --epochs-stage2 15
     python notebooks/retrain.py --batch-size 16     # if VRAM allows
 
+    # 4-architecture comparison for the thesis (run sequentially):
+    python notebooks/retrain.py --arch efficientnet_b4   --skip-preprocess
+    python notebooks/retrain.py --arch resnet50          --skip-preprocess
+    python notebooks/retrain.py --arch mobilenet_v3_large --skip-preprocess
+    python notebooks/retrain.py --arch convnext_tiny     --skip-preprocess
+
+Each architecture writes:
+    models/best_model_<arch>.pth                (or best_model.pth for b4)
+    results/reporte_final_<arch>.json           (or reporte_final.json   for b4)
+
 Tested with: Python 3.10, PyTorch 2.x, CUDA 11.8 on RTX 3060.
-Approx wall time: ~1.5–2 h on a single GPU for the 5k-image dataset.
+Approx wall time: ~1.5–2 h on a single GPU for the 5k-image dataset
+(per architecture; the 4-arch comparison takes one work day on GPU).
 """
 
 from __future__ import annotations
@@ -164,7 +175,7 @@ def preprocess_dataset() -> None:
 
 # ─── Stage 2: model + training ──────────────────────────
 class AustralianRaptorCNN(nn.Module):
-    """Mirrors the architecture used in gui/app.py."""
+    """EfficientNetB4 architecture used by the production GUI."""
 
     def __init__(self, num_classes: int = NUM_CLASSES,
                  dropout_rate: float = 0.4):
@@ -183,6 +194,70 @@ class AustralianRaptorCNN(nn.Module):
 
     def forward(self, x):
         return self.backbone(x)
+
+
+# ─── Multi-architecture builder (porting Veracruz pattern) ───
+def build_model(arch: str = "efficientnet_b4",
+                num_classes: int = NUM_CLASSES) -> nn.Module:
+    """
+    Builds one of four backbones for the 4-architecture comparison
+    described in the thesis Chapter 3.4. Mirrors the pattern of the
+    author's Veracruz project (raptors-cnn).
+
+    Supported:
+        efficientnet_b4   — production default (gui/app.py)
+        resnet50          — robust baseline
+        mobilenet_v3_large — edge / mobile reference
+        convnext_tiny     — state-of-the-art 2022 reference
+    """
+    arch = arch.lower()
+    if arch == "efficientnet_b4":
+        return AustralianRaptorCNN(num_classes)
+
+    if arch == "resnet50":
+        m = models.resnet50(
+            weights=models.ResNet50_Weights.IMAGENET1K_V2)
+        m.fc = nn.Sequential(
+            nn.Dropout(0.3),
+            nn.Linear(m.fc.in_features, num_classes),
+        )
+        return m
+
+    if arch == "mobilenet_v3_large":
+        m = models.mobilenet_v3_large(
+            weights=models.MobileNet_V3_Large_Weights.IMAGENET1K_V2)
+        m.classifier[-1] = nn.Linear(
+            m.classifier[-1].in_features, num_classes)
+        return m
+
+    if arch == "convnext_tiny":
+        m = models.convnext_tiny(
+            weights=models.ConvNeXt_Tiny_Weights.IMAGENET1K_V1)
+        m.classifier[-1] = nn.Linear(
+            m.classifier[-1].in_features, num_classes)
+        return m
+
+    raise ValueError(f"Unsupported architecture: {arch}")
+
+
+def get_feature_layers(model: nn.Module, arch: str) -> list:
+    """Returns the parameter list of backbone feature layers,
+    used by the two-stage training to freeze/unfreeze.
+    """
+    arch = arch.lower()
+    if arch == "efficientnet_b4":
+        return list(model.backbone.features.parameters())
+    if arch == "resnet50":
+        # Conv1 + bn1 + relu + maxpool + layer1-4
+        return (list(model.conv1.parameters()) +
+                list(model.bn1.parameters()) +
+                list(model.layer1.parameters()) +
+                list(model.layer2.parameters()) +
+                list(model.layer3.parameters()) +
+                list(model.layer4.parameters()))
+    if arch in ("mobilenet_v3_large", "convnext_tiny"):
+        return list(model.features.parameters())
+    raise ValueError(f"Unsupported architecture: {arch}")
 
 
 def make_loaders(batch_size: int):
@@ -253,8 +328,9 @@ def evaluate(model, loader, device, class_names):
 
 
 def train(epochs_s1: int, epochs_s2: int, batch_size: int,
-          lr_s1: float = 1e-3, lr_s2: float = 1e-4) -> None:
-    print("\n=== STAGE 2 — Training ===\n")
+          lr_s1: float = 1e-3, lr_s2: float = 1e-4,
+          arch: str = "efficientnet_b4") -> None:
+    print(f"\n=== STAGE 2 — Training ({arch}) ===\n")
     set_seed()
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     print(f"Device: {device}")
@@ -262,13 +338,17 @@ def train(epochs_s1: int, epochs_s2: int, batch_size: int,
     train_loader, val_loader, test_loader, train_ds = make_loaders(batch_size)
     class_names = train_ds.classes
 
-    model = AustralianRaptorCNN(NUM_CLASSES).to(device)
+    model = build_model(arch, NUM_CLASSES).to(device)
     weights = class_weight_tensor(train_ds, device)
     criterion = nn.CrossEntropyLoss(weight=weights, label_smoothing=0.05)
 
     history = {"epoch": [], "phase": [], "train_loss": [],
                "train_acc": [], "val_acc": [], "val_f1": []}
-    best_f1, best_path = 0.0, MODELS_DIR / "best_model.pth"
+    # Per-architecture checkpoint name so multiple runs don't overwrite
+    best_path = MODELS_DIR / (
+        "best_model.pth" if arch == "efficientnet_b4"
+        else f"best_model_{arch}.pth")
+    best_f1 = 0.0
 
     def run_epoch(epoch_idx, phase, loader, optimizer=None):
         is_train = optimizer is not None
@@ -291,7 +371,10 @@ def train(epochs_s1: int, epochs_s2: int, batch_size: int,
         return float(np.mean(losses)), correct / n
 
     # Stage 1 — frozen backbone, only train classifier head.
-    for p in model.backbone.features.parameters():
+    # Multi-arch aware: get_feature_layers() returns the parameter list
+    # of the backbone for the chosen architecture.
+    backbone_params = get_feature_layers(model, arch)
+    for p in backbone_params:
         p.requires_grad = False
     optim_s1 = optim.AdamW(
         [p for p in model.parameters() if p.requires_grad], lr=lr_s1)
@@ -318,9 +401,12 @@ def train(epochs_s1: int, epochs_s2: int, batch_size: int,
                 "class_order": class_names,
             }, best_path)
 
-    # Stage 2 — unfreeze last 20 layers, lower LR, full fine-tune.
-    print("\n  → Stage 2: unfreezing last 20 layers, lr={:.0e}".format(lr_s2))
-    feat_layers = list(model.backbone.features.parameters())
+    # Stage 2 — unfreeze last N layers, lower LR, full fine-tune.
+    # Multi-arch aware: use get_feature_layers() to find the right
+    # parameter list for each backbone.
+    print("\n  → Stage 2: unfreezing last 20 backbone layers, "
+          f"lr={lr_s2:.0e} ({arch})")
+    feat_layers = get_feature_layers(model, arch)
     for p in feat_layers[-20:]:
         p.requires_grad = True
     optim_s2 = optim.AdamW(
@@ -375,8 +461,23 @@ def train(epochs_s1: int, epochs_s2: int, batch_size: int,
                 "f1":        round(block["f1-score"], 4),
                 "support":   int(block["support"]),
             }
+    # Architecture-aware report. For the default (efficientnet_b4) the
+    # file is reporte_final.json — overwrites the GUI-served metrics.
+    # For other architectures, name it reporte_final_<arch>.json so
+    # the 4-architecture comparison run produces 4 separate reports.
+    arch_label = {
+        "efficientnet_b4":    "EfficientNetB4",
+        "resnet50":           "ResNet-50",
+        "mobilenet_v3_large": "MobileNetV3-Large",
+        "convnext_tiny":      "ConvNeXt-Tiny",
+    }.get(arch, arch)
+    report_filename = (
+        "reporte_final.json" if arch == "efficientnet_b4"
+        else f"reporte_final_{arch}.json")
+
     json.dump({
-        "modelo": "EfficientNetB4",
+        "modelo": arch_label,
+        "arch_key": arch,
         "dataset": "iNaturalist + ALA (post-expansion)",
         "total_test_images": sum(b["support"] for b in per_species.values()),
         "metricas_globales": {
@@ -390,11 +491,12 @@ def train(epochs_s1: int, epochs_s2: int, batch_size: int,
         },
         "por_especie": per_species,
         "training_config": {
+            "arch": arch,
             "epochs_s1": epochs_s1, "epochs_s2": epochs_s2,
             "batch_size": batch_size,
             "lr_s1": lr_s1, "lr_s2": lr_s2, "seed": SEED,
         },
-    }, open(RESULTS_DIR / "reporte_final.json", "w"), indent=2)
+    }, open(RESULTS_DIR / report_filename, "w"), indent=2)
 
     pd.DataFrame(test_metrics["report"]).T.to_csv(
         RESULTS_DIR / "test_report.csv")
@@ -462,6 +564,11 @@ def parse_args():
                                 formatter_class=argparse.RawDescriptionHelpFormatter)
     p.add_argument("--skip-preprocess", action="store_true",
                    help="Skip dataset re-split; use existing dataset/processed/")
+    p.add_argument("--arch", default="efficientnet_b4",
+                   choices=["efficientnet_b4", "resnet50",
+                            "mobilenet_v3_large", "convnext_tiny"],
+                   help="Backbone to train (default: efficientnet_b4). "
+                        "Run all four for the thesis comparison.")
     p.add_argument("--epochs-stage1", type=int, default=10)
     p.add_argument("--epochs-stage2", type=int, default=20)
     p.add_argument("--batch-size",    type=int, default=8,
@@ -480,7 +587,7 @@ def main():
     else:
         print("⊘ Skipping preprocessing (--skip-preprocess set).")
     train(args.epochs_stage1, args.epochs_stage2, args.batch_size,
-          args.lr_stage1, args.lr_stage2)
+          args.lr_stage1, args.lr_stage2, arch=args.arch)
     mins = (time.time() - started) / 60
     print(f"\n⏱  Total wall time: {mins:.1f} min")
 

@@ -61,6 +61,9 @@ SPECIES_INFO = {
         "class_idx":       0,
 
         "family":          "Accipitridae",
+
+
+        "code":            "WTE",
         "epbc_status":     "Not listed (A. a. fleayi: Endangered)",
         "habitat":         "Open woodland, scrubland, grassland",
         "wingspan_cm":     "182-232 cm",
@@ -78,6 +81,9 @@ SPECIES_INFO = {
         "class_idx":       1,
 
         "family":          "Falconidae",
+
+
+        "code":            "PRF",
         "epbc_status":     "Not listed",
         "habitat":         "Cliffs, urban areas, coastlines",
         "wingspan_cm":     "74-120 cm",
@@ -95,6 +101,9 @@ SPECIES_INFO = {
         "class_idx":       2,
 
         "family":          "Accipitridae",
+
+
+        "code":            "SPH",
         "epbc_status":     "Vulnerable (NSW)",
         "habitat":         "Grassland, scrubland, open farmland",
         "wingspan_cm":     "110-148 cm",
@@ -112,6 +121,9 @@ SPECIES_INFO = {
         "class_idx":       3,
 
         "family":          "Accipitridae",
+
+
+        "code":            "BRG",
         "epbc_status":     "Not listed",
         "habitat":         "Dense forest, woodland",
         "wingspan_cm":     "75-95 cm",
@@ -129,6 +141,9 @@ SPECIES_INFO = {
         "class_idx":       4,
 
         "family":          "Falconidae",
+
+
+        "code":            "NKK",
         "epbc_status":     "Not listed",
         "habitat":         "Open habitats, grassland, farmland",
         "wingspan_cm":     "66-78 cm",
@@ -146,6 +161,9 @@ SPECIES_INFO = {
         "class_idx":       5,
 
         "family":          "Accipitridae",
+
+
+        "code":            "BSK",
         "epbc_status":     "Not listed",
         "habitat":         "Grassland, agricultural areas, "
                            "wetland edges",
@@ -164,6 +182,9 @@ SPECIES_INFO = {
         "class_idx":       6,
 
         "family":          "Accipitridae",
+
+
+        "code":            "SQK",
         "epbc_status":     "Vulnerable (EPBC Act)",
         "habitat":         "Mature eucalyptus forest, woodland",
         "wingspan_cm":     "120-145 cm",
@@ -181,6 +202,9 @@ SPECIES_INFO = {
         "class_idx":       7,
 
         "family":          "Accipitridae",
+
+
+        "code":            "LIE",
         "epbc_status":     "Not listed",
         "habitat":         "Open woodland, forest edges",
         "wingspan_cm":     "85-110 cm",
