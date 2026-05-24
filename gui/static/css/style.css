@@ -1600,3 +1600,97 @@ body {
     font-style: italic;
     margin: 0;
 }
+
+/* ─── Taxonomy badge + family (v1.4) ─────────────────── */
+.species-taxonomy {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.2rem 0;
+}
+
+.species-code-badge {
+    display: inline-block;
+    color: white;
+    font-weight: 700;
+    font-size: 0.7rem;
+    letter-spacing: 0.08em;
+    padding: 0.18rem 0.55rem;
+    border-radius: 4px;
+    font-family: 'Consolas', 'Courier New', monospace;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.15);
+}
+
+.species-family {
+    font-style: italic;
+    font-size: 0.78rem;
+    color: #666;
+    letter-spacing: 0.02em;
+}
+
+/* ─── eBird live data block (v1.4.1) ───────────────── */
+.species-ebird {
+    margin-top: 0.7rem;
+    padding: 0.7rem 0.9rem;
+    background: linear-gradient(135deg, #fef9e7 0%, #fff5e0 100%);
+    border-left: 3px solid var(--orange);
+    border-radius: 8px;
+    font-size: 0.82rem;
+    color: #5C3A0F;
+}
+
+.species-ebird-label {
+    display: block;
+    font-weight: 700;
+    color: var(--orange);
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 0.3rem;
+}
+
+.species-ebird-stat {
+    font-size: 0.88rem;
+    color: var(--dark);
+}
+
+.species-ebird-stat strong {
+    font-size: 1.05rem;
+    color: var(--blue);
+    font-weight: 800;
+}
+
+.species-ebird-last {
+    margin-top: 0.25rem;
+    color: #555;
+    font-size: 0.78rem;
+}
+
+.species-ebird-last .ebird-date {
+    font-family: 'Consolas', monospace;
+    color: var(--blue);
+    font-weight: 600;
+}
+
+.species-ebird-hotspots {
+    margin-top: 0.4rem;
+    line-height: 1.6;
+}
+
+.species-ebird-hotspots .hotspots-title {
+    font-size: 0.72rem;
+    color: #777;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+
+.hotspot-chip {
+    display: inline-block;
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 0.12rem 0.55rem;
+    font-size: 0.72rem;
+    color: #555;
+    margin: 0.1rem 0.2rem 0.1rem 0;
+}

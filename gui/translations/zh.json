@@ -89,7 +89,11 @@
     "best_time_to_see": "最佳观察时间",
     "did_you_know": "💡 你知道吗",
     "behavior_video": "飞行与行为",
-    "no_behavior_video": "尚无行为视频 — 在此放置一个:"
+    "no_behavior_video": "尚无行为视频 — 在此放置一个:",
+    "ebird_label": "eBird 实时数据(过去 30 天)",
+    "ebird_sightings": "最近目击",
+    "ebird_last_seen": "最近一次见到",
+    "ebird_hotspots": "热门观察点"
   },
   "data": {
     "summary_title": "观察摘要",

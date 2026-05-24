@@ -81,6 +81,22 @@
 
             <div class="species-card-body">
 
+                {% if info.code or info.family %}
+                <div class="species-row species-taxonomy">
+                    {% if info.code %}
+                    <span class="species-code-badge"
+                          style="background: {{ info.color }}DD">
+                        {{ info.code }}
+                    </span>
+                    {% endif %}
+                    {% if info.family %}
+                    <span class="species-family">
+                        {{ info.family }}
+                    </span>
+                    {% endif %}
+                </div>
+                {% endif %}
+
                 <div class="species-row">
                     <span class="species-label">{{ t('result.epbc_status') }}</span>
                     <span class="species-value
@@ -244,6 +260,40 @@
                     <strong>{{ m.train_count or '—' }}</strong>
                     {{ t('species_guide.trained_on_suffix') }}
                 </div>
+
+                {% set eb = ebird.get(key) if ebird else None %}
+                {% if eb and eb.get('recent_count', 0) > 0 %}
+                <div class="species-ebird">
+                    <span class="species-ebird-label">
+                        📡 {{ t('species_guide.ebird_label') }}
+                    </span>
+                    <div class="species-ebird-stat">
+                        <strong>{{ eb.recent_count }}</strong>
+                        {{ t('species_guide.ebird_sightings') }}
+                    </div>
+                    {% if eb.last_seen and eb.last_seen.date %}
+                    <div class="species-ebird-last">
+                        {{ t('species_guide.ebird_last_seen') }}:
+                        <span class="ebird-date">{{ eb.last_seen.date[:10] }}</span>
+                        {% if eb.last_seen.location %}
+                          · <em>{{ eb.last_seen.location[:48] }}</em>
+                        {% endif %}
+                    </div>
+                    {% endif %}
+                    {% if eb.top_locations %}
+                    <div class="species-ebird-hotspots">
+                        <span class="hotspots-title">
+                            {{ t('species_guide.ebird_hotspots') }}:
+                        </span>
+                        {% for h in eb.top_locations[:3] %}
+                          <span class="hotspot-chip">
+                            {{ h.location[:30] }} ({{ h.count }})
+                          </span>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                </div>
+                {% endif %}
 
                 <a class="species-cta"
                    href="/?focus={{ key }}">

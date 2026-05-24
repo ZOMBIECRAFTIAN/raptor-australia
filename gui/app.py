@@ -607,18 +607,36 @@ def _load_species_metrics():
     return metrics
 
 
+def _load_ebird_enrichment() -> dict:
+    """
+    Loads ``results/ebird_enrichment.json`` if present. Returns
+    an empty dict on any error so the GUI degrades gracefully
+    when the eBird fetcher has not been run yet.
+    """
+    p = PROJECT_ROOT / "results" / "ebird_enrichment.json"
+    if not p.exists():
+        return {}
+    try:
+        with open(p, "r", encoding="utf-8") as f:
+            data = json.load(f)
+        return data.get("species", {})
+    except Exception as e:
+        print(f"[ebird] could not load enrichment: {e}")
+        return {}
+
+
 @app.route("/species")
 def species_list():
-    """Página de catálogo de especies con métricas + i18n."""
+    """Catálogo de especies — métricas + eBird + i18n."""
     lang     = get_locale()
     metrics  = _load_species_metrics()
     info_loc = _localized_species_info(lang)
-    # species_data has the same fields and serves as 'details' too.
     return render_template("species.html",
                            species_info=info_loc,
                            species_metrics=metrics,
                            species_details=info_loc,
-                           behavior_videos=_behavior_video_status())
+                           behavior_videos=_behavior_video_status(),
+                           ebird=_load_ebird_enrichment())
 
 
 # ─── Paso 8 — Exportación CSV / ALA ─────────────────────

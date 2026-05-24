@@ -89,7 +89,11 @@
     "best_time_to_see": "Meilleure période d'observation",
     "did_you_know": "💡 Le saviez-vous",
     "behavior_video": "Vol et comportement",
-    "no_behavior_video": "Pas encore de vidéo de comportement — placez-en une ici :"
+    "no_behavior_video": "Pas encore de vidéo de comportement — placez-en une ici :",
+    "ebird_label": "Données eBird en direct (30 derniers jours)",
+    "ebird_sightings": "observations récentes",
+    "ebird_last_seen": "Dernière observation",
+    "ebird_hotspots": "Principaux sites"
   },
   "data": {
     "summary_title": "Résumé des observations",

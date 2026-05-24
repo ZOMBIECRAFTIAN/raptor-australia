@@ -287,6 +287,63 @@ Per-class performance and learning curves are visualised in
 
 ---
 
+## Methodology depth (v1.4+)
+
+The project ships with several research-grade tools designed
+to be used directly in the MPhil thesis defence:
+
+### Multi-architecture comparison
+
+`notebooks/retrain.py` now supports four backbones via the
+`--arch` flag:
+
+```bash
+python notebooks/retrain.py --arch efficientnet_b4
+python notebooks/retrain.py --arch resnet50
+python notebooks/retrain.py --arch mobilenet_v3_large
+python notebooks/retrain.py --arch convnext_tiny
+```
+
+Each run writes its own `models/best_model_<arch>.pth` and
+`results/reporte_final_<arch>.json`, so running all four lets you
+populate the comparison table in Chapter 3.4 of the thesis.
+
+### Grad-CAM interpretability
+
+`notebooks/gradcam.py` produces the activation heat-map for a
+single image — verifies the model is attending to morphological
+features (wings, tail, body) rather than background. The
+companion `notebooks/gradcam_mosaic.py` runs Grad-CAM on one
+representative image per species and stitches a single 4×2 figure
+ready to drop into the thesis (`results/gradcam_mosaic.png`).
+
+```bash
+python notebooks/gradcam.py --image dataset/raw/aquila_audax/<file>.jpg
+python notebooks/gradcam_mosaic.py
+```
+
+### Thesis chapters scaffolding
+
+[`docs/CHAPTERS_OUTLINE.md`](docs/CHAPTERS_OUTLINE.md) — full
+five-chapter outline (Introduction, Theoretical Framework,
+Methodology, Results, Conclusions) ready for writing.
+
+### Taxonomy versioning
+
+[`docs/TAXONOMY_VERSIONING.md`](docs/TAXONOMY_VERSIONING.md) —
+formal audit log of every taxonomic reclassification applied
+(Accipiter → Tachyspiza per IOC 2024) and the process for future
+updates. Mirrors the equivalent file in the author's prior
+project (raptors-cnn, Veracruz, México).
+
+### Species roadmap
+
+[`docs/SPECIES_ROADMAP.md`](docs/SPECIES_ROADMAP.md) — three-tier
+plan to grow from the current 8 species to the full ~24 diurnal
+raptors of Australia (v2.0 / v3.0 / v4.0 milestones).
+
+---
+
 ## Re-deriving the catalogue hero images
 
 After downloading the Atlas of Living Australia images

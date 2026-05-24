@@ -17,6 +17,38 @@ and the project adheres to [Semantic Versioning](https://semver.org/).
 - Family-level head (Accipitridae vs Falconidae) before species
   classification (now that `family` field is in `SPECIES_INFO`).
 
+## [1.4.1] — 2026-05-12
+
+### Added
+- **eBird live-data block** on every species card. Shows the
+  recent-30-day sighting count, last-seen date + location, and
+  top hotspots from `results/ebird_enrichment.json`. Loads via a
+  new `_load_ebird_enrichment()` helper in `app.py`; degrades
+  gracefully when the JSON is absent. Provides citizen-science
+  context the CNN cannot, by itself, capture.
+- **Taxonomy + family badges** rendered on each card (two-three
+  letter `code` in the species colour + `family` italic). Wires
+  up the v1.3.1 data fields into the UI.
+- **`notebooks/gradcam_mosaic.py`** — single-figure 4×2 mosaic
+  of Grad-CAM heat-maps for the eight species, presentation-
+  ready for the thesis Chapter 4. Uses one representative image
+  per species deterministically (median file-size pick).
+- **`notebooks/healthcheck.py`** — single-command project smoke
+  test: validates Python syntax, JSON, required files,
+  translation coverage, template render and YAML. Exits with
+  code 0 on success, non-zero on first failure. Designed for
+  use immediately before pushing a release or running a defence
+  demo.
+
+### Changed
+- All 10 translation JSONs gained 4 new keys for the eBird block
+  (`ebird_label`, `ebird_sightings`, `ebird_last_seen`,
+  `ebird_hotspots`).
+- `README.md` now references the v1.4-era tooling
+  (`docs/CHAPTERS_OUTLINE.md`, `docs/TAXONOMY_VERSIONING.md`,
+  `docs/SPECIES_ROADMAP.md`, multi-architecture training,
+  Grad-CAM interpretability).
+
 ## [1.4.0] — 2026-05-12
 
 Inspired by methodology ported from the author's prior project
