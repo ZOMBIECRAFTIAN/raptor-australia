@@ -21,7 +21,6 @@ https://arxiv.org/abs/1610.02391).
 
 Usage (from project root, with raptor_env active):
     python notebooks/gradcam.py --image C:\\path\\to\\photo.jpg
-    python notebooks/gradcam.py --image foo.jpg --arch efficientnet_b4
     python notebooks/gradcam.py --image foo.jpg --class-idx 3
 
 Output saved to results/gradcam_<image_stem>.png by default.
@@ -60,17 +59,18 @@ RESULTS_DIR.mkdir(parents=True, exist_ok=True)
 INPUT_SIZE   = 380
 IMAGENET_MEAN = [0.485, 0.456, 0.406]
 IMAGENET_STD  = [0.229, 0.224, 0.225]
-NUM_CLASSES  = 8
+NUM_CLASSES = 8
+PRIMARY_ARCH = "efficientnet_b4"
 
 SPECIES_LABELS = [
-    "Wedge-tailed Eagle",      # aquila_audax
-    "Spotted Harrier",         # circus_assimilis
-    "Black-shouldered Kite",   # elanus_axillaris
-    "Nankeen Kestrel",         # falco_cenchroides
-    "Peregrine Falcon",        # falco_peregrinus
-    "Little Eagle",            # hieraaetus_morphnoides
-    "Square-tailed Kite",      # lophoictinia_isura
-    "Brown Goshawk",           # tachyspiza_fasciata
+    "Wedge-tailed Eagle",       # aquila_audax
+    "Spotted Harrier",          # circus_assimilis
+    "Black-shouldered Kite",    # elanus_axillaris
+    "Nankeen Kestrel",          # falco_cenchroides
+    "Peregrine Falcon",         # falco_peregrinus
+    "Little Eagle",             # hieraaetus_morphnoides
+    "Square-tailed Kite",       # lophoictinia_isura
+    "Brown Goshawk",            # tachyspiza_fasciata
 ]
 
 
@@ -95,38 +95,20 @@ class AustralianRaptorCNN(nn.Module):
 
 def build_model(arch: str = "efficientnet_b4",
                 num_classes: int = NUM_CLASSES) -> nn.Module:
-    """Multi-architecture builder, matching the future v2.0 plan."""
+    """Build the single v1.5 classifier architecture."""
     arch = arch.lower()
-    if arch == "efficientnet_b4":
+    if arch == PRIMARY_ARCH:
         return AustralianRaptorCNN(num_classes)
-    if arch == "resnet50":
-        m = models.resnet50(weights=None)
-        m.fc = nn.Sequential(nn.Dropout(0.3),
-                             nn.Linear(m.fc.in_features, num_classes))
-        return m
-    if arch == "mobilenet_v3_large":
-        m = models.mobilenet_v3_large(weights=None)
-        m.classifier[-1] = nn.Linear(
-            m.classifier[-1].in_features, num_classes)
-        return m
-    if arch == "convnext_tiny":
-        m = models.convnext_tiny(weights=None)
-        m.classifier[-1] = nn.Linear(
-            m.classifier[-1].in_features, num_classes)
-        return m
-    raise ValueError(f"Unsupported architecture: {arch}")
+    raise ValueError(f"Unsupported classifier architecture: {arch}")
 
 
 def get_target_layer(model: nn.Module, arch: str) -> nn.Module:
     """Returns the last convolutional block for each backbone."""
     arch = arch.lower()
-    if arch == "efficientnet_b4":
+    if arch == PRIMARY_ARCH:
         # AustralianRaptorCNN wraps the EfficientNet under .backbone
         return model.backbone.features[-1]
-    if arch == "resnet50":           return model.layer4[-1]
-    if arch == "mobilenet_v3_large": return model.features[-1]
-    if arch == "convnext_tiny":      return model.features[-1]
-    raise ValueError(f"Unsupported architecture: {arch}")
+    raise ValueError(f"Unsupported classifier architecture: {arch}")
 
 
 # ─── Grad-CAM core ──────────────────────────────────────
@@ -208,7 +190,7 @@ def render(image_path: Path, cam: np.ndarray, pred_idx: int,
     fig.tight_layout()
     fig.savefig(out_path, dpi=140, bbox_inches="tight")
     plt.close(fig)
-    print(f"  ✓ Saved {out_path}")
+    print(f"  Saved {out_path}")
 
 
 # ─── CLI ────────────────────────────────────────────────
@@ -217,9 +199,8 @@ def parse_args():
                                 formatter_class=argparse.RawDescriptionHelpFormatter)
     p.add_argument("--image", required=True,
                    help="Path to the JPG/PNG to analyse")
-    p.add_argument("--arch", default="efficientnet_b4",
-                   choices=["efficientnet_b4", "resnet50",
-                            "mobilenet_v3_large", "convnext_tiny"])
+    p.add_argument("--arch", default=PRIMARY_ARCH,
+                   choices=[PRIMARY_ARCH])
     p.add_argument("--weights", default=str(MODEL_PATH),
                    help="Path to .pth checkpoint (default: models/best_model.pth)")
     p.add_argument("--class-idx", type=int, default=None,
@@ -238,7 +219,7 @@ def main() -> None:
 
     model = build_model(args.arch).to(device)
 
-    ck = torch.load(args.weights, map_location=device)
+    ck = torch.load(args.weights, map_location=device, weights_only=True)
     if isinstance(ck, dict) and "model_state_dict" in ck:
         model.load_state_dict(ck["model_state_dict"])
     else:

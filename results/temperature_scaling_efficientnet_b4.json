@@ -1,0 +1,13 @@
+{
+  "arch": "efficientnet_b4",
+  "temperature": 0.6934510469436646,
+  "ece_before": 0.059212040553972584,
+  "ece_after": 0.05294511937400672,
+  "nll_before": 0.5106908082962036,
+  "nll_after": 0.5117520093917847,
+  "nll_delta": 0.0010612010955810547,
+  "ece_reduction_factor": 1.118366362264594,
+  "accuracy_before": 0.8495145631067961,
+  "accuracy_after": 0.8495145631067961,
+  "note": "Temperature scaling preserves the top-1 argmax by construction; any acc difference is numerical."
+}

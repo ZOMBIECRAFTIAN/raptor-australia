@@ -61,14 +61,20 @@ SLEEP      = 0.6                       # ~1.5 req/s — polite
 # Scientific names → eBird taxonomy lookup target
 # (eBird species codes are resolved at runtime via /ref/taxonomy)
 SPECIES_SCI = {
-    "aquila_audax":           "Aquila audax",
-    "falco_peregrinus":       "Falco peregrinus",
-    "circus_assimilis":       "Circus assimilis",
-    "tachyspiza_fasciata":    "Accipiter fasciatus",   # eBird still uses old genus
-    "falco_cenchroides":      "Falco cenchroides",
-    "elanus_axillaris":       "Elanus axillaris",
-    "lophoictinia_isura":     "Lophoictinia isura",
-    "hieraaetus_morphnoides": "Hieraaetus morphnoides",
+    "aquila_audax":               "Aquila audax",
+    "circus_assimilis":           "Circus assimilis",
+    "elanus_axillaris":           "Elanus axillaris",
+    "falco_berigora":             "Falco berigora",
+    "falco_cenchroides":          "Falco cenchroides",
+    "falco_peregrinus":           "Falco peregrinus",
+    "haliaeetus_leucogaster":     "Haliaeetus leucogaster",
+    "haliastur_indus":            "Haliastur indus",
+    "haliastur_sphenurus":        "Haliastur sphenurus",
+    "hieraaetus_morphnoides":     "Hieraaetus morphnoides",
+    "lophoictinia_isura":         "Lophoictinia isura",
+    "milvus_migrans":             "Milvus migrans",
+    "tachyspiza_fasciata":        "Accipiter fasciatus",
+    "tachyspiza_novaehollandiae": "Accipiter novaehollandiae",
 }
 
 

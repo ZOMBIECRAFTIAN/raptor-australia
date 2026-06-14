@@ -6,16 +6,21 @@ __pycache__/
 *.egg
 *.egg-info/
 .pytest_cache/
+results/pytest-basetemp/
+results/pytest-temp/
 .mypy_cache/
 
 # ─── Virtual environments ──────────────────────────────
 .venv/
+.venv-modern/
 venv/
 env/
 raptor_env/
 ENV/
 env.bak/
 venv.bak/
+.tmp-pip/
+.pip-cache/
 
 # ─── Jupyter ───────────────────────────────────────────
 .ipynb_checkpoints/
@@ -35,8 +40,8 @@ Thumbs.db
 *.pem
 
 # ─── Project-specific: large datasets ──────────────────
-# Raw image dataset (re-downloadable via notebooks/download_ala_images.py
-# and the original iNaturalist scraper in 01_download_dataset.ipynb)
+# Raw image dataset (re-downloadable via notebooks/download_ala_images.py;
+# rebuild processed splits with notebooks/retrain.py)
 dataset/raw/
 dataset/processed/
 dataset/feedback/
@@ -44,7 +49,7 @@ dataset/raw_archive/        # quality-filter rejects — re-derivable
 
 # ─── Project-specific: model weights ───────────────────
 # .pth/.pt files exceed GitHub's 100 MB per-file limit.
-# Train via 03_training.ipynb to reproduce best_model.pth.
+# Train via notebooks/retrain.py to reproduce best_model.pth.
 models/*.pth
 models/*.pt
 models/checkpoints/
@@ -55,8 +60,7 @@ results/observations.csv
 results/feedback_log.csv
 
 # ─── Project-specific: regeneratable artefacts ─────────
-# Hero candidate contact sheets and scoring tables are produced by
-# notebooks/pick_hero_images.py — no need to version-control them.
+# Legacy hero candidate artifacts are not part of the v1.5 release.
 results/hero_candidates_*.jpg
 results/hero_scores.csv
 
@@ -64,5 +68,13 @@ results/hero_scores.csv
 gui/uploads/
 !gui/uploads/.gitkeep
 
-# ─── Conversation export (workspace artefact, not code) ─
+# ─── Conversation exports & assistant scratch files ────
+# Any *_chat_export.md or stray text dumps from AI-assisted
+# work belong in the local workspace, never in version control.
 raptor_chat_export.md
+*_chat_export.md
+chat_export*.md
+# Empty/garbage zero-byte files (eg. accidental "python" file
+# created by shell mishaps)
+python
+node

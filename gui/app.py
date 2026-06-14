@@ -7,10 +7,6 @@ y módulo de vocabulario AUSLAN.
 import os
 import json
 import uuid
-import torch
-import torch.nn as nn
-import torchvision.transforms as transforms
-from torchvision import models
 from flask import (Flask, render_template, request,
                    jsonify, send_from_directory, Response,
                    redirect, url_for, make_response)
@@ -23,12 +19,33 @@ from species_data_i18n import get_species_data, SPECIES_I18N
 # Internationalisation: 10-language UI + species data
 from i18n import (load_translations, t, get_locale,
                   get_languages, COOKIE_NAME, LANGUAGES)
+from yolo_detector import YoloBirdDetector, YoloUnavailable
 
 from PIL import Image
 from pathlib import Path
 import numpy as np
 from datetime import datetime
 import csv
+
+LIGHTWEIGHT_MODE = os.environ.get("RAPTOR_LIGHTWEIGHT", "").lower() in {
+    "1", "true", "yes"
+}
+
+try:
+    import torch
+    import torch.nn as nn
+    import torchvision.transforms as transforms
+    from torchvision import models
+except Exception as exc:  # pragma: no cover - exercised in lightweight CI
+    if not LIGHTWEIGHT_MODE:
+        raise
+    torch = None
+    nn = None
+    transforms = None
+    models = None
+    TORCH_IMPORT_ERROR = exc
+else:
+    TORCH_IMPORT_ERROR = None
 
 # ─── Configuración ────────────────────────────────────
 BASE_DIR     = Path(__file__).parent
@@ -50,8 +67,8 @@ app.jinja_env.globals.update(
 )
 
 # ─── Dispositivo ──────────────────────────────────────
-device = torch.device("cuda" if torch.cuda.is_available()
-                      else "cpu")
+device = (torch.device("cuda" if torch.cuda.is_available() else "cpu")
+          if torch is not None else None)
 
 # ─── Información de especies ──────────────────────────
 SPECIES_INFO = {
@@ -73,12 +90,12 @@ SPECIES_INFO = {
         "auslan_sign":     "Both hands in inverted V, "
                            "extend downward with wide amplitude",
         "auslan_video":    "aquila_audax.svg",
-        "color":           "#2C3E50"
+        "color":           "#2C3E50",
     },
     "falco_peregrinus": {
         "common_name":     "Peregrine Falcon",
         "scientific_name": "Falco peregrinus macropus",
-        "class_idx":       1,
+        "class_idx":       5,
 
         "family":          "Falconidae",
 
@@ -93,12 +110,12 @@ SPECIES_INFO = {
         "auslan_sign":     "Dominant hand index finger, "
                            "rapid vertical dive downward",
         "auslan_video":    "falco_peregrinus.svg",
-        "color":           "#8E44AD"
+        "color":           "#8E44AD",
     },
     "circus_assimilis": {
         "common_name":     "Spotted Harrier",
         "scientific_name": "Circus assimilis",
-        "class_idx":       2,
+        "class_idx":       1,
 
         "family":          "Accipitridae",
 
@@ -113,12 +130,12 @@ SPECIES_INFO = {
         "auslan_sign":     "Both flat hands, lateral oscillating "
                            "glide at low height",
         "auslan_video":    "circus_assimilis.svg",
-        "color":           "#27AE60"
+        "color":           "#27AE60",
     },
     "tachyspiza_fasciata": {
         "common_name":     "Brown Goshawk",
         "scientific_name": "Tachyspiza fasciata",
-        "class_idx":       3,
+        "class_idx":       12,
 
         "family":          "Accipitridae",
 
@@ -133,7 +150,7 @@ SPECIES_INFO = {
         "auslan_sign":     "Curved hand, rapid zigzag movement "
                            "between trees",
         "auslan_video":    "tachyspiza_fasciata.svg",
-        "color":           "#D35400"
+        "color":           "#D35400",
     },
     "falco_cenchroides": {
         "common_name":     "Nankeen Kestrel",
@@ -153,12 +170,12 @@ SPECIES_INFO = {
         "auslan_sign":     "Open hand, stationary vibration "
                            "(hovering motion)",
         "auslan_video":    "falco_cenchroides.svg",
-        "color":           "#E67E22"
+        "color":           "#E67E22",
     },
     "elanus_axillaris": {
         "common_name":     "Black-shouldered Kite",
         "scientific_name": "Elanus axillaris",
-        "class_idx":       5,
+        "class_idx":       2,
 
         "family":          "Accipitridae",
 
@@ -174,12 +191,12 @@ SPECIES_INFO = {
         "auslan_sign":     "Both hands in H, hover then "
                            "short descent",
         "auslan_video":    "elanus_axillaris.svg",
-        "color":           "#2980B9"
+        "color":           "#2980B9",
     },
     "lophoictinia_isura": {
         "common_name":     "Square-tailed Kite",
         "scientific_name": "Lophoictinia isura",
-        "class_idx":       6,
+        "class_idx":       10,
 
         "family":          "Accipitridae",
 
@@ -194,12 +211,12 @@ SPECIES_INFO = {
         "auslan_sign":     "Flat hand, slow glide with "
                            "square tail demarcated",
         "auslan_video":    "lophoictinia_isura.svg",
-        "color":           "#16A085"
+        "color":           "#16A085",
     },
     "hieraaetus_morphnoides": {
         "common_name":     "Little Eagle",
         "scientific_name": "Hieraaetus morphnoides",
-        "class_idx":       7,
+        "class_idx":       9,
 
         "family":          "Accipitridae",
 
@@ -215,11 +232,121 @@ SPECIES_INFO = {
         "auslan_sign":     "Compact hand, small active "
                            "movement (small size + broad wings)",
         "auslan_video":    "hieraaetus_morphnoides.svg",
-        "color":           "#C0392B"
-    }
+        "color":           "#C0392B",
+    },
+    "falco_berigora": {
+        "common_name":     "Brown Falcon",
+        "scientific_name":     "Falco berigora",
+        "class_idx":       3,
+
+        "family":          "Falconidae",
+
+
+        "code":            "BRF",
+        "epbc_status":     "Not listed",
+        "habitat":     "Open habitats, agricultural land, semi-arid woodland",
+        "wingspan_cm":     "88-110 cm",
+        "length_cm":     "41-51 cm",
+        "diagnostic":     "Variable plumage (light to dark morphs), broad rounded wings, slow flapping flight",
+        "auslan_sign":     "Open hand, slow broad flap with occasional glide",
+        "auslan_video":     "falco_berigora.svg",
+        "color":     "#7E5109",
+    },
+    "haliaeetus_leucogaster": {
+        "common_name":     "White-bellied Sea-Eagle",
+        "scientific_name":     "Haliaeetus leucogaster",
+        "class_idx":       6,
+
+        "family":          "Accipitridae",
+
+
+        "code":            "WBE",
+        "epbc_status":     "Vulnerable (NSW, VIC, SA, TAS)",
+        "habitat":     "Coastal cliffs, estuaries, large inland lakes, rivers",
+        "wingspan_cm":     "178-220 cm",
+        "length_cm":     "75-85 cm",
+        "diagnostic":     "Adult with white head/underparts and grey back, dark flight feathers, short wedge-shaped tail",
+        "auslan_sign":     "Both hands flat horizontal, slow gliding extension outward",
+        "auslan_video":     "haliaeetus_leucogaster.svg",
+        "color":     "#154360",
+    },
+    "haliastur_indus": {
+        "common_name":     "Brahminy Kite",
+        "scientific_name":     "Haliastur indus",
+        "class_idx":       7,
+
+        "family":          "Accipitridae",
+
+
+        "code":            "BHK",
+        "epbc_status":     "Not listed",
+        "habitat":     "Coastal mangroves, estuaries, tropical wetlands",
+        "wingspan_cm":     "110-125 cm",
+        "length_cm":     "44-52 cm",
+        "diagnostic":     "Striking white head and chest contrasting with chestnut body, soars on flat or slightly arched wings",
+        "auslan_sign":     "Dominant hand, smooth horizontal glide with subtle banking",
+        "auslan_video":     "haliastur_indus.svg",
+        "color":     "#B7660D",
+    },
+    "haliastur_sphenurus": {
+        "common_name":     "Whistling Kite",
+        "scientific_name":     "Haliastur sphenurus",
+        "class_idx":       8,
+
+        "family":          "Accipitridae",
+
+
+        "code":            "WHK",
+        "epbc_status":     "Not listed",
+        "habitat":     "Open country, wetlands, woodland near water; widespread",
+        "wingspan_cm":     "120-146 cm",
+        "length_cm":     "50-60 cm",
+        "diagnostic":     "Pale buff head, long rounded tail with diagnostic 'M' wing pattern from below, frequent whistling call",
+        "auslan_sign":     "Flat hand horizontal, smooth gliding sweep with audible-like accent",
+        "auslan_video":     "haliastur_sphenurus.svg",
+        "color":     "#B7950B",
+    },
+    "milvus_migrans": {
+        "common_name":     "Black Kite",
+        "scientific_name":     "Milvus migrans",
+        "class_idx":       11,
+
+        "family":          "Accipitridae",
+
+
+        "code":            "BLK",
+        "epbc_status":     "Not listed",
+        "habitat":     "Open country, edges of bushfires, rubbish tips, agricultural land",
+        "wingspan_cm":     "140-160 cm",
+        "length_cm":     "50-60 cm",
+        "diagnostic":     "Distinctively forked tail, dark plumage, often seen in flocks over fires",
+        "auslan_sign":     "Dominant hand with V-fingers for forked tail, soaring motion",
+        "auslan_video":     "milvus_migrans.svg",
+        "color":     "#6C3483",
+    },
+    "tachyspiza_novaehollandiae": {
+        "common_name":     "Grey Goshawk",
+        "scientific_name":     "Tachyspiza novaehollandiae",
+        "class_idx":       13,
+
+        "family":          "Accipitridae",
+
+
+        "code":            "GRG",
+        "epbc_status":     "Vulnerable (TAS, VIC)",
+        "habitat":     "Rainforest, eucalyptus forest, riparian woodland",
+        "wingspan_cm":     "75-105 cm",
+        "length_cm":     "40-55 cm",
+        "diagnostic":     "Two morphs: pure white form (unique to Australia) and grey form, red iris, yellow legs",
+        "auslan_sign":     "Curved hand, swift turning movement through dense canopy",
+        "auslan_video":     "tachyspiza_novaehollandiae.svg",
+        "color":     "#7B7D7D",
+    },
 }
 
-# Orden de clases según ImageFolder (alfabético)
+# Orden de clases v1.5 según ImageFolder (alfabético).
+# Las especies Tier-2 permanecen en SPECIES_INFO como roadmap, pero
+# no se exponen en inferencia hasta que exista un checkpoint v2.0.
 CLASS_ORDER = [
     "aquila_audax",
     "circus_assimilis",
@@ -228,43 +355,90 @@ CLASS_ORDER = [
     "falco_peregrinus",
     "hieraaetus_morphnoides",
     "lophoictinia_isura",
-    "tachyspiza_fasciata"
+    "tachyspiza_fasciata",
+]
+NUM_CLASSES = len(CLASS_ORDER)
+MODEL_VERSION = "v1.5"
+MODEL_F1_MACRO = "0.8482"
+CALIBRATION_TEMPERATURE = 0.6934510469436646
+LOW_CONFIDENCE_THRESHOLD = 50.0
+AMBIGUOUS_TOP2_MARGIN = 10.0
+YOLO_CROP_POLICY = os.environ.get("RAPTOR_YOLO_CROP_POLICY",
+                                  "adaptive").lower()
+YOLO_CROP_CONFIDENCE_GAIN = 10.0
+ROADMAP_CLASS_ORDER = [
+    "falco_berigora",
+    "haliaeetus_leucogaster",
+    "haliastur_indus",
+    "haliastur_sphenurus",
+    "milvus_migrans",
+    "tachyspiza_novaehollandiae",
 ]
 
-# ─── Modelo ───────────────────────────────────────────
-class AustralianRaptorCNN(nn.Module):
-    def __init__(self, num_classes=8, dropout_rate=0.4):
-        super(AustralianRaptorCNN, self).__init__()
-        self.backbone = models.efficientnet_b4(weights=None)
-        num_features  = self.backbone.classifier[1].in_features
-        self.backbone.classifier = nn.Sequential(
-            nn.Dropout(p=dropout_rate, inplace=True),
-            nn.Linear(num_features, 512),
-            nn.ReLU(),
-            nn.Dropout(p=dropout_rate / 2),
-            nn.Linear(512, num_classes)
-        )
+for _idx, _key in enumerate(CLASS_ORDER):
+    SPECIES_INFO[_key]["class_idx"] = _idx
 
-    def forward(self, x):
-        return self.backbone(x)
+
+def _active_species_info() -> dict:
+    """Species exposed by the currently validated checkpoint."""
+    return {key: SPECIES_INFO[key] for key in CLASS_ORDER}
+
+# ─── Modelo ───────────────────────────────────────────
+if nn is not None:
+    class AustralianRaptorCNN(nn.Module):
+        def __init__(self, num_classes=NUM_CLASSES, dropout_rate=0.4):
+            super(AustralianRaptorCNN, self).__init__()
+            self.backbone = models.efficientnet_b4(weights=None)
+            num_features  = self.backbone.classifier[1].in_features
+            self.backbone.classifier = nn.Sequential(
+                nn.Dropout(p=dropout_rate, inplace=True),
+                nn.Linear(num_features, 512),
+                nn.ReLU(),
+                nn.Dropout(p=dropout_rate / 2),
+                nn.Linear(512, num_classes)
+            )
+
+        def forward(self, x):
+            return self.backbone(x)
+else:
+    class AustralianRaptorCNN:  # pragma: no cover - lightweight CI only
+        def __init__(self, *_, **__):
+            raise RuntimeError(
+                "PyTorch is not available. Set RAPTOR_LIGHTWEIGHT=0 "
+                "and install requirements.txt for model inference."
+            )
 
 
 def load_model():
     """Carga el modelo entrenado una sola vez al iniciar."""
-    model = AustralianRaptorCNN(num_classes=8).to(device)
-    checkpoint = torch.load(MODEL_PATH, map_location=device)
+    if torch is None:
+        raise RuntimeError(f"PyTorch import failed: {TORCH_IMPORT_ERROR}")
+    if not MODEL_PATH.exists():
+        raise FileNotFoundError(f"Model checkpoint not found: {MODEL_PATH}")
+
+    model = AustralianRaptorCNN(num_classes=NUM_CLASSES).to(device)
+    checkpoint = torch.load(MODEL_PATH, map_location=device,
+                            weights_only=True)
     model.load_state_dict(checkpoint["model_state_dict"])
     model.eval()
-    print(f"✅ Modelo cargado — Val F1: "
-          f"{checkpoint['val_f1']:.4f}")
+    ckpt_order = checkpoint.get("class_order")
+    if ckpt_order and list(ckpt_order) != CLASS_ORDER:
+        raise ValueError(
+            "Checkpoint class_order does not match gui.CLASS_ORDER: "
+            f"{ckpt_order} != {CLASS_ORDER}"
+        )
+    print(f"Modelo cargado — Val F1: {checkpoint['val_f1']:.4f}")
     return model
 
 
 # Cargar modelo al iniciar la app
-raptor_model = load_model()
+if LIGHTWEIGHT_MODE:
+    raptor_model = None
+else:
+    raptor_model = load_model()
 
 # ─── Transformación de inferencia ─────────────────────
-inference_transform = transforms.Compose([
+inference_transform = (transforms.Compose([
     transforms.Resize((420, 420)),
     transforms.CenterCrop(380),
     transforms.ToTensor(),
@@ -272,7 +446,166 @@ inference_transform = transforms.Compose([
         mean=[0.485, 0.456, 0.406],
         std=[0.229, 0.224, 0.225]
     )
-])
+]) if transforms is not None else None)
+
+
+def _dummy_prediction() -> dict:
+    """Deterministic lightweight prediction used by CI route tests."""
+    key = CLASS_ORDER[0]
+    info = _localized_species_info()[key]
+    top3 = []
+    for i, sp_key in enumerate(CLASS_ORDER[:3]):
+        sp = _localized_species_info()[sp_key]
+        top3.append({
+            "species_key": sp_key,
+            "common_name": sp["common_name"],
+            "scientific_name": sp["scientific_name"],
+            "confidence": round(91.0 - i * 12.5, 1),
+            "color": sp["color"],
+        })
+    return {
+        "species_key":     key,
+        "common_name":     info["common_name"],
+        "scientific_name": info["scientific_name"],
+        "confidence":      91.0,
+        "epbc_status":     info["epbc_status"],
+        "habitat":         info["habitat"],
+        "wingspan_cm":     info["wingspan_cm"],
+        "length_cm":       info["length_cm"],
+        "diagnostic":      info["diagnostic"],
+        "auslan_sign":     info["auslan_sign"],
+        "auslan_video":    info["auslan_video"],
+        "color":           info["color"],
+        "top3":            top3,
+        "detector":        "lightweight_dummy",
+        "bbox":            None,
+        "bbox_score":      None,
+        "calibration_temperature": CALIBRATION_TEMPERATURE,
+        "decision_status": "identified",
+        "warnings":        [],
+        "top2_margin":     12.5,
+        "inference_mode":  "lightweight_dummy",
+        "yolo_crop_policy": YOLO_CROP_POLICY,
+        "yolo_crop_available": False,
+    }
+
+
+def _expand_bbox(bbox: list[int], width: int, height: int,
+                 margin_frac: float = 0.05) -> list[int]:
+    """Expand a bbox by a small context margin and clamp to image bounds."""
+    x0, y0, x1, y1 = bbox
+    margin = int(round(margin_frac * min(width, height)))
+    return [
+        max(0, x0 - margin),
+        max(0, y0 - margin),
+        min(width, x1 + margin),
+        min(height, y1 + margin),
+    ]
+
+
+def _select_yolo_crop(img: Image.Image) -> tuple[Image.Image, dict | None]:
+    """
+    Use YOLO to select the strongest bird crop for single-image inference.
+
+    If YOLO is unavailable or no bird is detected, return the original image
+    and None. This keeps inference usable while making the detector/cropper
+    claim true whenever YOLO weights are available.
+    """
+    try:
+        yolo = _lazy_yolo_detector()
+    except Exception:
+        yolo = None
+    if yolo is None:
+        return img, None
+
+    boxes = yolo.detect(img)
+    if not boxes:
+        return img, None
+
+    best = max(boxes, key=lambda box: box.confidence)
+    width, height = img.size
+    crop_box = _expand_bbox(best.bbox, width, height)
+    crop = img.crop(tuple(crop_box))
+    if min(crop.size) < 32:
+        return img, None
+
+    return crop, {
+        "detector": best.source,
+        "bbox": crop_box,
+        "bbox_score": best.confidence,
+    }
+
+
+def _calibrated_probs(logits):
+    """Apply post-hoc temperature scaling before softmax."""
+    return torch.softmax(logits / CALIBRATION_TEMPERATURE, dim=1)
+
+
+def _decision_metadata(probs_np: np.ndarray,
+                       top3_idx: np.ndarray) -> dict:
+    confidence = float(probs_np[top3_idx[0]]) * 100.0
+    top2 = float(probs_np[top3_idx[1]]) * 100.0 if len(top3_idx) > 1 else 0.0
+    margin = confidence - top2
+    warnings = []
+    if confidence < LOW_CONFIDENCE_THRESHOLD:
+        warnings.append("low_confidence")
+    if margin < AMBIGUOUS_TOP2_MARGIN:
+        warnings.append("ambiguous_top2")
+    return {
+        "calibration_temperature": CALIBRATION_TEMPERATURE,
+        "decision_status": "uncertain" if warnings else "identified",
+        "warnings": warnings,
+        "top2_margin": round(margin, 1),
+    }
+
+
+def _predict_probs_from_pil(img: Image.Image) -> np.ndarray:
+    tensor = inference_transform(img).unsqueeze(0).to(device)
+    with torch.no_grad():
+        probs = _calibrated_probs(raptor_model(tensor))[0]
+    return probs.cpu().numpy()
+
+
+def _choose_inference_image(img: Image.Image) -> tuple[np.ndarray, dict]:
+    """
+    Classify whole image and, when available, YOLO crop.
+
+    The default adaptive policy keeps the whole-image prediction unless
+    the crop is at least YOLO_CROP_CONFIDENCE_GAIN points more confident.
+    This reflects the v1.5 ablation: YOLO is useful infrastructure, but
+    crop-only inference is not automatically better for this checkpoint.
+    """
+    whole_probs = _predict_probs_from_pil(img)
+    crop, detection_meta = _select_yolo_crop(img)
+    if detection_meta is None:
+        return whole_probs, {
+            "detector": "whole_image",
+            "bbox": None,
+            "bbox_score": None,
+            "inference_mode": "whole_image",
+            "yolo_crop_available": False,
+        }
+
+    crop_probs = _predict_probs_from_pil(crop)
+    whole_conf = float(whole_probs.max()) * 100.0
+    crop_conf = float(crop_probs.max()) * 100.0
+    use_crop = (
+        YOLO_CROP_POLICY == "always" or
+        (YOLO_CROP_POLICY == "adaptive" and
+         crop_conf >= whole_conf + YOLO_CROP_CONFIDENCE_GAIN)
+    )
+    if YOLO_CROP_POLICY == "never":
+        use_crop = False
+
+    meta = dict(detection_meta)
+    meta.update({
+        "inference_mode": "yolo_crop" if use_crop else "whole_image_yolo_detected",
+        "yolo_crop_available": True,
+        "whole_image_confidence": round(whole_conf, 1),
+        "yolo_crop_confidence": round(crop_conf, 1),
+        "yolo_crop_policy": YOLO_CROP_POLICY,
+    })
+    return (crop_probs if use_crop else whole_probs), meta
 
 
 def predict_image(img_path):
@@ -282,14 +615,13 @@ def predict_image(img_path):
     Returns:
         dict con especie predicha, confianza y top-3
     """
+    if raptor_model is None:
+        if LIGHTWEIGHT_MODE:
+            return _dummy_prediction()
+        raise RuntimeError("Model is not loaded.")
+
     img = Image.open(img_path).convert("RGB")
-    tensor = inference_transform(img).unsqueeze(0).to(device)
-
-    with torch.no_grad():
-        output = raptor_model(tensor)
-        probs  = torch.softmax(output, dim=1)[0]
-
-    probs_np = probs.cpu().numpy()
+    probs_np, inference_meta = _choose_inference_image(img)
 
     # Top-3 predicciones
     top3_idx = np.argsort(probs_np)[::-1][:3]
@@ -313,7 +645,7 @@ def predict_image(img_path):
     best_key  = CLASS_ORDER[top3_idx[0]]
     best_info = localized[best_key]
 
-    return {
+    result = {
         "species_key":     best_key,
         "common_name":     best_info["common_name"],
         "scientific_name": best_info["scientific_name"],
@@ -328,10 +660,15 @@ def predict_image(img_path):
         "color":           best_info["color"],
         "top3":            top3
     }
+    result.update(_decision_metadata(probs_np, top3_idx))
+    result.update(inference_meta)
+    result.setdefault("yolo_crop_policy", YOLO_CROP_POLICY)
+    return result
 
 
 # ─── Rutas Flask ──────────────────────────────────────
-def _localized_species_info(lang: str | None = None) -> dict:
+def _localized_species_info(lang: str | None = None,
+                            include_roadmap: bool = False) -> dict:
     """
     Merge non-translatable fields from SPECIES_INFO (class_idx,
     wingspan_cm, length_cm, auslan_video, color, scientific_name)
@@ -341,7 +678,8 @@ def _localized_species_info(lang: str | None = None) -> dict:
     lang = lang or get_locale()
     loc  = get_species_data(lang)
     out: dict = {}
-    for key, base in SPECIES_INFO.items():
+    source = SPECIES_INFO if include_roadmap else _active_species_info()
+    for key, base in source.items():
         merged = dict(base)
         merged.update(loc.get(key, {}))
         # 'behaviour' is the canonical field in SPECIES_I18N;
@@ -367,6 +705,26 @@ def set_lang(code: str):
     return resp
 
 
+
+@app.route("/health")
+def health():
+    """Machine-readable app health endpoint for demos and deployment."""
+    cuda_available = bool(
+        torch is not None and hasattr(torch, "cuda") and torch.cuda.is_available()
+    )
+    return jsonify({
+        "status": "ok",
+        "project": "Australian Raptor CNN + AUSLAN",
+        "model_version": MODEL_VERSION,
+        "classifier": "EfficientNetB4",
+        "detector": "YOLO",
+        "active_species_count": NUM_CLASSES,
+        "model_loaded": raptor_model is not None,
+        "lightweight_mode": LIGHTWEIGHT_MODE,
+        "device": str(device) if device is not None else "unavailable",
+        "cuda_available": cuda_available,
+        "yolo_crop_policy": YOLO_CROP_POLICY,
+    })
 @app.route("/")
 def index():
     """Página principal — UI localizada."""
@@ -424,6 +782,7 @@ def save_observation():
     data = request.get_json()
 
     obs_file = PROJECT_ROOT / "results" / "observations.csv"
+    obs_file.parent.mkdir(parents=True, exist_ok=True)
     file_exists = obs_file.exists()
 
     with open(obs_file, "a", newline="", encoding="utf-8") as f:
@@ -478,6 +837,7 @@ def save_feedback():
             log_file = PROJECT_ROOT / "results" / "out_of_domain_log.csv"
         else:
             log_file = PROJECT_ROOT / "results" / "feedback_log.csv"
+        log_file.parent.mkdir(parents=True, exist_ok=True)
         file_exists = log_file.exists()
 
         feedback_id = str(uuid.uuid4())[:8]
@@ -595,7 +955,7 @@ def _load_species_metrics():
 
     # Conteo de imágenes de entrenamiento por especie
     raw_dir = PROJECT_ROOT / "dataset" / "raw"
-    for key in SPECIES_INFO:
+    for key in CLASS_ORDER:
         sp_dir = raw_dir / key
         count  = 0
         if sp_dir.exists():
@@ -673,9 +1033,9 @@ def _to_dwc_rows(obs_rows: list[dict]) -> list[dict]:
                         else "unverified")
 
         identified_by = (
-            "Australian Raptor CNN v1.1 "
-            "(EfficientNetB4 transfer learning, "
-            "iNaturalist + ALA, F1-macro 0.76)"
+            f"Australian Raptor CNN {MODEL_VERSION} "
+            "(YOLO-assisted pipeline, EfficientNetB4 classifier, "
+            f"iNaturalist + ALA, F1-macro {MODEL_F1_MACRO})"
         )
 
         out.append({
@@ -812,34 +1172,67 @@ def auslan_video(filename):
 
 
 # ─── Video analysis (multi-species, multi-bird) ──────────
-_video_detector = None
+_yolo_detector = None
 
 
-def _lazy_video_detector():
+def _yolo_weights_path() -> str:
+    configured = os.environ.get("RAPTOR_YOLO_WEIGHTS")
+    if configured:
+        return configured
+    local = PROJECT_ROOT / "models" / "yolov8n.pt"
+    return str(local) if local.exists() else "yolov8n.pt"
+
+
+def _lazy_yolo_detector():
     """
-    Faster R-CNN bird detector reused across video frames. Loads
-    weights only on first call to keep startup fast.
+    YOLO detector reused across video frames.
+
+    If ultralytics/weights are unavailable, detection is disabled and
+    callers can still classify the whole image through /identify.
     """
-    global _video_detector
-    if _video_detector is None:
-        from torchvision.models.detection import (
-            fasterrcnn_resnet50_fpn,
-            FasterRCNN_ResNet50_FPN_Weights,
-        )
-        weights = FasterRCNN_ResNet50_FPN_Weights.DEFAULT
-        m = fasterrcnn_resnet50_fpn(
-            weights=weights, box_score_thresh=0.45)
-        m.eval().to(device)
-        m._ra_categories = weights.meta["categories"]
-        _video_detector = m
-    return _video_detector
+    global _yolo_detector
+    if _yolo_detector is False:
+        return None
+    if _yolo_detector is None:
+        try:
+            _yolo_detector = YoloBirdDetector(_yolo_weights_path(),
+                                              confidence=0.5)
+            print(f"YOLO bird detector loaded: {_yolo_weights_path()}")
+        except (YoloUnavailable, Exception) as exc:
+            print(f"[video] YOLO unavailable; detection disabled: {exc}")
+            _yolo_detector = False
+            return None
+    return _yolo_detector
+
+
+def _detect_birds(pil: Image.Image, min_conf: float = 0.5) -> list[dict]:
+    """
+    Detect bird boxes in one frame with YOLO.
+
+    Returns dicts with bbox, bbox_score and detector. If YOLO is not
+    available, returns an empty list rather than switching architecture.
+    """
+    yolo = _lazy_yolo_detector()
+    if yolo is None:
+        return []
+
+    out = []
+    for box in yolo.detect(pil):
+        if box.confidence < min_conf:
+            continue
+        out.append({
+            "bbox": box.bbox,
+            "bbox_score": box.confidence,
+            "detector": box.source,
+        })
+    return out
 
 
 def _classify_crop(crop_pil) -> dict:
     """Run the trained classifier on a single bird crop (PIL.Image)."""
     tensor = inference_transform(crop_pil).unsqueeze(0).to(device)
     with torch.no_grad():
-        probs = torch.softmax(raptor_model(tensor), dim=1)[0].cpu().numpy()
+        probs = _calibrated_probs(raptor_model(tensor))[0].cpu().numpy()
     idx = int(np.argmax(probs))
     sp_key = CLASS_ORDER[idx]
     return {
@@ -858,7 +1251,7 @@ def identify_video():
 
     Pipeline (per uploaded video):
       1. Sample frames at ~1 fps using OpenCV.
-      2. Run Faster R-CNN on each frame to find bird bboxes.
+      2. Run YOLO on each frame to find bird bboxes.
       3. Crop each detected bird and classify with the CNN.
       4. Return a per-frame timeline + a per-species summary.
 
@@ -899,10 +1292,6 @@ def identify_video():
         max_frames = 60
         sampled  = 0
 
-        from torchvision.transforms.functional import to_tensor
-        detector = _lazy_video_detector()
-        cats     = detector._ra_categories
-
         timeline: list[dict] = []
         per_species: dict[str, int] = {}
         frame_idx = 0
@@ -919,16 +1308,9 @@ def identify_video():
             pil = Image.fromarray(rgb)
             W, H = pil.size
 
-            with torch.no_grad():
-                out = detector([to_tensor(pil).to(device)])[0]
-
             birds: list[dict] = []
-            for i in range(len(out["labels"])):
-                if cats[int(out["labels"][i])] != "bird":
-                    continue
-                if float(out["scores"][i]) < 0.5:
-                    continue
-                x0, y0, x1, y1 = [float(v) for v in out["boxes"][i]]
+            for detection in _detect_birds(pil, min_conf=0.5):
+                x0, y0, x1, y1 = detection["bbox"]
                 # Add a 5% margin for the classifier to use context
                 m = 0.05 * min(W, H)
                 cx0 = max(0, int(x0 - m))
@@ -941,7 +1323,8 @@ def identify_video():
                     continue
                 pred = _classify_crop(crop)
                 pred["bbox"] = [cx0, cy0, cx1, cy1]
-                pred["bbox_score"] = round(float(out["scores"][i]), 3)
+                pred["bbox_score"] = detection["bbox_score"]
+                pred["detector"] = detection["detector"]
                 birds.append(pred)
                 per_species[pred["species_key"]] = (
                     per_species.get(pred["species_key"], 0) + 1)
@@ -1011,7 +1394,7 @@ def _behavior_video_status() -> dict[str, dict]:
     """
     folder = BASE_DIR / "static" / "behavior_videos"
     out = {}
-    for key in SPECIES_INFO:
+    for key in CLASS_ORDER:
         # Accept .mp4, .webm, .mov in this order of preference.
         for ext in ("mp4", "webm", "mov"):
             p = folder / f"{key}.{ext}"

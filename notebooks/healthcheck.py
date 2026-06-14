@@ -8,8 +8,10 @@ is in a presentable state:
   2. JSON validity (all translations + results files)
   3. Jinja template render (with full mock state)
   4. Required files / folders present
-  5. Model checkpoint discoverable (if any)
-  6. CHANGELOG and CITATION parse
+  5. v1.5 release sync (dataset/results/CLASS_ORDER)
+  6. test_predictions.csv schema (if generated)
+  7. YOLO wrapper importability
+  8. CHANGELOG and CITATION parse
 
 Exits with code 0 (all green) or non-zero (first failure).
 Designed for use immediately before pushing a tagged release
@@ -25,7 +27,10 @@ from __future__ import annotations
 import argparse
 import ast
 import json
+import os
+import subprocess
 import sys
+import uuid
 from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -41,7 +46,7 @@ def check_python_syntax(verbose: bool) -> tuple[bool, list[str]]:
         try:
             ast.parse(p.read_text(encoding="utf-8"))
             if verbose:
-                print(f"    ✓ {p.relative_to(BASE_DIR)}")
+                print(f"    OK {p.relative_to(BASE_DIR)}")
         except SyntaxError as e:
             errors.append(f"{p.relative_to(BASE_DIR)}: {e}")
     return (not errors), errors
@@ -55,7 +60,7 @@ def check_json_files(verbose: bool) -> tuple[bool, list[str]]:
         try:
             json.loads(p.read_text(encoding="utf-8"))
             if verbose:
-                print(f"    ✓ {p.relative_to(BASE_DIR)}")
+                print(f"    OK {p.relative_to(BASE_DIR)}")
         except Exception as e:
             errors.append(f"{p.relative_to(BASE_DIR)}: {e}")
     return (not errors), errors
@@ -65,19 +70,68 @@ def check_required_files() -> tuple[bool, list[str]]:
     required = [
         "README.md", "LICENSE", "CHANGELOG.md", "CITATION.cff",
         "CONTRIBUTING.md", "Dockerfile", ".gitignore",
-        "requirements.txt",
+        "requirements.txt", "requirements-lock.txt", "environment.yml",
+        "RELEASE_MANIFEST_v1_5.md",
         "gui/app.py", "gui/i18n.py", "gui/species_data_i18n.py",
+        "gui/yolo_detector.py",
         "gui/templates/index.html", "gui/templates/species.html",
         "gui/templates/data.html",
         "gui/static/css/style.css",
         "notebooks/retrain.py", "notebooks/gradcam.py",
+        "notebooks/run_tests.py",
+        "notebooks/export_test_predictions.py",
+        "notebooks/update_final_report.py",
+        "notebooks/build_release_manifest.py",
+        "notebooks/build_thesis_docx.py",
+        "notebooks/audit_thesis_docx.py",
+        "notebooks/export_thesis_pdf.ps1",
+        "notebooks/audit_thesis_pdf.py",
+        "notebooks/audit_dataset_leakage.py",
+        "notebooks/build_leakage_review_plan.py",
+        "notebooks/yolo_crop_ablation.py",
+        "notebooks/top3_utility.py",
+        "notebooks/build_model_registry.py",
+        "notebooks/build_controlled_demo_set.py",
         "notebooks/gradcam_mosaic.py",
         "notebooks/download_ala_images.py",
         "notebooks/filter_ala_quality.py",
         "notebooks/fetch_ebird_data.py",
-        "docs/SETUP.md", "docs/CHAPTERS_OUTLINE.md",
+        "docs/SETUP.md",
+        "docs/THESIS.md", "docs/Australian_Raptor_Thesis_v1_5.docx",
+        "docs/Australian_Raptor_Thesis_v1_5.pdf",
+        "docs/DATASHEET.md", "docs/MODEL_CARD.md",
+        "docs/METHODOLOGY.md", "docs/DEFENSE_CHECKLIST.md",
+        "docs/DEMO_SCRIPT.md",
+        "docs/MASTERS_RESEARCH_PROPOSAL.md",
+        "docs/SCIENTIFIC_DEFENSIBILITY.md",
+        "docs/MASTERS_PRESENTATION_OUTLINE.md",
+        "docs/ETHICS_DATA_GOVERNANCE.md",
+        "docs/CLAIMS_MATRIX.md",
+        "docs/SPLIT_GOVERNANCE.md", "docs/MODEL_REGISTRY.md",
+        "docs/LEAKAGE_REVIEW_PROTOCOL.md",
+        "docs/LIMITATIONS.md", "docs/CONTROLLED_DEMO_SET.md",
         "docs/TAXONOMY_VERSIONING.md", "docs/SPECIES_ROADMAP.md",
         "docs/auslan_consultation/README.md",
+        "results/reporte_final.json",
+        "results/test_report.csv",
+        "results/test_predictions.csv",
+        "results/thesis_docx_audit.json",
+        "results/thesis_pdf_audit.json",
+        "results/release_manifest_v1_5.json",
+        "results/top3_utility.json",
+        "results/top3_utility.md",
+        "results/leakage_audit.json",
+        "results/leakage_audit.md",
+        "results/leakage_near_duplicate_pairs.jpg",
+        "results/leakage_review_decisions.csv",
+        "dataset/metadata/deleak_split_plan_v1_6.csv",
+        "results/yolo_crop_ablation.json",
+        "results/yolo_crop_ablation.md",
+        "results/temperature_scaling_efficientnet_b4.json",
+        "results/model_registry_v1_5.json",
+        "results/controlled_demo_set.csv",
+        "demo/controlled/ood_gray.png",
+        "demo/controlled/ood_sky_like.png",
         ".github/workflows/ci.yml",
     ]
     missing = []
@@ -105,6 +159,125 @@ def check_translations_coverage() -> tuple[bool, list[str]]:
                     break
                 cur = cur[part]
     return (not errors), errors
+
+
+def check_release_sync() -> tuple[bool, list[str]]:
+    """Validate v1.5 class order against local dataset/results."""
+    errors = []
+    os.environ["RAPTOR_LIGHTWEIGHT"] = "1"
+    sys.path.insert(0, str(BASE_DIR / "gui"))
+    try:
+        import app as gui_app
+    except Exception as e:
+        return False, [f"gui import failed: {e}"]
+
+    expected = [
+        "aquila_audax",
+        "circus_assimilis",
+        "elanus_axillaris",
+        "falco_cenchroides",
+        "falco_peregrinus",
+        "hieraaetus_morphnoides",
+        "lophoictinia_isura",
+        "tachyspiza_fasciata",
+    ]
+    if gui_app.CLASS_ORDER != expected:
+        errors.append(f"CLASS_ORDER mismatch: {gui_app.CLASS_ORDER}")
+    if gui_app.NUM_CLASSES != len(expected):
+        errors.append(f"NUM_CLASSES={gui_app.NUM_CLASSES}, expected 8")
+
+    for i, key in enumerate(gui_app.CLASS_ORDER):
+        got = gui_app.SPECIES_INFO[key].get("class_idx")
+        if got != i:
+            errors.append(f"{key}.class_idx={got}, expected {i}")
+
+    test_dir = BASE_DIR / "dataset" / "processed" / "test"
+    if test_dir.exists():
+        found = sorted(p.name for p in test_dir.iterdir() if p.is_dir())
+        if found != expected:
+            errors.append(f"processed/test classes mismatch: {found}")
+
+        report = BASE_DIR / "results" / "reporte_final.json"
+        if report.exists():
+            data = json.loads(report.read_text(encoding="utf-8"))
+            n_test = sum(
+                1 for sp in test_dir.iterdir() if sp.is_dir()
+                for p in sp.iterdir() if p.is_file()
+            )
+            if data.get("total_test_images") != n_test:
+                errors.append(
+                    "reporte_final total_test_images="
+                    f"{data.get('total_test_images')}, expected {n_test}"
+                )
+    return (not errors), errors
+
+
+def check_test_predictions_schema() -> tuple[bool, list[str]]:
+    p = BASE_DIR / "results" / "test_predictions.csv"
+    if not p.exists():
+        return True, [
+            "results/test_predictions.csv not generated yet; run "
+            "notebooks/export_test_predictions.py after checkpoint changes."
+        ]
+    import csv
+    required = {"image_path", "y_true", "y_pred", "confidence", "top3"}
+    with open(p, encoding="utf-8", newline="") as f:
+        reader = csv.DictReader(f)
+        missing = required - set(reader.fieldnames or [])
+        if missing:
+            return False, [f"missing columns: {sorted(missing)}"]
+        rows = list(reader)
+    if not rows:
+        return False, ["test_predictions.csv has no rows"]
+    return True, []
+
+
+def check_yolo_wrapper() -> tuple[bool, list[str]]:
+    sys.path.insert(0, str(BASE_DIR / "gui"))
+    try:
+        import yolo_detector
+    except Exception as e:
+        return False, [f"cannot import gui/yolo_detector.py: {e}"]
+    if yolo_detector.COCO_BIRD_CLASS_ID != 14:
+        return False, ["COCO bird class id must be 14"]
+    return True, []
+
+
+def check_pytest_suite() -> tuple[bool, list[str]]:
+    tests_dir = BASE_DIR / "tests"
+    if not tests_dir.exists():
+        return False, ["tests/ directory is missing"]
+    try:
+        import pytest  # noqa: F401
+    except Exception:
+        return True, ["pytest not installed; skipping test execution"]
+    env = os.environ.copy()
+    env["RAPTOR_LIGHTWEIGHT"] = "1"
+    temp_root = BASE_DIR / "results" / "pytest-temp"
+    temp_root.mkdir(parents=True, exist_ok=True)
+    basetemp = temp_root / f"run-{os.getpid()}-{uuid.uuid4().hex[:8]}"
+    env["TMP"] = str(temp_root)
+    env["TEMP"] = str(temp_root)
+    proc = subprocess.run(
+        [
+            sys.executable,
+            "-m",
+            "pytest",
+            "tests",
+            "-q",
+            "-p",
+            "no:cacheprovider",
+            "--basetemp",
+            str(basetemp),
+        ],
+        cwd=str(BASE_DIR),
+        env=env,
+        text=True,
+        capture_output=True,
+    )
+    if proc.returncode != 0:
+        return False, (proc.stdout + proc.stderr).splitlines()[-10:]
+    return True, [proc.stdout.strip()]
 
 
 def check_template_render() -> tuple[bool, list[str]]:
@@ -204,9 +377,13 @@ def main():
         ("Python syntax",        lambda: check_python_syntax(args.verbose)),
         ("JSON validity",        lambda: check_json_files(args.verbose)),
         ("Required files",       check_required_files),
+        ("Release sync",         check_release_sync),
+        ("test_predictions CSV", check_test_predictions_schema),
+        ("YOLO wrapper",         check_yolo_wrapper),
         ("Translation coverage", check_translations_coverage),
         ("Template render",      check_template_render),
         ("YAML validity",        check_yaml_files),
+        ("Pytest suite",         check_pytest_suite),
     ]
     print("Australian Raptor CNN — Project Healthcheck\n")
     all_ok = True
@@ -216,19 +393,22 @@ def main():
         except Exception as e:
             ok, errors = False, [str(e)]
         if ok:
-            print(f"  ✓ {name}")
+            print(f"  OK   {name}")
+            if args.verbose:
+                for msg in errors[:3]:
+                    print(f"       {msg}")
         else:
             all_ok = False
-            print(f"  ✗ {name}")
+            print(f"  FAIL {name}")
             for err in errors[:5]:
-                print(f"      · {err}")
+                print(f"       - {err}")
             if len(errors) > 5:
-                print(f"      · ... and {len(errors) - 5} more")
+                print(f"       - ... and {len(errors) - 5} more")
     print()
     if all_ok:
-        print("✅ All checks passed — project is presentable.")
+        print("All checks passed — project is presentable.")
         sys.exit(0)
-    print("❌ Some checks failed — review the issues above before pushing.")
+    print("Some checks failed — review the issues above before pushing.")
     sys.exit(1)
 
 

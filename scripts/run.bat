@@ -6,7 +6,7 @@ pushd "%~dp0\..\gui"
 
 if not exist "..\models\best_model.pth" (
     echo X  Model weights not found at models\best_model.pth
-    echo    Train the model via notebooks\03_training.ipynb first,
+    echo    Train the model via notebooks\retrain.py first,
     echo    or place a pre-trained .pth file at that path.
     popd
     exit /b 1

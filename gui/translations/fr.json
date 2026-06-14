@@ -7,7 +7,7 @@
   "app": {
     "title": "CNN des Rapaces Australiens",
     "footer_credit": "Australian Raptor CNN + AUSLAN | Brian Fernández Báez | Proposition MPhil — University of Queensland",
-    "footer_model": "Modèle: EfficientNetB4 | Précision: 75,6% | F1-macro: 0,76 | Dataset: iNaturalist Australia + ALA (~5 000 images)"
+    "footer_model": "Modèle: YOLO + EfficientNetB4 | Précision: 84,95% | F1-macro: 0,848 | Dataset: iNaturalist Australia + ALA (1 992 images traitées)"
   },
   "nav": {
     "identify": "Identifier",
@@ -77,7 +77,7 @@
     "trained_on_suffix": "images",
     "identify_button": "Identifier cette espèce →",
     "footer_title": "Comment le modèle reconnaît ces espèces",
-    "footer_text": "Le CNN a été ré-entraîné sur ~4 970 images issues d'iNaturalist Australia et de l'Atlas of Living Australia, par transfer learning sur EfficientNetB4 (pré-entraîné ImageNet) avec un fine-tuning de 30 époques. La précision sur le test est de 75,6 % avec un F1-macro de 0,76 sur les 8 espèces. Le F1 par espèce va de 0,69 (faucon pèlerin) à 0,85 (élanion d'Australie).",
+    "footer_text": "La version v1.5 utilise YOLO pour localiser les oiseaux et EfficientNetB4 pour classer 8 espèces sur 1 992 images traitées issues d'iNaturalist Australia et de l'Atlas of Living Australia. La précision sur le test est de 84,95 % avec un F1-macro de 0,8478.",
     "references": "Références : Olsen et al. (1993) ; Marchant et Higgins (1993) ; Debus (1998) ; DAWE (2021) ; Atlas of Living Australia (2024).",
     "profile_title": "📖 Fiche d'espèce",
     "distribution": "Répartition",

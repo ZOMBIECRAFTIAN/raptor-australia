@@ -2,8 +2,10 @@
 
 **Status:** Provisional. Submitted for review by AUSLAN-fluent
 consultants and Deaf community representatives.
-**Author:** Brian Fernández Báez, MPhil candidate.
-**Project:** Australian Raptor CNN + AUSLAN — University of Queensland.
+**Author:** Brian Fernández Báez, Computer Systems Engineer
+(independent researcher; prospective Master's by Research / MPhil
+applicant in Australia, with a future PhD pathway).
+**Project:** Australian Raptor CNN + AUSLAN — research prototype.
 
 ---
 

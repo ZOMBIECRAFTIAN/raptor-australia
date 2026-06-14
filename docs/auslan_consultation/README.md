@@ -7,9 +7,11 @@ AUSLAN** project.
 
 ## Why this folder exists
 
-The project's MPhil proposal (University of Queensland) commits to a
-*"diseño participativo con comunidades sordas australianas"* in
-Chapter 1, §1.3 (Problem 3) and §1.4.3 (Social Justification).
+The project's draft research proposal (prepared for prospective
+Master's by Research / MPhil applications in Australia, with a
+future PhD pathway) commits to a *"diseño
+participativo con comunidades sordas australianas"* in Chapter 1,
+§1.3 (Problem 3) and §1.4.3 (Social Justification).
 Honouring that commitment requires three concrete steps before any
 official sign is published:
 

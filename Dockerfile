@@ -6,13 +6,13 @@
 #               -v "$(pwd)/models:/app/models:ro" \
 #               raptor-au
 #
-# The model weights file (models/best_model.pth, ~185 MB) is
-# expected to be mounted at runtime — it is excluded from this
-# image to keep it small and to respect GitHub's 100 MB file
-# size limit. Train via 03_training.ipynb to obtain it.
+# Model weights (models/best_model.pth) and optional YOLO weights
+# (models/yolov8n.pt) are expected to be mounted at runtime. They
+# are excluded from this image to keep it small and to respect
+# GitHub's file-size limits. Train via notebooks/retrain.py.
 # ────────────────────────────────────────────────────────
 
-FROM python:3.10-slim
+FROM python:3.13-slim
 
 WORKDIR /app
 
@@ -22,6 +22,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         zlib1g-dev \
         libpng-dev \
         libfreetype6 \
+        libgl1 \
+        libglib2.0-0 \
         ca-certificates \
     && rm -rf /var/lib/apt/lists/*
 

@@ -1,206 +1,508 @@
 # 🦅 Australian Raptor CNN + AUSLAN
 
-> Deep-learning identification of southeast-Australian birds of prey,
-> coupled with an inclusive AUSLAN sign-language vocabulary for Deaf
-> citizen scientists. Built as the foundation of an MPhil research
-> proposal at the **University of Queensland**.
+> Deep-learning identification of Australian birds of prey using
+> citizen-science imagery, paired with a provisional AUSLAN
+> sign-language vocabulary for accessibility.
+>
+> **Master's-level research release prepared for prospective
+> Master's by Research / MPhil applications in Australia, with a
+> future PhD continuation path.** This repository is a working
+> research prototype; it is *not* affiliated with, endorsed by,
+> or part of an enrolled program at any Australian university.
 
 [![CI](https://github.com/ZOMBIECRAFTIAN/raptor-australia/actions/workflows/ci.yml/badge.svg)](https://github.com/ZOMBIECRAFTIAN/raptor-australia/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
-[![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/)
-[![PyTorch 2.x](https://img.shields.io/badge/PyTorch-2.x-EE4C2C.svg)](https://pytorch.org/)
-[![F1-macro 0.76](https://img.shields.io/badge/F1--macro-0.76-yellow.svg)](results/reporte_final.json)
-[![Accuracy 75.6%](https://img.shields.io/badge/accuracy-75.6%25-yellowgreen.svg)](results/reporte_final.json)
-[![Cite this](https://img.shields.io/badge/cite-CITATION.cff-informational.svg)](CITATION.cff)
-[![Status: research preview](https://img.shields.io/badge/status-research%20preview-orange.svg)]()
+[![Python 3.13](https://img.shields.io/badge/python-3.13-blue.svg)](https://www.python.org/)
+[![PyTorch 2.12+cu130](https://img.shields.io/badge/PyTorch-2.12%2Bcu130-EE4C2C.svg)](https://pytorch.org/)
+[![Accuracy 84.95%](https://img.shields.io/badge/accuracy-84.95%25-brightgreen.svg)](results/reporte_final.json)
+[![F1-macro 0.848](https://img.shields.io/badge/F1--macro-0.848-green.svg)](results/reporte_final.json)
+[![Status: research prototype](https://img.shields.io/badge/status-research%20prototype-orange.svg)]()
 
 ---
 
-## Why this project exists
+## Why Australia?
 
-Australia experienced its largest documented ecological disaster
-during the **Black Summer bushfires (2019–2020)**: an estimated
-3 billion vertebrates were affected and 18.6 million hectares burnt
-(Ward et al., *Nature Ecology & Evolution* 2020). Recovery monitoring
-of apex predators like raptors is a national research priority
-(DAWE, 2021), but current methods are slow, manual, and exclude
-people with hearing disability from participating in citizen science.
+Australia hosts approximately 24 diurnal raptor species,
+including taxa endemic to its biogeographic region (e.g. the
+nominate *Aquila audax audax* and its threatened Tasmanian
+sub-species *A. a. fleayi*). The continent experienced its
+largest documented ecological disturbance during the
+**Black Summer bushfires (2019-2020)** — an estimated 3 billion
+vertebrates affected and 18.6 million hectares burnt (Ward et al.,
+*Nature Ecology & Evolution*, 2020) — and continued monitoring of
+apex predators is a stated national research priority of the
+Department of Climate Change, Energy, the Environment and Water
+(DCCEEW, 2023, *Threatened Species Action Plan 2022-2032*).
 
-This project addresses three intertwined gaps:
-
-1. **Automation** — a CNN that identifies eight key raptor species
-   from in-flight or perched photographs.
-2. **Inclusion** — a proposed AUSLAN vocabulary for the species,
-   designed participatorily for the ~3.6 M Australians with hearing
-   loss (Hearing Australia, 2022).
-3. **Interoperability** — every observation can be exported in
-   **Darwin Core** format, ready for upload to the Atlas of Living
-   Australia or any GBIF data publisher.
-
-A more detailed scientific framing is in
-[`docs/auslan_consultation/`](docs/auslan_consultation/) and in the
-project's MPhil proposal (available on request).
+These three factors — biological singularity, continental scale
+of recent disturbance, and clear national policy priorities —
+make Australia the most suitable context in which to apply
+computer-vision tools to raptor monitoring.
 
 ---
 
-## Target species
+## Conservation relevance
 
-Eight raptors of southeast Australia were chosen for ecological
-relevance and image availability:
+Raptors are widely used indicators of ecosystem health
+(Sergio et al., *Annual Review of Ecology, Evolution and
+Systematics*, 2006). Of the eight species in the current model:
 
-| Common name | Scientific name | EPBC status | F1 (test) |
-|---|---|---|---|
-| Wedge-tailed Eagle | *Aquila audax* | Not listed (A.a.fleayi: Endangered) | 0.71 |
-| Peregrine Falcon | *Falco peregrinus macropus* | Not listed | 0.69 |
-| Spotted Harrier | *Circus assimilis* | Vulnerable (NSW) | 0.77 |
-| Brown Goshawk | *Tachyspiza fasciata* | Not listed | 0.74 |
-| Nankeen Kestrel | *Falco cenchroides* | Not listed | 0.75 |
-| Black-shouldered Kite | *Elanus axillaris* | Not listed | 0.85 |
-| Square-tailed Kite | *Lophoictinia isura* | **Vulnerable (EPBC Act)** | 0.75 |
-| Little Eagle | *Hieraaetus morphnoides* | Not listed | 0.80 |
+- *Lophoictinia isura* (Square-tailed Kite) is listed as
+  **Vulnerable under the EPBC Act 1999**.
+- *Aquila audax fleayi* (Tasmanian sub-species) is listed as
+  **Endangered under the EPBC Act 1999**.
+- *Circus assimilis* (Spotted Harrier) is listed as Vulnerable
+  in NSW.
 
-Per-species precision/recall and confusion matrix are in
-[`results/`](results/).
+Faster and lower-cost identification supports two operational
+needs identified in the DCCEEW action plan: rapid post-fire
+fauna surveys, and sustained citizen-science contribution to the
+Atlas of Living Australia (ALA).
+
+---
+
+## Research gap
+
+Despite mature CNN tooling for general bird identification
+(e.g. *Merlin*, *iNaturalist Seek*), three gaps remain for the
+Australian raptor context specifically:
+
+1. **No publicly released raptor-specific Australian benchmark**
+   exists with reproducible splits and per-species metrics.
+2. **Disability-inclusive design** is absent from existing tools.
+   No widely adopted bird-identification app currently ships
+   AUSLAN signs or sign-language alternatives to spoken species
+   names.
+3. **Interoperability with Australian biodiversity infrastructure**
+   (ALA, GBIF, Darwin Core) is rarely demonstrated end-to-end
+   from a citizen-science capture interface.
+
+This repository is a working prototype that addresses all three
+gaps, intended as evidence for a prospective Master's by Research
+/ MPhil application in computer vision for conservation in
+Australia, while leaving a clear future PhD pathway.
+
+---
+
+## Target species (current validated model)
+
+The validated model recognises **eight raptor species** chosen
+for ecological relevance and minimum data availability:
+
+| Common name | Scientific name | EPBC status |
+|---|---|---|
+| Wedge-tailed Eagle | *Aquila audax* | Not listed (A.a.fleayi: Endangered) |
+| Peregrine Falcon | *Falco peregrinus macropus* | Not listed |
+| Spotted Harrier | *Circus assimilis* | Vulnerable (NSW) |
+| Brown Goshawk | *Tachyspiza fasciata* (formerly *Accipiter*) | Not listed |
+| Nankeen Kestrel | *Falco cenchroides* | Not listed |
+| Black-shouldered Kite | *Elanus axillaris* | Not listed |
+| Square-tailed Kite | *Lophoictinia isura* | **Vulnerable (EPBC)** |
+| Little Eagle | *Hieraaetus morphnoides* | Not listed |
+
+Per-species precision, recall and F1 are written to
+`results/reporte_final.json` after each training run.
+
+A proposed expansion to 14 species (adding *Falco berigora*,
+*Haliaeetus leucogaster*, *Haliastur indus*, *H. sphenurus*,
+*Milvus migrans*, and *Tachyspiza novaehollandiae*) is
+described in [`docs/SPECIES_ROADMAP.md`](docs/SPECIES_ROADMAP.md);
+the data-pipeline code is already in place for that expansion,
+but the validated metrics in this README correspond to the
+**8-species** baseline.
+
+---
+
+## Dataset and data sources
+
+The dataset is constructed from two open APIs:
+
+- **iNaturalist** (v1 API) — Research-Grade observations filtered
+  to AU geography and the target taxa; only CC-BY-NC or CC0
+  images are downloaded.
+- **Atlas of Living Australia** (ALA biocache) — supplementary
+  occurrences including older museum records.
+
+The current validated v1.5 release uses an **8-species processed
+split of 1,992 images**: 1,590 train, 196 validation and 206
+held-out test images. The split is deterministic, seeded with
+42, and stored under `dataset/processed/`.
+
+YOLO is now the preferred detector/cropper for app-side bird
+localisation and future curation passes. The released
+EfficientNetB4 checkpoint remains the species classifier.
+
+Full provenance, licences, sampling biases, and known limitations
+are documented in [`docs/DATASHEET.md`](docs/DATASHEET.md),
+following the framework of Gebru et al. (2021) *Datasheets for
+Datasets*.
+
+Academic delivery artefacts are also included:
+[`docs/THESIS.md`](docs/THESIS.md),
+[`docs/Australian_Raptor_Thesis_v1_5.docx`](docs/Australian_Raptor_Thesis_v1_5.docx),
+[`docs/Australian_Raptor_Thesis_v1_5.pdf`](docs/Australian_Raptor_Thesis_v1_5.pdf),
+[`docs/DEFENSE_CHECKLIST.md`](docs/DEFENSE_CHECKLIST.md), and
+[`docs/DEMO_SCRIPT.md`](docs/DEMO_SCRIPT.md). Master's framing is
+captured in [`docs/MASTERS_RESEARCH_PROPOSAL.md`](docs/MASTERS_RESEARCH_PROPOSAL.md),
+[`docs/SCIENTIFIC_DEFENSIBILITY.md`](docs/SCIENTIFIC_DEFENSIBILITY.md), and
+[`docs/MASTERS_PRESENTATION_OUTLINE.md`](docs/MASTERS_PRESENTATION_OUTLINE.md).
+Additional scientific QA artefacts include
+[`docs/SPLIT_GOVERNANCE.md`](docs/SPLIT_GOVERNANCE.md),
+[`docs/MODEL_REGISTRY.md`](docs/MODEL_REGISTRY.md),
+[`docs/LIMITATIONS.md`](docs/LIMITATIONS.md), and
+[`docs/CONTROLLED_DEMO_SET.md`](docs/CONTROLLED_DEMO_SET.md).
+The release hash manifest is in
+[`RELEASE_MANIFEST_v1_5.md`](RELEASE_MANIFEST_v1_5.md).
+
+---
+
+## Atlas of Living Australia integration
+
+ALA is queried with a polite rate-limited downloader
+(`notebooks/download_ala_images.py`) using only the standard-
+library HTTP client, an identifying `User-Agent` header, and a
+multi-strategy taxonomy fallback (`lsid → species → genus +
+specificEpithet`) that handles the IOC 2024 *Accipiter →
+Tachyspiza* reclassification.
+
+The dataset is not redistributed; the **scripts** are released
+so any third party can regenerate it under ALA's data-use terms.
+
+---
+
+## Darwin Core export
+
+Every observation captured by the Flask application can be
+exported in **Darwin Core** (DwC) CSV format. The export endpoint
+maps the internal observation schema to the TDWG-controlled
+vocabulary used by ALA / GBIF for biodiversity-data exchange:
+
+| DwC term | Source field |
+|---|---|
+| `scientificName` | `species` |
+| `eventDate` | ISO timestamp |
+| `decimalLatitude` / `decimalLongitude` | optional GPS |
+| `identificationVerificationStatus` | "PredictedAutomated" |
+| `identifiedBy` | this repository + version |
+| `basisOfRecord` | `HumanObservation` |
+
+The mapping logic lives in `gui/app.py::_to_dwc_rows()` and the
+file is downloadable from the `/data` dashboard.
+
+---
+
+## AI methodology
+
+### Architecture
+
+EfficientNetB4 (Tan & Le, *ICML* 2019) initialised from
+ImageNet-1k pretrained weights, with a fresh
+`Linear(1792 → 8)` classification head.
+
+Why EfficientNetB4? Best precision-to-compute ratio in the
+benchmarks of the published literature for fine-grained bird
+classification at the 380-px input typical of citizen-science
+photographs.
+
+### Two-stage transfer learning
+
+- **Stage 1 (10 epochs)** — backbone frozen, only the new head
+  trained at learning rate 1 × 10⁻³.
+- **Stage 2 (20 epochs)** — late blocks unfrozen, whole network
+  fine-tuned at 1 × 10⁻⁴.
+
+Optimiser AdamW (weight decay 1 × 10⁻⁴), cosine annealing
+scheduler with one warm restart, batch size 8, fixed seed 42.
+
+Train-time augmentations: random horizontal flip, random rotation
+±15°, colour-jitter, random erasing. Validation/test splits
+receive no augmentation.
+
+### YOLO-assisted detection
+
+YOLO is used as the detector/cropper before species
+classification. The app first localises bird regions in video
+frames or images, then sends the crop to the EfficientNetB4
+classifier. If the optional `ultralytics` package or local YOLO
+weights are unavailable, the app falls back to the previous
+torchvision COCO bird detector so the demo remains usable.
+
+### Interpretability
+
+Grad-CAM (Selvaraju et al., 2017) heat-maps are generated for
+diagnostic verification that the model attends to morphological
+features (wings, tail, body silhouette) rather than to background
+cues. See `notebooks/gradcam.py` and the thesis-ready 4×2 mosaic
+in `notebooks/gradcam_mosaic.py`.
+
+---
+
+## Evaluation metrics
+
+The validated EfficientNetB4 model (8 species, iNaturalist + ALA
+expanded training set) achieves the following on the held-out
+test split:
+
+| Metric | Value | Interpretation |
+|---|---|---|
+| **Top-1 Accuracy** | **84.95 %** | Proportion of test images whose top-1 prediction matches the true label. |
+| **Macro-F1** | **0.8482** | Harmonic mean of precision and recall, averaged equally across the 8 classes. |
+| Weighted-F1 | 0.8476 | Same as macro-F1 but weighted by class support. |
+| Architecture | EfficientNetB4 | 19 M parameters, ImageNet pretrained. |
+| Training images | 1,590 | Deterministic 80 % split, plus on-the-fly augmentation. |
+| Validation / Test | 196 / 206 | Held-out validation and test partitions. |
+| Bootstrap 95 % CI | Acc. [0.8010, 0.8981]; macro-F1 [0.7964, 0.8935] | Computed from `results/test_predictions.csv` with B=1,000. |
+| Calibration | ECE 0.0639 | Current app-prediction confidence from 10-bin reliability analysis. Temperature-scaling experiment: 0.0592 -> 0.0529 on raw logits. |
+| Family-level accuracy | 92.72 % | Accipitridae/Falconidae grouped confusion. |
+
+### What these numbers mean academically
+
+- **Accuracy of 84.95 %** in an 8-class problem is well above the
+  random baseline (12.5 %) and the majority-class baseline
+  (≈ 14 %). It indicates that the model has learned visual
+  discriminators meaningful at species level, but it leaves
+  roughly one in seven test images mis-classified — a level of
+  error that supports the proposed UI design of always showing
+  top-3 alternatives plus an explicit "I'm not sure" feedback
+  option, rather than presenting the top-1 label as authoritative.
+- **Macro-F1 of 0.8482** indicates balanced performance across the
+  eight species rather than the model exploiting one or two
+  high-support classes; this is the preferred metric on
+  conservation-equity grounds because a rare species
+  mis-identification carries higher ecological cost than a common
+  one.
+- The drop from an earlier iNaturalist-only checkpoint
+  (~80 % accuracy on its smaller, easier test set) reflects a
+  **harder evaluation distribution** — the ALA-expanded test set
+  contains habitat shots, juveniles in atypical plumage, and
+  museum-record photographs absent from the iNat-only model's
+  test set. The current numbers are therefore an honest
+  characterisation of citizen-science conditions, not a
+  regression.
+
+Per-image predictions are written to `results/test_predictions.csv`
+with `image_path,y_true,y_pred,confidence,top3`. Bootstrap CIs,
+calibration and taxonomy-aware error analysis are generated from
+that single auditable file.
+
+---
+
+## Current limitations
+
+This is a research prototype and should be read as such.
+
+1. **Geographic bias.** ~75 % of iNaturalist Australian
+   observations are from south-east Australia (NSW + VIC + ACT).
+   Performance in the NT, WA and remote arid zones is expected
+   to be lower.
+2. **Plumage-stage coverage.** Juveniles and immature plumages
+   are under-represented for several species.
+3. **Per-image splitting.** The train/val/test split is
+   per-image rather than per-observer or per-observation, so
+   there is a residual risk of observation-level leakage.
+   Group-shuffle splits are flagged as future work.
+4. **8-species scope.** The validated model recognises only the
+   8 species above. An observed raptor outside that set will be
+   forced into one of those classes; the UI exposes an explicit
+   "Other — not in 8 species" feedback class to mitigate this.
+5. **Calibration is mild but not perfect.** The current app-output ECE is
+   0.0639, so displayed confidence is useful but should still be
+   treated as model confidence, not biological certainty.
+6. **AUSLAN signs are provisional.** They are programmatically-
+   generated schematic illustrations of a proposed motion, NOT
+   validated AUSLAN. See the AUSLAN section below.
+
+---
+
+## Master's relevance
+
+This repository is positioned as evidence for prospective
+Master's by Research / MPhil applications in Australian
+universities working at the intersection of computer vision,
+conservation biology, and inclusive design (e.g. University of
+Queensland CBCS, ANU Fenner School, UNSW Centre for Ecosystem
+Science, Monash SEAE, James Cook University TESS). It also
+defines a credible bridge to later PhD work. It demonstrates:
+
+- An end-to-end, reproducible deep-learning pipeline applied to
+  an Australian conservation problem.
+- Engagement with Australian biodiversity infrastructure
+  (ALA, GBIF, Darwin Core, EPBC Act listings, IOC taxonomy).
+- A documented commitment to participatory design with a
+  marginalised community (Deaf citizens scientists, via the
+  AUSLAN consultation protocol).
+- The kind of artefacts examiners expect of a Master's-level
+  research project: datasheet, model card, formal methodology
+  document, automated tests, bootstrap CIs, calibration
+  analysis, family-level error analysis, YOLO-assisted detection,
+  Grad-CAM
+  interpretability, and a six-chapter thesis package.
+
+---
+
+## Potential research directions
+
+Several extensions are within the time and scope of a one-to-two
+year MPhil:
+
+- **Stronger detector-assisted identification.** Fine-tune YOLO
+  on Australian raptor boxes instead of relying on COCO bird
+  detections, then quantify whether crop-first classification
+  improves difficult flight and multi-bird scenes.
+- **Acoustic fusion.** Combine the visual model with raptor
+  vocalisation classification (e.g. BirdNET embeddings) for
+  multi-modal field surveys.
+- **Population-level inference.** Integrate model outputs with
+  ALA spatial layers to produce occupancy and detection-probability
+  surfaces consistent with the methods of Guillera-Arroita
+  et al. (2014).
+- **Sub-species disambiguation.** Targeted data collection for
+  *Aquila audax fleayi* and other geographically structured
+  sub-species, with spatial features as auxiliary input.
+- **Domain adaptation across continents.** Compare with the
+  author's prior Mexican raptor dataset (53 species, Veracruz)
+  to test transfer learning between bird communities.
+- **Participatory AUSLAN validation** as a paired computer-
+  science + linguistics study, partnering with Macquarie
+  University's Auslan Signbank or the Deaf Society NSW.
+
+---
+
+## Future expansion to more Australian raptor species
+
+The roadmap in [`docs/SPECIES_ROADMAP.md`](docs/SPECIES_ROADMAP.md)
+sets out three milestones beyond the current eight-species model:
+
+- **v2.0 — 14 species** (adds *Falco berigora*, *Haliaeetus
+  leucogaster*, *Haliastur indus*, *H. sphenurus*, *Milvus
+  migrans*, *Tachyspiza novaehollandiae*). This will reuse the
+  YOLO + EfficientNetB4 pipeline and publish a new model card only
+  after the 14-species checkpoint is trained and evaluated.
+- **v3.0 — ~20 species** including northern Australian taxa
+  (*Aviceda subcristata*, *Macheiramphus alcinus*, *Erythrotriorchis
+  radiatus*).
+- **v4.0 — all 24 diurnal Australian raptors** (target).
+
+Each tier triggers a new datasheet revision, a model card update,
+and a thesis-chapter contribution note.
+
+---
+
+## AUSLAN — explicitly provisional
+
+> The sign vocabulary in this repository is **provisional and
+> illustrative**. The animations are programmatically generated
+> schematic SVGs that visualise a *proposed* sign motion. They
+> are **not** validated AUSLAN.
+>
+> **No sign in this repository can be considered authoritative
+> AUSLAN until it has been validated participatorily with members
+> of the Australian Deaf community.** Every species page in the
+> web app banners its sign card with
+> "PROVISIONAL ILLUSTRATION — pending Deaf community validation".
+>
+> The full participatory validation protocol — consent forms,
+> recommended Deaf-community partners, indicative budget,
+> Macquarie Auslan Signbank contacts — is documented in
+> [`docs/auslan_consultation/`](docs/auslan_consultation/).
 
 ---
 
 ## Quick start
 
 ### Requirements
-- Python 3.10 or newer
+
+- Python 3.13
 - ~6 GB free disk for training data (downloaded automatically)
 - ~200 MB for the trained model weights
-- Optional but recommended: NVIDIA GPU with CUDA 11.8+
+- Optional but recommended for retraining: NVIDIA GPU supported through the official PyTorch CUDA 13.0 build
 
 ### Install
-```bash
-# Clone
-git clone https://github.com/ZOMBIECRAFTIAN/raptor-australia.git
-cd raptor-australia
 
-# Create a Python environment (conda recommended)
-conda create -n raptor_env python=3.10 -y
-conda activate raptor_env
-
-# Install dependencies
-pip install -r requirements.txt
+```powershell
+cd E:\Projects\raptor_australia
+python -m venv .venv-modern
+.\.venv-modern\Scripts\activate
+$env:TEMP = "E:\Projects\raptor_australia\.tmp-pip"
+$env:TMP = "E:\Projects\raptor_australia\.tmp-pip"
+python -m pip install --upgrade pip setuptools wheel
+pip install --no-cache-dir -r requirements.txt
 ```
+
+Conda remains supported through `environment.yml`, but the direct modern setup used for this compatibility update is the local `.venv-modern` environment on `E:`.
+
+### Verify the install
+
+```bash
+python notebooks/run_tests.py
+python notebooks/healthcheck.py
+```
+
+`run_tests.py` executes pytest with a Windows-safe temporary
+directory. `healthcheck.py` then runs syntax, JSON, release-sync,
+YOLO-wrapper, template, YAML and pytest checks. It should print
+`All checks passed — project is presentable.`
 
 ### Build the dataset (skip if you already have one)
-```bash
-# 2,400+ images from the Atlas of Living Australia (no API key)
-python notebooks/download_ala_images.py
-```
-The original iNaturalist scraper used during development is in
-`notebooks/01_download_dataset.ipynb`.
 
-### Train the model (or download pre-trained weights)
-The training notebook (`notebooks/03_training.ipynb`) reproduces the
-EfficientNetB4 fine-tuning end to end. Pre-trained weights
-(`models/best_model.pth`, ~185 MB) are not stored in git due to
-GitHub's file-size limit; contact the author if you need them or
-re-train via the notebook (~1 hour on an RTX 3060).
+```bash
+python notebooks/download_ala_images.py            # all species
+python notebooks/download_ala_images.py --species aquila_audax
+python notebooks/filter_ala_quality.py --use-detector
+```
+
+### Train the model
+
+```bash
+# EfficientNetB4 is the only v1.5 classifier architecture.
+python notebooks/retrain.py --arch efficientnet_b4 --batch-size 4
+```
+
+The run writes `models/best_model.pth`,
+`results/reporte_final.json`, `results/test_report.csv` and
+`results/test_predictions.csv`.
 
 ### Run the web app
+
 ```bash
 cd gui
 python app.py
+# open http://localhost:5000
 ```
-Open <http://localhost:5000>.
+
+### Generate thesis figures and metric files
+
+```bash
+python notebooks/gradcam_mosaic.py
+python notebooks/export_test_predictions.py
+python notebooks/bootstrap_metrics.py --report-md
+python notebooks/error_analysis.py
+python notebooks/calibration_ece.py
+```
 
 ### Convenience launchers
+
 ```bash
 # Linux / macOS
 ./scripts/setup.sh        # one-shot env install
 ./scripts/run.sh          # launches Flask after sanity-checks
 
 # Windows
-scripts\run.bat           # same, native cmd
+scripts\run.bat
 ```
 
-### Run with Docker
-```bash
-# Build (excludes dataset and model — image stays small)
-docker build -t raptor-au .
+### Docker
 
-# Run, mounting the model from the host
+```bash
+docker build -t raptor-au .
 docker run -p 5000:5000 \
     -v "$(pwd)/models:/app/models:ro" \
     raptor-au
 ```
+
 The image runs gunicorn behind the Flask app on port 5000 and
-expects `models/best_model.pth` to be available via the volume
-mount. See the `Dockerfile` for details.
-
----
-
-## What the app does
-
-### `/` — Identify
-Upload a photo. The CNN returns:
-- Top-1 species + confidence
-- Top-3 ranked candidates with confidence bars
-- Species fact panel (habitat, status, diagnostic)
-- Animated **AUSLAN sign motion** (provisional SVG)
-- "Was this correct?" feedback button — corrections feed back into
-  the next training cycle.
-
-### `/species` — Species Guide
-Card grid of all eight species with:
-- Hero image (full-body, automatically picked from the dataset)
-- Quick stats (EPBC, length, wingspan)
-- Field diagnostic
-- Detailed species profile (Merlin-Bird-ID style: distribution,
-  diet, behaviour, migration, nesting, breeding season,
-  best months to observe, did-you-know fact)
-- AUSLAN sign description
-- Per-class model performance (F1 / Precision / Recall)
-- Training image count
-
-### `/data` — Data dashboard & export
-- Live stats (observations · species recorded · model corrections)
-- Histogram of observations per species
-- Three downloads:
-  - Internal CSV (your raw observations)
-  - **Darwin Core CSV** — ready to upload to the
-    [Atlas of Living Australia](https://www.ala.org.au) or any
-    GBIF publisher
-  - Feedback log — input for the next retraining cycle
-
----
-
-## Architecture
-
-```
-Input image (JPG/PNG/TIFF/WebP, ≤ 16 MB)
-        │
-        ▼
-┌──────────────────────────┐
-│  Pre-processing           │  Resize 420 → CenterCrop 380
-│  ImageNet normalisation   │
-└──────────────────────────┘
-        │
-        ▼
-┌──────────────────────────┐
-│  EfficientNetB4 backbone  │  Pre-trained on ImageNet (1.2 M images)
-│  (frozen during stage 1)  │
-├──────────────────────────┤
-│  Custom classifier head    │  Dropout(0.4) + Linear(1792→512)
-│  (8 species output)        │  + ReLU + Dropout(0.2) + Linear(512→8)
-└──────────────────────────┘
-        │
-        ▼
-   Softmax probabilities  ─►  Top-3 species + confidences
-                              + species fact panel
-                              + AUSLAN sign motion
-```
-
-**Why EfficientNetB4?** Best precision/efficiency trade-off in our
-benchmarks for in-flight bird classification. Compared with ResNet-50
-(83.0% top-1 ImageNet) it delivers comparable accuracy with fewer
-parameters (19 M vs. 25 M), is small enough for CPU inference, and
-the 380-px input matches the typical resolution of citizen-science
-photos (Tan & Le, *ICML* 2019; Chen et al., 2021).
+expects `models/best_model_efficientnet_b4.pth` (or the legacy
+`best_model.pth`) at the mounted volume.
 
 ---
 
@@ -208,171 +510,75 @@ photos (Tan & Le, *ICML* 2019; Chen et al., 2021).
 
 ```
 raptor-australia/
-├── README.md, LICENSE, requirements.txt, .gitignore
-│
-├── dataset/                    (mostly excluded from git — too large)
-│   ├── raw/                    — ~5,000 source images, 8 species
-│   ├── processed/              — train/val/test splits (380 px)
-│   ├── metadata/               — per-species CSV logs ✅ in git
-│   └── feedback/               — user-submitted corrections
-│
-├── models/
-│   └── best_model.pth          (185 MB — excluded from git)
-│
-├── notebooks/
-│   ├── 01_download_dataset.ipynb       — iNaturalist scraper
-│   ├── 02_preprocessing.ipynb          — resize, augment, split
-│   ├── 03_training.ipynb               — EfficientNetB4 fine-tuning
-│   ├── 04_evaluation.ipynb             — metrics + confusion matrix
-│   ├── download_ala_images.py          — Atlas of Living Australia
-│   ├── pick_hero_images.py             — quality-aware hero picker
-│   └── generate_auslan_svgs.py         — sign animation generator
-│
-├── gui/
-│   ├── app.py                  — Flask backend, model serving, exports
-│   ├── species_data.py         — Merlin-style species profiles
-│   ├── templates/              — index.html, species.html, data.html
-│   └── static/
-│       ├── css/style.css       — full UI stylesheet
-│       ├── img/species/        — 8 hero JPGs (auto-picked)
-│       └── auslan_videos/      — 8 SVG sign animations
+├── README.md, LICENSE, CHANGELOG.md, CITATION.cff
+├── RELEASE_MANIFEST_v1_5.md       — release files + SHA-256 hashes
+├── requirements.txt, requirements-lock.txt, environment.yml, Dockerfile, .gitignore
 │
 ├── docs/
-│   └── auslan_consultation/
-│       ├── README.md, sign_descriptions.md
-│       ├── email_template.md, validation_protocol.md
-│       ├── budget_estimate.md, contacts.md
+│   ├── METHODOLOGY.md            — formal Chapter 3 methodology
+│   ├── DATASHEET.md              — dataset datasheet (Gebru 2021)
+│   ├── MODEL_CARD.md             — model card (Mitchell 2019)
+│   ├── THESIS.md                 — formal chapters 1-6 draft
+│   ├── Australian_Raptor_Thesis_v1_5.docx — thesis manuscript
+│   ├── Australian_Raptor_Thesis_v1_5.pdf  — exported thesis PDF
+│   ├── DEFENSE_CHECKLIST.md      — oral defense preparation
+│   ├── DEMO_SCRIPT.md            — live demo sequence
+│   ├── MASTERS_RESEARCH_PROPOSAL.md — Master's/MPhil proposal
+│   ├── MASTERS_PRESENTATION_OUTLINE.md — presentation slide plan
+│   ├── SCIENTIFIC_DEFENSIBILITY.md — validity threats + claim boundaries
+│   ├── SPLIT_GOVERNANCE.md       — leakage audit and split policy
+│   ├── MODEL_REGISTRY.md         — checkpoint hash + class order
+│   ├── LIMITATIONS.md            — claims to avoid and validity threats
+│   ├── CONTROLLED_DEMO_SET.md    — repeatable demo image set
+│   ├── SPECIES_ROADMAP.md        — 8 → 14 → 24 species roadmap
+│   ├── TAXONOMY_VERSIONING.md    — IOC reclassification audit
+│   ├── SETUP.md                  — step-by-step env setup
+│   └── auslan_consultation/      — participatory validation kit
+│
+├── notebooks/
+│   ├── retrain.py                — EfficientNetB4 transfer learning
+│   ├── export_test_predictions.py — per-image thesis predictions
+│   ├── gradcam.py, gradcam_mosaic.py
+│   ├── bootstrap_metrics.py      — 95 % CIs (Efron 1979)
+│   ├── error_analysis.py         — family-level confusion
+│   ├── calibration_ece.py        — ECE + reliability diagram
+│   ├── temperature_scaling.py    — post-hoc calibration
+│   ├── build_thesis_docx.py      — reproducible thesis DOCX build
+│   ├── audit_thesis_docx.py      — structural DOCX QA fallback
+│   ├── export_thesis_pdf.ps1     — Word COM PDF export
+│   ├── audit_thesis_pdf.py       — PDF text/metadata audit
+│   ├── build_release_manifest.py — SHA-256 release manifest
+│   ├── audit_dataset_leakage.py  — duplicate/leakage audit
+│   ├── yolo_crop_ablation.py     — YOLO-crop vs whole-image report
+│   ├── top3_utility.py           — top-3 citizen-science utility
+│   ├── build_model_registry.py   — checkpoint registry entry
+│   ├── build_controlled_demo_set.py — presentation demo set
+│   ├── fetch_ebird_data.py       — eBird recent-observations
+│   ├── download_ala_images.py    — Atlas of Living Australia
+│   ├── filter_ala_quality.py     — detector-assisted quality filter
+│   ├── generate_auslan_svgs.py   — provisional sign animations
+│
+├── gui/
+│   ├── app.py, yolo_detector.py, species_data.py
+│   ├── species_data_i18n.py, i18n.py
+│   ├── templates/                — index, species, data, lang picker
+│   ├── translations/             — 10-language UI strings
+│   └── static/
+│       ├── css/, img/species/
+│       ├── auslan_videos/        — provisional SVG sign animations
+│       └── behavior_videos/      — optional ALA video tiles
+│
+├── scripts/setup.sh, run.sh, run.bat
 │
 └── results/
-    ├── reporte_final.json      — global + per-species metrics
-    ├── test_report.csv         — sklearn classification_report
-    ├── training_history.csv    — loss/accuracy per epoch
-    └── *.png                   — confusion matrix, learning curves, F1 chart
+    ├── reporte_final.json        — global + per-species metrics
+    ├── test_report.csv           — sklearn classification_report
+    ├── test_predictions.csv      — auditable per-image predictions
+    ├── bootstrap_ci_efficientnet_b4.* — confidence intervals
+    ├── error_analysis_efficientnet_b4.* — family-aware errors
+    ├── calibration_efficientnet_b4.json — app-output ECE
+    └── yolo_crop_ablation.*      — YOLO crop policy evidence
 ```
-
----
-
-## Performance
-
-Final test set: **490 images held out** during training (no leakage).
-
-| Metric | Value |
-|---|---|
-| Accuracy | **75.6 %** |
-| F1-macro | **0.758** |
-| F1-weighted | 0.756 |
-| Architecture | EfficientNetB4 (transfer learning) |
-| Training images | ~3,975 (80 % split, +augmentation) |
-| Val / Test images | 497 / 503 |
-| Training time | ~106 min on RTX 3060 |
-
-> **A note on the metric drop vs. v1.0.0.** The original model
-> trained only on iNaturalist Australia (~2,400 images) reached
-> F1-macro 0.78 on its own iNat-style test set. Retraining on
-> the *expanded* iNaturalist + Atlas of Living Australia dataset
-> (~5,000 images) brought F1-macro down to 0.76 — but this is
-> evaluated on a substantially **harder** test set that includes
-> habitat shots, juveniles in atypical plumage, and museum-record
-> photographs that the iNat-only model never had to handle. The
-> v1.1 model is therefore **more robust to real-world citizen
-> science conditions**, even if its headline F1 is slightly
-> lower than the v1.0 number. Per-species results show
-> Black-shouldered Kite and Little Eagle improved with the
-> larger dataset, while Spotted Harrier and Brown Goshawk
-> dropped because ALA contributes more juvenile records for
-> those species, which the model now needs to learn to handle.
-
-Per-class performance and learning curves are visualised in
-[`results/`](results/).
-
----
-
-## Methodology depth (v1.4+)
-
-The project ships with several research-grade tools designed
-to be used directly in the MPhil thesis defence:
-
-### Multi-architecture comparison
-
-`notebooks/retrain.py` now supports four backbones via the
-`--arch` flag:
-
-```bash
-python notebooks/retrain.py --arch efficientnet_b4
-python notebooks/retrain.py --arch resnet50
-python notebooks/retrain.py --arch mobilenet_v3_large
-python notebooks/retrain.py --arch convnext_tiny
-```
-
-Each run writes its own `models/best_model_<arch>.pth` and
-`results/reporte_final_<arch>.json`, so running all four lets you
-populate the comparison table in Chapter 3.4 of the thesis.
-
-### Grad-CAM interpretability
-
-`notebooks/gradcam.py` produces the activation heat-map for a
-single image — verifies the model is attending to morphological
-features (wings, tail, body) rather than background. The
-companion `notebooks/gradcam_mosaic.py` runs Grad-CAM on one
-representative image per species and stitches a single 4×2 figure
-ready to drop into the thesis (`results/gradcam_mosaic.png`).
-
-```bash
-python notebooks/gradcam.py --image dataset/raw/aquila_audax/<file>.jpg
-python notebooks/gradcam_mosaic.py
-```
-
-### Thesis chapters scaffolding
-
-[`docs/CHAPTERS_OUTLINE.md`](docs/CHAPTERS_OUTLINE.md) — full
-five-chapter outline (Introduction, Theoretical Framework,
-Methodology, Results, Conclusions) ready for writing.
-
-### Taxonomy versioning
-
-[`docs/TAXONOMY_VERSIONING.md`](docs/TAXONOMY_VERSIONING.md) —
-formal audit log of every taxonomic reclassification applied
-(Accipiter → Tachyspiza per IOC 2024) and the process for future
-updates. Mirrors the equivalent file in the author's prior
-project (raptors-cnn, Veracruz, México).
-
-### Species roadmap
-
-[`docs/SPECIES_ROADMAP.md`](docs/SPECIES_ROADMAP.md) — three-tier
-plan to grow from the current 8 species to the full ~24 diurnal
-raptors of Australia (v2.0 / v3.0 / v4.0 milestones).
-
----
-
-## Re-deriving the catalogue hero images
-
-After downloading the Atlas of Living Australia images
-(`download_ala_images.py`), regenerate the catalogue thumbnails
-with quality-aware bird detection:
-
-```bash
-python notebooks/pick_hero_images.py --use-detector --apply
-```
-
-The picker scores every candidate image with sharpness, resolution
-and a Faster R-CNN bird-bounding-box criterion (full-body shots
-score highest). Output:
-- `gui/static/img/species/<species>.jpg` — the picked hero
-- `results/hero_candidates_<species>.jpg` — top-6 contact sheet
-- `results/hero_scores.csv` — full ranking table
-
----
-
-## AUSLAN consultation
-
-The sign vocabulary in this project is **provisional**. Every screen
-labels it as such. The full participatory validation methodology —
-including draft consent forms, recommended Deaf community contacts,
-and a budget — is in
-[`docs/auslan_consultation/`](docs/auslan_consultation/).
-
-Validation is required before any sign in this repository can be
-considered authoritative AUSLAN.
 
 ---
 
@@ -380,45 +586,30 @@ considered authoritative AUSLAN.
 
 ```bibtex
 @software{fernandez_raptor_au_2026,
-  author    = {Fernández Báez, Brian},
+  author    = {Fernández-Báez, Brian},
   title     = {Australian Raptor CNN + AUSLAN: Deep learning
                identification of Australian birds of prey with
-               inclusive sign-language vocabulary},
-  version   = {1.0},
+               provisional sign-language vocabulary},
   year      = {2026},
   url       = {https://github.com/ZOMBIECRAFTIAN/raptor-australia},
-  license   = {MIT}
+  license   = {MIT},
+  note      = {Master's-level research prototype prepared for
+               prospective Master's by Research / MPhil
+               applications in Australia, with a future PhD path.}
 }
 ```
 
 ---
 
-## Roadmap
-
-- [x] Dataset curation (iNaturalist + Atlas of Living Australia)
-- [x] EfficientNetB4 fine-tuning v1.0 (iNat-only: Acc 80.8 %, F1 0.78)
-- [x] Retraining v1.1 on iNat + ALA dataset (Acc 75.6 %, F1 0.76 — harder benchmark)
-- [x] Flask web app with feedback loop
-- [x] Species catalogue with Merlin-style profiles
-- [x] AUSLAN sign animations (provisional)
-- [x] Darwin Core export to ALA / GBIF
-- [ ] Validated AUSLAN videos (pending Deaf community consultation)
-- [ ] Re-train with feedback corrections (target: F1 ≥ 0.85)
-- [ ] Mobile-responsive frontend (PWA)
-- [ ] Spatial heatmap of observations
-
----
-
 ## Acknowledgements
 
-- **University of Queensland** — Centre for Biodiversity and
-  Conservation Science (CBCS) for inspiring the Australian focus.
-- **Atlas of Living Australia** for the open biodiversity API.
+- **Atlas of Living Australia** — for the open biodiversity API.
 - **iNaturalist Australia** community contributors.
-- **Pronatura Veracruz** (Mexico) — original raptor migration
+- **Pronatura Veracruz** (Mexico) — the original raptor migration
   context that seeded this project.
-- **Deaf Society of NSW** and **Auslan Signbank** (Macquarie
-  University) — pending consultation partners.
+- **Auslan Signbank** (Macquarie University) and the **Deaf
+  Society of NSW** — listed as prospective consultation partners
+  for the participatory AUSLAN validation.
 
 ---
 
@@ -426,20 +617,25 @@ considered authoritative AUSLAN.
 
 MIT — see [`LICENSE`](LICENSE).
 
-Note that **bird images**, **the AUSLAN vocabulary**, and the
-**model weights** have additional terms documented in `LICENSE`.
+Bird image licences are per-image (CC0 / CC-BY / CC-BY-NC),
+captured in `dataset/metadata/sources_log.csv` at download time.
+The provisional AUSLAN sign illustrations are also MIT-licensed,
+but please note the explicit caveat above: they should not be
+treated as authoritative AUSLAN.
 
 ---
 
 ## Contact
 
-**Brian Fernández Báez** — Computer Systems Engineer
-(Ingeniero en Sistemas Computacionales, with a specialisation in
-Advanced Computational Concurrency), Instituto Tecnológico Nacional
-de México — Campus Veracruz. Independent researcher building deep
-learning + accessibility tools for biodiversity. MPhil candidate,
-University of Queensland (application 2026).
+**Brian Fernández-Báez** — Computer Systems Engineer (Ingeniero
+en Sistemas Computacionales, specialisation in Advanced
+Computational Concurrency), Instituto Tecnológico Nacional de
+México, Campus Veracruz.
 
-For collaboration enquiries (especially Deaf community partners and
-Australian raptor researchers), please open an issue on this
-repository or email via the address listed on my GitHu
+Independent researcher building deep-learning and accessibility
+tools for biodiversity, currently preparing Master's by Research
+/ MPhil applications in Australia with a future PhD pathway.
+
+For collaboration enquiries — in particular from Deaf-community
+partners and Australian raptor researchers — please open a GitHub
+Issue on this repository.

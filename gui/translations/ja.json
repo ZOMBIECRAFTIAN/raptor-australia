@@ -7,7 +7,7 @@
   "app": {
     "title": "オーストラリア猛禽類 CNN",
     "footer_credit": "Australian Raptor CNN + AUSLAN | Brian Fernández Báez | クイーンズランド大学 MPhil 研究計画",
-    "footer_model": "モデル:EfficientNetB4 | 精度:75.6% | F1-macro:0.76 | データセット:iNaturalist Australia + ALA(約5,000枚)"
+    "footer_model": "モデル:YOLO + EfficientNetB4 | 精度:84.95% | F1-macro:0.848 | データセット:iNaturalist Australia + ALA(処理済み1,992枚)"
   },
   "nav": {
     "identify": "識別",
@@ -77,7 +77,7 @@
     "trained_on_suffix": "枚",
     "identify_button": "この種を識別 →",
     "footer_title": "モデルがこれらの種をどう認識するか",
-    "footer_text": "CNN は iNaturalist Australia と Atlas of Living Australia の合計約 4,970 枚で再学習され、EfficientNetB4(ImageNet 事前学習)による転移学習で 30 epoch ファインチューニングしました。テスト精度は 75.6 %、8 種の F1-macro は 0.76 です。種別の F1 は 0.69(ハヤブサ)〜 0.85(クロカタシロガシラトビ)です。",
+    "footer_text": "v1.5 は YOLO で鳥を局在化し、EfficientNetB4 で 8 種を分類します。iNaturalist Australia と Atlas of Living Australia の処理済み 1,992 枚を使用し、テスト精度は 84.95 %、F1-macro は 0.8482 です。",
     "references": "参考文献:Olsen ほか (1993);Marchant & Higgins (1993);Debus (1998);DAWE (2021);Atlas of Living Australia (2024)。",
     "profile_title": "📖 種プロファイル",
     "distribution": "分布",

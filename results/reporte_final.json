@@ -1,27 +1,27 @@
 {
-  "modelo": "EfficientNetB4",
-  "dataset": "iNaturalist + ALA (post-expansion)",
-  "total_test_images": 206,
+  "modelo": "EfficientNetB4 + YOLO adaptive policy",
+  "dataset": "iNaturalist + ALA (v1.5 processed split)",
+  "total_test_images": 217,
   "metricas_globales": {
-    "accuracy": 0.8495,
-    "f1_macro": 0.8478,
-    "f1_weighted": 0.8477
+    "accuracy": 0.8571,
+    "f1_macro": 0.8508,
+    "f1_weighted": 0.8567
   },
   "objetivos": {
     "accuracy_80": true,
-    "f1_macro_85": false
+    "f1_macro_85": true
   },
   "por_especie": {
     "Wedge-tailed Eagle": {
-      "precision": 0.8846,
-      "recall": 1.0,
-      "f1": 0.9388,
-      "support": 23
+      "precision": 0.8684,
+      "recall": 0.9706,
+      "f1": 0.9167,
+      "support": 34
     },
     "Spotted Harrier": {
-      "precision": 0.8966,
-      "recall": 0.8125,
-      "f1": 0.8525,
+      "precision": 0.9,
+      "recall": 0.8438,
+      "f1": 0.871,
       "support": 32
     },
     "Black-shouldered Kite": {
@@ -31,35 +31,45 @@
       "support": 27
     },
     "Nankeen Kestrel": {
-      "precision": 0.875,
-      "recall": 0.6364,
-      "f1": 0.7368,
+      "precision": 0.9412,
+      "recall": 0.7273,
+      "f1": 0.8205,
       "support": 22
     },
     "Peregrine Falcon": {
-      "precision": 0.9048,
-      "recall": 0.8261,
-      "f1": 0.8636,
+      "precision": 0.8571,
+      "recall": 0.7826,
+      "f1": 0.8182,
       "support": 23
     },
     "Little Eagle": {
-      "precision": 0.8261,
-      "recall": 0.8636,
-      "f1": 0.8444,
+      "precision": 0.85,
+      "recall": 0.7727,
+      "f1": 0.8095,
       "support": 22
     },
     "Square-tailed Kite": {
-      "precision": 0.8846,
-      "recall": 0.92,
-      "f1": 0.902,
+      "precision": 0.7742,
+      "recall": 0.96,
+      "f1": 0.8571,
       "support": 25
     },
     "Brown Goshawk": {
-      "precision": 0.8182,
+      "precision": 0.9643,
       "recall": 0.8438,
-      "f1": 0.8308,
+      "f1": 0.9,
       "support": 32
     }
+  },
+  "prediction_distribution": {
+    "aquila_audax": 38,
+    "circus_assimilis": 30,
+    "elanus_axillaris": 32,
+    "falco_cenchroides": 17,
+    "falco_peregrinus": 21,
+    "hieraaetus_morphnoides": 20,
+    "lophoictinia_isura": 31,
+    "tachyspiza_fasciata": 28
   },
   "training_config": {
     "epochs_s1": 10,
@@ -68,5 +78,11 @@
     "lr_s1": 0.001,
     "lr_s2": 0.0001,
     "seed": 42
+  },
+  "inference_config": {
+    "classifier": "EfficientNetB4",
+    "detector": "YOLOv8n COCO bird class",
+    "crop_policy": "adaptive",
+    "temperature": 0.6934510469436646
   }
 }

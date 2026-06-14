@@ -1,0 +1,22 @@
+{
+  "pdf_path": "E:\\Projects\\raptor_australia\\docs\\Australian_Raptor_Thesis_v1_5.pdf",
+  "file_size_bytes": 528946,
+  "page_count": 16,
+  "metadata": {
+    "/Producer": "Microsoft\u00ae Word para Microsoft 365",
+    "/Creator": "Microsoft\u00ae Word para Microsoft 365",
+    "/CreationDate": "D:20260614070113-06'00'",
+    "/ModDate": "D:20260614070113-06'00'"
+  },
+  "text_characters": 14110,
+  "missing_text": [],
+  "checks": {
+    "pdf_exists": true,
+    "pdf_size_gt_100kb": true,
+    "page_count_gt_8": true,
+    "extractable_text_gt_5000_chars": true,
+    "required_text_present": true
+  },
+  "passed": true,
+  "note": "Text/PDF structural audit only. Visual page QA requires a rasterizer such as LibreOffice, Poppler, Ghostscript or ImageMagick."
+}

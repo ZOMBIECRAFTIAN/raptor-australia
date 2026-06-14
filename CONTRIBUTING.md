@@ -65,8 +65,8 @@ depends on it.
 ### Direct image uploads
 
 The dataset is not stored in git. Use
-`notebooks/download_ala_images.py` (no API key) or the iNaturalist
-scraper in `01_download_dataset.ipynb` to rebuild it locally.
+`notebooks/download_ala_images.py` (no API key) and `notebooks/retrain.py`
+to rebuild the dataset splits locally.
 
 ### Production-grade demands
 

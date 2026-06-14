@@ -1,0 +1,23 @@
+{
+  "status": "completed",
+  "yolo_weights": "E:\\Projects\\raptor_australia\\models\\yolov8n.pt",
+  "n_yolo_detections": 166,
+  "metrics": {
+    "whole_image": {
+      "n": 217,
+      "accuracy": 0.8387096774193549,
+      "mean_confidence": 75.18064516129033
+    },
+    "yolo_crop": {
+      "n": 217,
+      "accuracy": 0.815668202764977,
+      "mean_confidence": 73.67649769585253
+    },
+    "adaptive": {
+      "n": 217,
+      "accuracy": 0.8571428571428571,
+      "mean_confidence": 80.25806451612904
+    }
+  },
+  "note": "This is an inference ablation with the same EfficientNetB4 checkpoint. It does not retrain the classifier on cropped images."
+}

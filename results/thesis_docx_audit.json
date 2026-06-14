@@ -1,0 +1,49 @@
+{
+  "docx_path": "E:\\Projects\\raptor_australia\\docs\\Australian_Raptor_Thesis_v1_5.docx",
+  "paragraphs": 122,
+  "headings": [
+    "Contents",
+    "Abstract",
+    "Chapter 1. Introduction",
+    "Research Questions",
+    "Contributions",
+    "Chapter 2. Literature Review",
+    "Chapter 3. Methodology",
+    "Dataset",
+    "Pipeline",
+    "Reproducibility",
+    "Chapter 4. Results",
+    "Chapter 5. Software, Accessibility and Data Interoperability",
+    "Chapter 6. Discussion and Conclusion",
+    "Limitations",
+    "Future Work",
+    "Appendix A. Dataset Datasheet Summary",
+    "Appendix B. Model Card Summary",
+    "Appendix C. Reproducibility Checklist",
+    "Appendix D. Defence Demonstration Script",
+    "Appendix E. Release Package",
+    "Bibliography"
+  ],
+  "missing_headings": [],
+  "tables": 10,
+  "embedded_media_files": [
+    "word/media/image1.png",
+    "word/media/image2.png",
+    "word/media/image3.png"
+  ],
+  "checks": {
+    "docx_exists": true,
+    "required_headings_present": true,
+    "has_tables": true,
+    "has_embedded_figures": true,
+    "has_results_metrics": true,
+    "has_yolo": true,
+    "has_efficientnetb4": true,
+    "has_darwin_core": true,
+    "has_auslan_caution": true,
+    "styles_include_heading_blue": true,
+    "document_has_page_breaks": true
+  },
+  "passed": true,
+  "note": "Structural DOCX audit only. Visual render QA requires LibreOffice or another DOCX-to-PDF renderer."
+}

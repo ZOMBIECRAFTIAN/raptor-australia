@@ -81,10 +81,10 @@ purpose, voluntary participation, anonymity in any published
 report, payment of honoraria, and the right to withdraw.
 
 **Option 2 — Formal HREC approval (recommended once enrolled in
-MPhil at UQ):** submit the protocol to the UQ Human Research
-Ethics Committee. Plan ~6-8 weeks for approval. The Deaf Society
-of NSW typically requires HREC approval before referring
-participants.
+an Australian Master's by Research, MPhil or future PhD program):** submit the protocol to the
+host university's Human Research Ethics Committee. Plan ~6-8
+weeks for approval. The Deaf Society of NSW typically requires
+HREC approval before referring participants.
 
 A draft consent form (1 page) is in `consent_form_draft.md` (to be
 added once participating organisation specifies their preferred

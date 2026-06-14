@@ -6,6 +6,8 @@ and the project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+- Modernized the direct runtime stack to Python 3.13.9, PyTorch 2.12.0+cu130, torchvision 0.27.0+cu130, NumPy 2.4.6, pandas 3.0.3, Flask 3.1.3 and Ultralytics 8.4.67; installed and validated in E:\Projects\raptor_australia\.venv-modern.
+
 - Replace provisional AUSLAN SVG illustrations with consented
   videos produced with the Deaf community.
 - Spatial heatmap of saved observations.
@@ -16,6 +18,34 @@ and the project adheres to [Semantic Versioning](https://semver.org/).
   `docs/SPECIES_ROADMAP.md`).
 - Family-level head (Accipitridae vs Falconidae) before species
   classification (now that `family` field is in `SPECIES_INFO`).
+
+## [1.5.0] — 2026-06-07
+
+### Added
+- YOLO detector/cropper wrapper (`gui/yolo_detector.py`) for
+  bird localisation before EfficientNetB4 classification.
+- Real pytest suite covering CLASS_ORDER synchronisation, Flask
+  routes, i18n, feedback logging, Darwin Core mapping and YOLO
+  wrapper importability.
+- `results/test_predictions.csv` with per-image
+  `image_path,y_true,y_pred,confidence,top3` for thesis metrics.
+- Bootstrap CI, calibration/ECE and taxonomy-aware error-analysis
+  artefacts generated from `test_predictions.csv`.
+- `docs/THESIS.md` as the formal thesis draft scaffold.
+
+### Changed
+- v1.5 keeps a single classifier architecture: EfficientNetB4.
+  YOLO is the detector; it is not treated as a competing species
+  classifier.
+- README, model card, datasheet, methodology and thesis outline
+  now report the validated 8-species release, 1,992 processed
+  images, 206-image test set, 84.95% accuracy and 0.8478 macro-F1.
+- Healthcheck now uses ASCII-safe output and runs release-sync,
+  YOLO-wrapper and pytest checks in lightweight mode.
+
+### Removed
+- Removed unfinished multi-architecture comparison and ablation
+  aggregation scripts from the v1.5 release path.
 
 ## [1.4.1] — 2026-05-12
 
@@ -122,9 +152,9 @@ of own intellectual work.
   contributors and for the thesis appendix.
 - **`notebooks/fetch_ebird_data.py`** — pulls eBird observation
   metadata (last 30 days per species) via a `.env`-based API key.
-- **`notebooks/download_ala_videos.py`** — fetches CC-licensed
+- **legacy behavior-video utility retired before v1.5** — fetches CC-licensed
   behaviour videos from ALA into `gui/static/behavior_videos/`.
-- **`notebooks/restore_archived.py`** — restores images previously
+- **legacy archive-restore utility retired before v1.5** — restores images previously
   moved to `dataset/raw_archive/` by the quality filter.
 
 ### Changed
@@ -140,7 +170,7 @@ of own intellectual work.
   re-tracking the quality-filter rejects.
 
 ### Added (tooling, not yet retrained)
-- **`notebooks/pick_hero_manual.py`** — interactive Tk GUI for
+- **legacy manual hero-picker utility retired before v1.5** — interactive Tk GUI for
   picking the catalogue hero per species manually (4×3 thumbnail
   grid, click to apply). Faster and more accurate than any
   heuristic for the 8 hero images. Logs each pick to
@@ -221,7 +251,7 @@ bounding-box detector to filter out the lowest-quality records.
   `Accept-Language`; `t('dotted.path')` lookup with English fallback.
 
 ### Changed
-- Hero images regenerated using `pick_hero_images.py --use-detector`
+- Hero images regenerated using `legacy hero-picker workflow retired before v1.5`
   on the post-ALA dataset (Faster R-CNN bird-bbox scoring favours
   full-body, well-framed photographs).
 
@@ -235,7 +265,7 @@ First public release on GitHub.
   (`notebooks/download_ala_images.py`).
 - **Hero image picker** with optional Faster R-CNN bird detection
   for selecting full-body, in-frame catalogue images
-  (`notebooks/pick_hero_images.py --use-detector`).
+  (the legacy hero-picker workflow retired before v1.5).
 - **AUSLAN sign animation generator** producing 8 SMIL-based SVG
   illustrations of the proposed sign motion patterns
   (`notebooks/generate_auslan_svgs.py`).
@@ -282,9 +312,9 @@ First public release on GitHub.
 ## [0.3.0] — 2026-03 (development snapshot)
 
 ### Added
-- Full training pipeline (`03_training.ipynb`): two-stage
+- Legacy training notebook pipeline (retired before v1.5): two-stage
   fine-tuning (10 epochs feature extraction, 20 epochs full).
-- Evaluation notebook (`04_evaluation.ipynb`): per-class metrics,
+- Legacy evaluation notebook (retired before v1.5): per-class metrics,
   confusion matrix, learning curves, F1 plot.
 
 ### Performance

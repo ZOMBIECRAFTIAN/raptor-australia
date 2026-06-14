@@ -1,0 +1,59 @@
+{
+  "n_test": 217,
+  "fine_accuracy": 0.8571428571428571,
+  "family_accuracy": 0.9400921658986175,
+  "cross_family_errors": 13,
+  "cross_family_rate": 0.059907834101382486,
+  "top_confusions": [
+    {
+      "true": "falco_cenchroides",
+      "pred": "elanus_axillaris",
+      "n": 3
+    },
+    {
+      "true": "hieraaetus_morphnoides",
+      "pred": "lophoictinia_isura",
+      "n": 3
+    },
+    {
+      "true": "tachyspiza_fasciata",
+      "pred": "elanus_axillaris",
+      "n": 3
+    },
+    {
+      "true": "circus_assimilis",
+      "pred": "lophoictinia_isura",
+      "n": 2
+    },
+    {
+      "true": "elanus_axillaris",
+      "pred": "falco_peregrinus",
+      "n": 2
+    },
+    {
+      "true": "falco_cenchroides",
+      "pred": "lophoictinia_isura",
+      "n": 2
+    },
+    {
+      "true": "falco_peregrinus",
+      "pred": "circus_assimilis",
+      "n": 2
+    },
+    {
+      "true": "falco_peregrinus",
+      "pred": "elanus_axillaris",
+      "n": 2
+    },
+    {
+      "true": "hieraaetus_morphnoides",
+      "pred": "aquila_audax",
+      "n": 2
+    },
+    {
+      "true": "tachyspiza_fasciata",
+      "pred": "hieraaetus_morphnoides",
+      "n": 2
+    }
+  ]
+}

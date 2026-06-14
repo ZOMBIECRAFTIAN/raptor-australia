@@ -29,22 +29,22 @@ Source list:
 
 Owls (Strigiformes) are intentionally **out of scope**: they are
 nocturnal, ecologically distinct, and would dilute the focus on
-diurnal raptors that the MPhil proposal makes.
+diurnal raptors that the research proposal makes.
 
 ## Full species list
 
-### 🟢 Tier 1 — included in v1.x (8 species, F1-macro 0.76)
+### 🟢 Tier 1 — included in v1.5 (8 species, F1-macro 0.8482)
 
 | Family | Scientific name | Common name | EPBC status | Current F1 |
 |---|---|---|---|---|
-| Accipitridae | *Aquila audax* | Wedge-tailed Eagle | Not listed¹ | 0.71 |
-| Accipitridae | *Hieraaetus morphnoides* | Little Eagle | Not listed | 0.80 |
-| Accipitridae | *Circus assimilis* | Spotted Harrier | Vulnerable (NSW) | 0.77 |
-| Accipitridae | *Tachyspiza fasciata* | Brown Goshawk | Not listed | 0.74 |
-| Accipitridae | *Elanus axillaris* | Black-shouldered Kite | Not listed | 0.85 |
-| Accipitridae | *Lophoictinia isura* | Square-tailed Kite | **Vulnerable (EPBC Act)** | 0.75 |
-| Falconidae | *Falco peregrinus macropus* | Peregrine Falcon | Not listed | 0.69 |
-| Falconidae | *Falco cenchroides* | Nankeen Kestrel | Not listed | 0.75 |
+| Accipitridae | *Aquila audax* | Wedge-tailed Eagle | Not listed¹ | 0.9388 |
+| Accipitridae | *Hieraaetus morphnoides* | Little Eagle | Not listed | 0.8444 |
+| Accipitridae | *Circus assimilis* | Spotted Harrier | Vulnerable (NSW) | 0.8525 |
+| Accipitridae | *Tachyspiza fasciata* | Brown Goshawk | Not listed | 0.8308 |
+| Accipitridae | *Elanus axillaris* | Black-shouldered Kite | Not listed | 0.8136 |
+| Accipitridae | *Lophoictinia isura* | Square-tailed Kite | **Vulnerable (EPBC Act)** | 0.9020 |
+| Falconidae | *Falco peregrinus macropus* | Peregrine Falcon | Not listed | 0.8636 |
+| Falconidae | *Falco cenchroides* | Nankeen Kestrel | Not listed | 0.7368 |
 
 ¹ Tasmanian subspecies *A. a. fleayi* is Endangered under EPBC Act 1999.
 
@@ -101,14 +101,13 @@ reports to `results/out_of_domain_log.csv`.
    quality filtering.
 2. **Quality curation.** Apply `filter_ala_quality.py --use-detector`
    to the expanded raw set.
-3. **Re-architect output layer.** Update
-   `gui/app.py:AustralianRaptorCNN(num_classes=8)` → `num_classes=14`,
-   and add the six new species to `SPECIES_INFO`, `CLASS_ORDER`,
-   `species_data_i18n.py` (all 10 languages).
-4. **Retrain.** `python notebooks/retrain.py`. Expected F1-macro
-   in the 0.72-0.78 range with 14 classes — slightly lower than v1.x
-   because of the added confusion pairs, but covering twice as many
-   species.
+3. **Expand active class order.** Move the six Tier-2 species
+   from roadmap metadata into `CLASS_ORDER` only after matching
+   folders exist in `dataset/processed/`.
+4. **Retrain.** `python notebooks/retrain.py`. The classifier
+   remains EfficientNetB4; YOLO remains the detector/cropper.
+   Expected F1-macro may fall slightly because the added species
+   introduce harder confusion pairs.
 5. **Update artefacts:** README, CHANGELOG, CITATION.cff (bump to
    v2.0.0), per-species hero images, AUSLAN sign descriptions for
    the 6 new species (provisional, with the same disclaimers).
@@ -156,19 +155,22 @@ PhD-thesis scale.
 5. The maintainer will trigger a retraining cycle when at least 3
    new species have been queued.
 
-## How this roadmap maps to the MPhil thesis
+## How this roadmap maps to a prospective MPhil thesis
 
-The thesis can be presented as a **staged research programme**:
+The proposal can be presented as a **staged research programme**:
 
-- **Year 1 (current MPhil work):** v1.x — 8 species, EfficientNetB4
-  transfer learning, prove the feedback-loop + AUSLAN-inclusion
-  methodology works.
-- **Year 2 (proposed extension):** v2.x → v3.x — full Australian
-  raptor community, hierarchical architecture, energy-based OOD,
-  validated AUSLAN videos.
-- **Post-thesis:** v4.x — global raptor identification with
-  open-vocabulary VLMs as a PhD continuation.
+- **Pre-application (current prototype):** v1.x — 8 species,
+  EfficientNetB4 transfer learning, proves that the feedback-
+  loop and AUSLAN-inclusion methodology are technically
+  feasible.
+- **Year 1 (MPhil scope, proposed):** v2.x → v3.x — expand to
+  the full Australian diurnal raptor community, hierarchical
+  architecture, energy-based OOD detection, validated AUSLAN
+  videos.
+- **Post-MPhil (PhD continuation):** v4.x — cross-continental
+  open-vocabulary raptor identification (Mexican corpus +
+  Australian corpus).
 
-This phased approach is exactly the kind of "research programme
-beyond the thesis itself" that admissions committees at UQ
-explicitly look for.
+This phased approach is the kind of "research programme beyond
+a single thesis" that international scholarship and admissions
+committees in Australia commonly look for.

@@ -6,7 +6,7 @@ for each image, whether it is suitable for training. Images that
 fail the filter are MOVED into ``dataset/raw_archive/<species>/``
 (originals preserved — nothing is deleted).
 
-Heuristics (fast, no external models — Faster R-CNN optional):
+Heuristics (fast, no external models — YOLO optional):
 
     1. Image opens cleanly                              [hard fail]
     2. min(width, height) ≥ MIN_DIM                     [hard fail]
@@ -47,9 +47,11 @@ from __future__ import annotations
 
 import argparse
 import csv
+import os
 import shutil
 from datetime import datetime
 from pathlib import Path
+import sys
 from typing import Iterable
 
 from PIL import Image, ImageOps
@@ -74,51 +76,48 @@ BBOX_MAX     = 0.85        # 85% of frame — excludes tight head close-ups
 DETECT_CONF  = 0.45        # confidence threshold for the 'bird' class
 EDGE_MARGIN  = 0.015       # 1.5% of short side — clip-detection slack
 
+GUI_DIR = BASE_DIR / "gui"
+if str(GUI_DIR) not in sys.path:
+    sys.path.insert(0, str(GUI_DIR))
 
-# ─── Faster R-CNN (loaded only with --use-detector) ─────
+# ─── YOLO detector (loaded only with --use-detector) ────
 _detector = None
 
 
+def yolo_weights_path() -> str:
+    configured = os.environ.get("RAPTOR_YOLO_WEIGHTS")
+    if configured:
+        return configured
+    local = BASE_DIR / "models" / "yolov8n.pt"
+    return str(local) if local.exists() else "yolov8n.pt"
+
+
 def lazy_detector():
-    """Lazy-load Faster R-CNN once. Same model as pick_hero_images.py."""
+    """Lazy-load YOLO once. Same detector family as the v1.5 app."""
     global _detector
     if _detector is None:
-        import torch
-        from torchvision.models.detection import (
-            fasterrcnn_resnet50_fpn,
-            FasterRCNN_ResNet50_FPN_Weights,
-        )
-        weights = FasterRCNN_ResNet50_FPN_Weights.DEFAULT
-        _detector = fasterrcnn_resnet50_fpn(
-            weights=weights, box_score_thresh=DETECT_CONF)
-        _detector.eval()
-        _detector._ra_categories = weights.meta["categories"]
-        _detector._ra_torch = torch
+        from yolo_detector import YoloBirdDetector
+
+        _detector = YoloBirdDetector(yolo_weights_path(),
+                                     confidence=DETECT_CONF)
     return _detector
 
 
 def detect_bird(path: Path) -> dict:
     """Return the best bird detection on the image, or {}."""
     det = lazy_detector()
-    torch = det._ra_torch
-    from torchvision.transforms.functional import to_tensor
 
     img = Image.open(path).convert("RGB")
     img = ImageOps.exif_transpose(img)
     W, H = img.size
 
-    with torch.no_grad():
-        out = det([to_tensor(img)])[0]
-
-    cats = det._ra_categories
     best = {}
     best_score = 0.0
-    for i in range(len(out["labels"])):
-        cat = cats[int(out["labels"][i])]
-        sc  = float(out["scores"][i])
-        if cat != "bird" or sc < DETECT_CONF or sc <= best_score:
+    for box in det.detect(img):
+        sc = float(box.confidence)
+        if sc < DETECT_CONF or sc <= best_score:
             continue
-        x0, y0, x1, y1 = [float(v) for v in out["boxes"][i]]
+        x0, y0, x1, y1 = [float(v) for v in box.bbox]
         best = {
             "score": sc,
             "x0": x0, "y0": y0, "x1": x1, "y1": y1,
@@ -269,8 +268,8 @@ def parse_args():
     p.add_argument("--species", default=None,
                    help="Limit to one species_key")
     p.add_argument("--use-detector", action="store_true",
-                   help="Use Faster R-CNN bird detection (slower, but "
-                        "catches dead specimens, feathers, habitat shots)")
+                   help="Use YOLO bird detection (slower, but catches "
+                        "dead specimens, feathers, habitat shots)")
     p.add_argument("--dry-run", action="store_true",
                    help="Just report; don't move any files")
     return p.parse_args()

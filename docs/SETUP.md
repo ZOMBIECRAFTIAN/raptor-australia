@@ -29,25 +29,27 @@ Guía paso a paso desde cero. Todo se ejecuta en **Anaconda Prompt**
 
 ---
 
-## B. Crear el entorno conda (una sola vez)
+## B. Crear el entorno local moderno (una sola vez)
 
-Abre **Anaconda Prompt** (busca "Anaconda Prompt" en el menú Inicio).
+Abre PowerShell o Anaconda Prompt.
 
 ```
-conda create -n raptor_env python=3.10 -y
-conda activate raptor_env
+cd E:\Projects\raptor_australia
+python -m venv .venv-modern
+.\.venv-modern\Scripts\activate
+python -m pip install --upgrade pip setuptools wheel
 ```
 
-El prompt cambia de `(base)` a `(raptor_env)`.
+El prompt cambia de `(base)` a `(.venv-modern)`.
 
 ---
 
 ## C. Clonar el proyecto (una sola vez)
 
 ```
-cd C:\Projects
+cd E:\Projects
 git clone https://github.com/ZOMBIECRAFTIAN/raptor-australia.git
-cd raptor-australia
+cd E:\Projects\raptor_australia
 ```
 
 ---
@@ -55,15 +57,14 @@ cd raptor-australia
 ## D. Instalar dependencias (una sola vez por entorno)
 
 ```
-pip install -r requirements.txt
+$env:TEMP = "E:\Projects\raptor_australia\.tmp-pip"
+$env:TMP = "E:\Projects\raptor_australia\.tmp-pip"
+pip install --no-cache-dir -r requirements.txt
 ```
 
-**Si necesitas PyTorch con GPU (NVIDIA CUDA 11.8):**
+**Si necesitas PyTorch con GPU:**
 
-```
-pip uninstall torch torchvision -y
-pip install torch torchvision --index-url https://download.pytorch.org/whl/cu118
-```
+El entorno moderno instala `torch==2.12.0+cu130` y `torchvision==0.27.0+cu130` desde el índice oficial de PyTorch. En esta máquina se validó con RTX 3050 Laptop GPU y CUDA disponible.
 
 **Verifica que torch ve la GPU:**
 
@@ -96,8 +97,8 @@ Importante: `.env` está en `.gitignore`, **nunca se sube a GitHub**.
 Cada vez que abres una nueva terminal:
 
 ```
-conda activate raptor_env
-cd C:\Projects\raptor_australia
+cd E:\Projects\raptor_australia
+.\.venv-modern\Scripts\activate
 ```
 
 ### Lanzar la aplicación web
@@ -125,7 +126,7 @@ cd ..
 
 ## G. Scripts útiles
 
-Todos se corren desde la raíz del proyecto con `(raptor_env)` activo:
+Todos se corren desde la raíz del proyecto con `(.venv-modern)` activo:
 
 ```
 REM Descargar imágenes ALA
@@ -135,17 +136,8 @@ REM Filtrar imágenes por calidad
 python notebooks/filter_ala_quality.py --use-detector --dry-run
 python notebooks/filter_ala_quality.py --use-detector
 
-REM Restaurar imágenes archivadas
-python notebooks/restore_archived.py --all
-
-REM Re-elegir heros del catálogo manualmente
-python notebooks/pick_hero_manual.py
-
-REM Re-elegir heros automáticamente con detector de aves
-python notebooks/pick_hero_images.py --use-detector --apply
-
 REM Re-entrenar el modelo (~1.5-2 horas en GPU)
-python notebooks/retrain.py
+python notebooks/retrain.py --batch-size 4
 
 REM Datos eBird
 python notebooks/fetch_ebird_data.py
@@ -153,9 +145,41 @@ python notebooks/fetch_ebird_data.py
 REM Generar SVGs AUSLAN
 python notebooks/generate_auslan_svgs.py
 
-REM Descargar videos de comportamiento (ALA)
-python notebooks/download_ala_videos.py
+REM Generar predicciones por imagen para tesis
+python notebooks/export_test_predictions.py
+
+REM Intervalos bootstrap, ECE y análisis de error
+python notebooks/bootstrap_metrics.py --report-md
+python notebooks/calibration_ece.py
+python notebooks/error_analysis.py
+
+REM Generar/auditar tesis y manifiesto de release
+python notebooks/build_thesis_docx.py
+powershell -NoProfile -ExecutionPolicy Bypass -File notebooks\export_thesis_pdf.ps1
+python notebooks/audit_thesis_docx.py
+python notebooks/audit_thesis_pdf.py
+python notebooks/build_release_manifest.py
 ```
+
+### YOLO detector
+
+La release v1.5 usa EfficientNetB4 como clasificador y YOLO como
+detector/cropper. `requirements.txt` instala `ultralytics`. Para
+evitar descargas automáticas durante una demo, coloca los pesos en:
+
+```
+models/yolov8n.pt
+```
+
+O define una ruta explícita:
+
+```
+set RAPTOR_YOLO_WEIGHTS=C:\ruta\a\yolov8n.pt
+```
+
+Si YOLO no está disponible, la ruta de imagen completa sigue
+clasificando con EfficientNetB4, pero el cropping/detector de video
+no cambia a otra arquitectura.
 
 ---
 
@@ -293,4 +317,4 @@ git push
 
 ---
 
-Última actualización: 2026-05-12 · v1.2.0
+Última actualización: 2026-06-13 · v1.5.0

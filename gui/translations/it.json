@@ -7,7 +7,7 @@
   "app": {
     "title": "CNN dei Rapaci Australiani",
     "footer_credit": "Australian Raptor CNN + AUSLAN | Brian Fernández Báez | Proposta MPhil — University of Queensland",
-    "footer_model": "Modello: EfficientNetB4 | Accuratezza: 75,6% | F1-macro: 0,76 | Dataset: iNaturalist Australia + ALA (~5 000 immagini)"
+    "footer_model": "Modello: YOLO + EfficientNetB4 | Accuratezza: 84,95% | F1-macro: 0,848 | Dataset: iNaturalist Australia + ALA (1 992 immagini elaborate)"
   },
   "nav": {
     "identify": "Identifica",
@@ -77,7 +77,7 @@
     "trained_on_suffix": "immagini",
     "identify_button": "Identifica questa specie →",
     "footer_title": "Come il modello riconosce queste specie",
-    "footer_text": "La CNN è stata ri-addestrata su ~4.970 immagini provenienti da iNaturalist Australia e dall'Atlas of Living Australia, mediante transfer learning su EfficientNetB4 (pre-addestrata su ImageNet) e fine-tuning per 30 epoche. L'accuratezza sul test è del 75,6 % con un F1-macro di 0,76 sulle 8 specie. L'F1 per specie va da 0,69 (falco pellegrino) a 0,85 (nibbio bianco australiano).",
+    "footer_text": "La versione v1.5 usa YOLO per localizzare gli uccelli ed EfficientNetB4 per classificare 8 specie su 1 992 immagini elaborate da iNaturalist Australia e dall'Atlas of Living Australia. L'accuratezza sul test è 84,95 % con F1-macro di 0,8478.",
     "references": "Riferimenti: Olsen et al. (1993); Marchant e Higgins (1993); Debus (1998); DAWE (2021); Atlas of Living Australia (2024).",
     "profile_title": "📖 Scheda della specie",
     "distribution": "Distribuzione",

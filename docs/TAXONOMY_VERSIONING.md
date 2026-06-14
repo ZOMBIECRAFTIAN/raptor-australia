@@ -68,7 +68,7 @@ The Australian breeding population is the subspecies
 macropus"* (trinomial), not as the species-level binomial,
 because:
 
-1. UQ thesis examiners would expect the trinomial for an
+1. Australian thesis examiners would expect the trinomial for an
    Australia-only system.
 2. ALA records consistently use the trinomial for Australian
    sightings.

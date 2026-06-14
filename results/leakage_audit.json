@@ -1,0 +1,172 @@
+{
+  "dataset_dir": "C:\\Projects\\raptor_australia\\dataset\\processed",
+  "n_images": 1992,
+  "max_hamming": 4,
+  "counts_by_split": {
+    "train": {
+      "total": 1590,
+      "species": {
+        "aquila_audax": 174,
+        "circus_assimilis": 256,
+        "elanus_axillaris": 208,
+        "falco_cenchroides": 171,
+        "falco_peregrinus": 176,
+        "hieraaetus_morphnoides": 169,
+        "lophoictinia_isura": 189,
+        "tachyspiza_fasciata": 247
+      }
+    },
+    "val": {
+      "total": 196,
+      "species": {
+        "aquila_audax": 21,
+        "circus_assimilis": 32,
+        "elanus_axillaris": 26,
+        "falco_cenchroides": 21,
+        "falco_peregrinus": 22,
+        "hieraaetus_morphnoides": 21,
+        "lophoictinia_isura": 23,
+        "tachyspiza_fasciata": 30
+      }
+    },
+    "test": {
+      "total": 206,
+      "species": {
+        "aquila_audax": 23,
+        "circus_assimilis": 32,
+        "elanus_axillaris": 27,
+        "falco_cenchroides": 22,
+        "falco_peregrinus": 23,
+        "hieraaetus_morphnoides": 22,
+        "lophoictinia_isura": 25,
+        "tachyspiza_fasciata": 32
+      }
+    }
+  },
+  "exact_duplicate_groups": [],
+  "source_id_groups": [],
+  "near_duplicate_pairs": [
+    {
+      "hamming": 0,
+      "a": "dataset/processed/train/circus_assimilis/circus_assimilis_320320273_579131684.jpg",
+      "a_split": "train",
+      "a_species": "circus_assimilis",
+      "b": "dataset/processed/test/circus_assimilis/ala_860404ea-477a-42fc-a572-2bfd4d39fa0b.jpg",
+      "b_split": "test",
+      "b_species": "circus_assimilis"
+    },
+    {
+      "hamming": 0,
+      "a": "dataset/processed/train/hieraaetus_morphnoides/ala_685a613e-2331-4184-8231-3fa938d949d9.jpg",
+      "a_split": "train",
+      "a_species": "hieraaetus_morphnoides",
+      "b": "dataset/processed/val/hieraaetus_morphnoides/hieraaetus_morphnoides_340404286_619458540.jpg",
+      "b_split": "val",
+      "b_species": "hieraaetus_morphnoides"
+    },
+    {
+      "hamming": 2,
+      "a": "dataset/processed/test/circus_assimilis/ala_8bd3a263-8f9d-46e3-98f4-2e9c09ac531d.jpg",
+      "a_split": "test",
+      "a_species": "circus_assimilis",
+      "b": "dataset/processed/train/circus_assimilis/circus_assimilis_313943044_566986707.jpg",
+      "b_split": "train",
+      "b_species": "circus_assimilis"
+    },
+    {
+      "hamming": 2,
+      "a": "dataset/processed/val/circus_assimilis/ala_46992cb4-faa9-4462-961a-96e6ef1db49a.jpg",
+      "a_split": "val",
+      "a_species": "circus_assimilis",
+      "b": "dataset/processed/train/circus_assimilis/circus_assimilis_326952915_592245393.jpg",
+      "b_split": "train",
+      "b_species": "circus_assimilis"
+    },
+    {
+      "hamming": 2,
+      "a": "dataset/processed/val/circus_assimilis/ala_883a5995-e471-43d9-a403-93e5508899e2.jpg",
+      "a_split": "val",
+      "a_species": "circus_assimilis",
+      "b": "dataset/processed/train/circus_assimilis/circus_assimilis_325644281_589637638.jpg",
+      "b_split": "train",
+      "b_species": "circus_assimilis"
+    },
+    {
+      "hamming": 3,
+      "a": "dataset/processed/test/circus_assimilis/circus_assimilis_294763186_530586862.jpg",
+      "a_split": "test",
+      "a_species": "circus_assimilis",
+      "b": "dataset/processed/val/circus_assimilis/ala_192ea4f3-16ea-49fe-a845-00b8f19ec26e.jpg",
+      "b_split": "val",
+      "b_species": "circus_assimilis"
+    },
+    {
+      "hamming": 3,
+      "a": "dataset/processed/test/elanus_axillaris/ala_dfef4d28-e2d4-449a-9293-e637b0878be8.jpg",
+      "a_split": "test",
+      "a_species": "elanus_axillaris",
+      "b": "dataset/processed/val/elanus_axillaris/elanus_axillaris_337260635_613053120.jpg",
+      "b_split": "val",
+      "b_species": "elanus_axillaris"
+    },
+    {
+      "hamming": 3,
+      "a": "dataset/processed/test/hieraaetus_morphnoides/hieraaetus_morphnoides_324404854_587147170.jpg",
+      "a_split": "test",
+      "a_species": "hieraaetus_morphnoides",
+      "b": "dataset/processed/train/hieraaetus_morphnoides/hieraaetus_morphnoides_339805982_618232770.jpg",
+      "b_split": "train",
+      "b_species": "hieraaetus_morphnoides"
+    },
+    {
+      "hamming": 4,
+      "a": "dataset/processed/test/circus_assimilis/ala_7238f997-58d7-44de-8713-a39465b3d21b.jpg",
+      "a_split": "test",
+      "a_species": "circus_assimilis",
+      "b": "dataset/processed/train/circus_assimilis/circus_assimilis_281401042_505489285.jpg",
+      "b_split": "train",
+      "b_species": "circus_assimilis"
+    },
+    {
+      "hamming": 4,
+      "a": "dataset/processed/test/falco_peregrinus/falco_peregrinus_330327982_598967662.jpg",
+      "a_split": "test",
+      "a_species": "falco_peregrinus",
+      "b": "dataset/processed/train/falco_peregrinus/ala_752ff81a-8f46-4796-b6c6-785f55cbc4ee.jpg",
+      "b_split": "train",
+      "b_species": "falco_peregrinus"
+    },
+    {
+      "hamming": 4,
+      "a": "dataset/processed/val/falco_peregrinus/ala_6fb1737a-3bf8-46d8-9bbe-05f78b768116.jpg",
+      "a_split": "val",
+      "a_species": "falco_peregrinus",
+      "b": "dataset/processed/train/falco_peregrinus/ala_b2c5af69-5cbf-498f-8444-91265c0e8017.jpg",
+      "b_split": "train",
+      "b_species": "falco_peregrinus"
+    },
+    {
+      "hamming": 4,
+      "a": "dataset/processed/val/falco_peregrinus/falco_peregrinus_323606526_585572323.jpg",
+      "a_split": "val",
+      "a_species": "falco_peregrinus",
+      "b": "dataset/processed/train/falco_peregrinus/ala_269a9438-2540-4e9b-8487-2f6600b59363.jpg",
+      "b_split": "train",
+      "b_species": "falco_peregrinus"
+    },
+    {
+      "hamming": 4,
+      "a": "dataset/processed/val/lophoictinia_isura/lophoictinia_isura_338531257_615671199.jpg",
+      "a_split": "val",
+      "a_species": "lophoictinia_isura",
+      "b": "dataset/processed/train/lophoictinia_isura/ala_58ad803c-6cb6-409b-8496-d8d09d19d64c.jpg",
+      "b_split": "train",
+      "b_species": "lophoictinia_isura"
+    }
+  ],
+  "n_exact_duplicate_groups": 0,
+  "n_source_id_groups": 0,
+  "n_near_duplicate_pairs": 13,
+  "passed": false,
+  "note": "dHash near-duplicate checks are a screening tool, not a final manual visual audit. Photographer/event leakage requires richer metadata than filenames when not available locally."
+}

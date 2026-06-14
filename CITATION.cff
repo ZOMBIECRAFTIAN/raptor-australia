@@ -2,16 +2,16 @@ cff-version: 1.2.0
 message: "If you use this software, please cite it as below."
 title: "Australian Raptor CNN + AUSLAN: Deep-learning identification of Australian birds of prey with inclusive sign-language vocabulary"
 type: software
-version: "1.2.0"
-date-released: "2026-05-01"
+version: "1.5.0"
+date-released: "2026-06-07"
 license: MIT
 repository-code: "https://github.com/ZOMBIECRAFTIAN/raptor-australia"
 abstract: >-
-  A convolutional neural network (EfficientNetB4 transfer learning)
-  for identifying eight raptor species of southeastern Australia,
-  paired with a provisional Australian Sign Language (AUSLAN)
-  vocabulary for accessible citizen science. The dataset is sourced
-  from iNaturalist Australia and the Atlas of Living Australia.
+  A YOLO-assisted EfficientNetB4 computer-vision pipeline for
+  identifying eight Australian raptor species, paired with a
+  provisional Australian Sign Language (AUSLAN) vocabulary for
+  accessible citizen science. The dataset is sourced from
+  iNaturalist Australia and the Atlas of Living Australia.
   Observations can be exported in Darwin Core format for upload to
   the Atlas of Living Australia and other GBIF data publishers.
 keywords:

@@ -15,7 +15,7 @@ the author's prior project raptors-cnn (Veracruz, México).
 
 Usage (from project root, with raptor_env active):
     python notebooks/gradcam_mosaic.py
-    python notebooks/gradcam_mosaic.py --arch efficientnet_b4
+    python notebooks/gradcam_mosaic.py
     python notebooks/gradcam_mosaic.py --out results/thesis_gradcam.png
 """
 
@@ -48,13 +48,19 @@ DATASET_DIR = BASE_DIR / "dataset" / "raw"
 SEED        = 42
 SPECIES_KEYS = [
     "aquila_audax",
-    "falco_peregrinus",
     "circus_assimilis",
-    "tachyspiza_fasciata",
-    "falco_cenchroides",
     "elanus_axillaris",
-    "lophoictinia_isura",
+    "falco_berigora",
+    "falco_cenchroides",
+    "falco_peregrinus",
+    "haliaeetus_leucogaster",
+    "haliastur_indus",
+    "haliastur_sphenurus",
     "hieraaetus_morphnoides",
+    "lophoictinia_isura",
+    "milvus_migrans",
+    "tachyspiza_fasciata",
+    "tachyspiza_novaehollandiae",
 ]
 
 
@@ -130,8 +136,7 @@ def parse_args():
     p = argparse.ArgumentParser(description=__doc__,
                                 formatter_class=argparse.RawDescriptionHelpFormatter)
     p.add_argument("--arch", default="efficientnet_b4",
-                   choices=["efficientnet_b4", "resnet50",
-                            "mobilenet_v3_large", "convnext_tiny"])
+                   choices=["efficientnet_b4"])
     p.add_argument("--weights", default=str(MODEL_PATH))
     p.add_argument("--out", default=None,
                    help="Output PNG (default: results/gradcam_mosaic.png)")
@@ -142,19 +147,14 @@ def main() -> None:
     args = parse_args()
     random.seed(SEED)
 
-    arch_label = {
-        "efficientnet_b4":    "EfficientNetB4",
-        "resnet50":           "ResNet-50",
-        "mobilenet_v3_large": "MobileNetV3-Large",
-        "convnext_tiny":      "ConvNeXt-Tiny",
-    }.get(args.arch, args.arch)
+    arch_label = "EfficientNetB4"
 
     device = torch.device("cuda" if torch.cuda.is_available()
                           else "cpu")
     print(f"Grad-CAM mosaic — arch={args.arch} · device={device}")
 
     model = build_model(args.arch).to(device)
-    ck = torch.load(args.weights, map_location=device)
+    ck = torch.load(args.weights, map_location=device, weights_only=True)
     if isinstance(ck, dict) and "model_state_dict" in ck:
         model.load_state_dict(ck["model_state_dict"])
     else:
@@ -180,14 +180,20 @@ def main() -> None:
         # SPECIES_LABELS is alphabetical (same order as ImageFolder)
         # — see notebooks/gradcam.py
         true_label = {
-            "aquila_audax":           "Wedge-tailed Eagle",
-            "circus_assimilis":       "Spotted Harrier",
-            "elanus_axillaris":       "Black-shouldered Kite",
-            "falco_cenchroides":      "Nankeen Kestrel",
-            "falco_peregrinus":       "Peregrine Falcon",
-            "hieraaetus_morphnoides": "Little Eagle",
-            "lophoictinia_isura":     "Square-tailed Kite",
-            "tachyspiza_fasciata":    "Brown Goshawk",
+            "aquila_audax":               "Wedge-tailed Eagle",
+            "circus_assimilis":           "Spotted Harrier",
+            "elanus_axillaris":           "Black-shouldered Kite",
+            "falco_berigora":             "Brown Falcon",
+            "falco_cenchroides":          "Nankeen Kestrel",
+            "falco_peregrinus":           "Peregrine Falcon",
+            "haliaeetus_leucogaster":     "White-bellied Sea-Eagle",
+            "haliastur_indus":            "Brahminy Kite",
+            "haliastur_sphenurus":        "Whistling Kite",
+            "hieraaetus_morphnoides":     "Little Eagle",
+            "lophoictinia_isura":         "Square-tailed Kite",
+            "milvus_migrans":             "Black Kite",
+            "tachyspiza_fasciata":        "Brown Goshawk",
+            "tachyspiza_novaehollandiae": "Grey Goshawk",
         }[sp_key]
 
         panels.append({

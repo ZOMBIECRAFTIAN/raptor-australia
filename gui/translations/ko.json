@@ -7,7 +7,7 @@
   "app": {
     "title": "호주 맹금류 CNN",
     "footer_credit": "Australian Raptor CNN + AUSLAN | Brian Fernández Báez | 퀸즐랜드 대학교 MPhil 연구 제안",
-    "footer_model": "모델: EfficientNetB4 | 정확도: 75.6% | F1-macro: 0.76 | 데이터셋: iNaturalist Australia + ALA (~5,000장)"
+    "footer_model": "모델: YOLO + EfficientNetB4 | 정확도: 84.95% | F1-macro: 0.848 | 데이터셋: iNaturalist Australia + ALA (처리된 1,992장)"
   },
   "nav": {
     "identify": "식별",
@@ -77,7 +77,7 @@
     "trained_on_suffix": "장",
     "identify_button": "이 종 식별하기 →",
     "footer_title": "모델이 이 종들을 어떻게 인식하는지",
-    "footer_text": "CNN은 iNaturalist Australia와 Atlas of Living Australia에서 가져온 약 4,970장의 이미지로 재학습되었으며, EfficientNetB4(ImageNet 사전 학습)에 대한 전이 학습 방식으로 30 에포크 동안 미세 조정되었습니다. 테스트 정확도는 75.6 %, 8종의 F1-macro는 0.76입니다. 종별 F1은 0.69(매)에서 0.85(검은어깨솔개)까지입니다.",
+    "footer_text": "v1.5는 YOLO로 새를 위치 검출하고 EfficientNetB4로 8종을 분류합니다. iNaturalist Australia와 Atlas of Living Australia의 처리된 1,992장을 사용하며, 테스트 정확도는 84.95 %, F1-macro는 0.8482입니다.",
     "references": "참고문헌: Olsen 외 (1993); Marchant & Higgins (1993); Debus (1998); DAWE (2021); Atlas of Living Australia (2024).",
     "profile_title": "📖 종 프로필",
     "distribution": "분포",

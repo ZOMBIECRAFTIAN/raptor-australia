@@ -1,0 +1,503 @@
+{
+  "n": 217,
+  "top1_accuracy": 0.8571428571428571,
+  "top3_accuracy": 0.9493087557603687,
+  "top3_gain": 0.09216589861751152,
+  "top3_rescued_count": 20,
+  "top3_rescued_examples": [
+    {
+      "image_path": "dataset/processed/test/aquila_audax/ala_692b1d59-4038-4157-be42-e4df6a69288f.jpg",
+      "y_true": "aquila_audax",
+      "y_pred": "circus_assimilis",
+      "confidence": "88.5",
+      "top3": [
+        {
+          "label": "circus_assimilis",
+          "confidence": 88.5
+        },
+        {
+          "label": "aquila_audax",
+          "confidence": 10.3
+        },
+        {
+          "label": "lophoictinia_isura",
+          "confidence": 0.6
+        }
+      ]
+    },
+    {
+      "image_path": "dataset/processed/test/circus_assimilis/ala_0d542178-f851-4bed-a9e6-ff6c0cbf8e85.jpg",
+      "y_true": "circus_assimilis",
+      "y_pred": "falco_cenchroides",
+      "confidence": "83.0",
+      "top3": [
+        {
+          "label": "falco_cenchroides",
+          "confidence": 83.0
+        },
+        {
+          "label": "circus_assimilis",
+          "confidence": 10.5
+        },
+        {
+          "label": "hieraaetus_morphnoides",
+          "confidence": 1.9
+        }
+      ]
+    },
+    {
+      "image_path": "dataset/processed/test/circus_assimilis/ala_93a8b63e-d23f-492e-a759-48f687e2ed4e.jpg",
+      "y_true": "circus_assimilis",
+      "y_pred": "lophoictinia_isura",
+      "confidence": "93.8",
+      "top3": [
+        {
+          "label": "lophoictinia_isura",
+          "confidence": 93.8
+        },
+        {
+          "label": "circus_assimilis",
+          "confidence": 5.5
+        },
+        {
+          "label": "hieraaetus_morphnoides",
+          "confidence": 0.5
+        }
+      ]
+    },
+    {
+      "image_path": "dataset/processed/test/circus_assimilis/ala_ba8c3d83-02a6-4a28-9c59-0d79daae3897.jpg",
+      "y_true": "circus_assimilis",
+      "y_pred": "lophoictinia_isura",
+      "confidence": "73.3",
+      "top3": [
+        {
+          "label": "lophoictinia_isura",
+          "confidence": 73.3
+        },
+        {
+          "label": "circus_assimilis",
+          "confidence": 21.5
+        },
+        {
+          "label": "aquila_audax",
+          "confidence": 1.9
+        }
+      ]
+    },
+    {
+      "image_path": "dataset/processed/test/circus_assimilis/circus_assimilis_330057774_598418700.jpg",
+      "y_true": "circus_assimilis",
+      "y_pred": "tachyspiza_fasciata",
+      "confidence": "52.5",
+      "top3": [
+        {
+          "label": "tachyspiza_fasciata",
+          "confidence": 52.5
+        },
+        {
+          "label": "circus_assimilis",
+          "confidence": 43.5
+        },
+        {
+          "label": "falco_cenchroides",
+          "confidence": 2.2
+        }
+      ]
+    },
+    {
+      "image_path": "dataset/processed/test/elanus_axillaris/ala_dfef4d28-e2d4-449a-9293-e637b0878be8.jpg",
+      "y_true": "elanus_axillaris",
+      "y_pred": "falco_peregrinus",
+      "confidence": "85.4",
+      "top3": [
+        {
+          "label": "falco_peregrinus",
+          "confidence": 85.4
+        },
+        {
+          "label": "elanus_axillaris",
+          "confidence": 8.4
+        },
+        {
+          "label": "hieraaetus_morphnoides",
+          "confidence": 3.1
+        }
+      ]
+    },
+    {
+      "image_path": "dataset/processed/test/falco_cenchroides/ala_95d6e1ab-9252-4dec-bdb4-fed2a6e29a2f.jpg",
+      "y_true": "falco_cenchroides",
+      "y_pred": "elanus_axillaris",
+      "confidence": "98.4",
+      "top3": [
+        {
+          "label": "elanus_axillaris",
+          "confidence": 98.4
+        },
+        {
+          "label": "falco_cenchroides",
+          "confidence": 1.2
+        },
+        {
+          "label": "tachyspiza_fasciata",
+          "confidence": 0.2
+        }
+      ]
+    },
+    {
+      "image_path": "dataset/processed/test/falco_cenchroides/falco_cenchroides_342022160_622757125.jpg",
+      "y_true": "falco_cenchroides",
+      "y_pred": "elanus_axillaris",
+      "confidence": "64.4",
+      "top3": [
+        {
+          "label": "elanus_axillaris",
+          "confidence": 64.4
+        },
+        {
+          "label": "hieraaetus_morphnoides",
+          "confidence": 26.1
+        },
+        {
+          "label": "falco_cenchroides",
+          "confidence": 4.8
+        }
+      ]
+    },
+    {
+      "image_path": "dataset/processed/test/falco_cenchroides/falco_cenchroides_342874081_624462981.jpg",
+      "y_true": "falco_cenchroides",
+      "y_pred": "lophoictinia_isura",
+      "confidence": "71.6",
+      "top3": [
+        {
+          "label": "lophoictinia_isura",
+          "confidence": 71.6
+        },
+        {
+          "label": "circus_assimilis",
+          "confidence": 9.9
+        },
+        {
+          "label": "falco_cenchroides",
+          "confidence": 6.3
+        }
+      ]
+    },
+    {
+      "image_path": "dataset/processed/test/falco_cenchroides/falco_cenchroides_348685215_635965810.jpg",
+      "y_true": "falco_cenchroides",
+      "y_pred": "falco_peregrinus",
+      "confidence": "54.6",
+      "top3": [
+        {
+          "label": "falco_peregrinus",
+          "confidence": 54.6
+        },
+        {
+          "label": "falco_cenchroides",
+          "confidence": 35.5
+        },
+        {
+          "label": "elanus_axillaris",
+          "confidence": 5.8
+        }
+      ]
+    },
+    {
+      "image_path": "dataset/processed/test/falco_peregrinus/falco_peregrinus_327627550_593585631.jpg",
+      "y_true": "falco_peregrinus",
+      "y_pred": "aquila_audax",
+      "confidence": "56.7",
+      "top3": [
+        {
+          "label": "aquila_audax",
+          "confidence": 56.7
+        },
+        {
+          "label": "falco_peregrinus",
+          "confidence": 35.3
+        },
+        {
+          "label": "falco_cenchroides",
+          "confidence": 4.2
+        }
+      ]
+    },
+    {
+      "image_path": "dataset/processed/test/falco_peregrinus/falco_peregrinus_332847280_604247365.jpg",
+      "y_true": "falco_peregrinus",
+      "y_pred": "elanus_axillaris",
+      "confidence": "92.3",
+      "top3": [
+        {
+          "label": "elanus_axillaris",
+          "confidence": 92.3
+        },
+        {
+          "label": "lophoictinia_isura",
+          "confidence": 3.8
+        },
+        {
+          "label": "falco_peregrinus",
+          "confidence": 1.9
+        }
+      ]
+    },
+    {
+      "image_path": "dataset/processed/test/hieraaetus_morphnoides/ala_0b2d9325-dc50-4fef-8878-77829ef73649.jpg",
+      "y_true": "hieraaetus_morphnoides",
+      "y_pred": "aquila_audax",
+      "confidence": "65.0",
+      "top3": [
+        {
+          "label": "aquila_audax",
+          "confidence": 65.0
+        },
+        {
+          "label": "lophoictinia_isura",
+          "confidence": 19.8
+        },
+        {
+          "label": "hieraaetus_morphnoides",
+          "confidence": 14.5
+        }
+      ]
+    },
+    {
+      "image_path": "dataset/processed/test/hieraaetus_morphnoides/ala_51f5607d-a761-4b4b-abeb-25e0d618f31e.jpg",
+      "y_true": "hieraaetus_morphnoides",
+      "y_pred": "lophoictinia_isura",
+      "confidence": "70.5",
+      "top3": [
+        {
+          "label": "lophoictinia_isura",
+          "confidence": 70.5
+        },
+        {
+          "label": "hieraaetus_morphnoides",
+          "confidence": 26.9
+        },
+        {
+          "label": "circus_assimilis",
+          "confidence": 2.0
+        }
+      ]
+    },
+    {
+      "image_path": "dataset/processed/test/hieraaetus_morphnoides/ala_573e20c0-4bb3-4bbd-886f-576db5e6f663.jpg",
+      "y_true": "hieraaetus_morphnoides",
+      "y_pred": "lophoictinia_isura",
+      "confidence": "52.8",
+      "top3": [
+        {
+          "label": "lophoictinia_isura",
+          "confidence": 52.8
+        },
+        {
+          "label": "circus_assimilis",
+          "confidence": 29.0
+        },
+        {
+          "label": "hieraaetus_morphnoides",
+          "confidence": 11.3
+        }
+      ]
+    },
+    {
+      "image_path": "dataset/processed/test/hieraaetus_morphnoides/hieraaetus_morphnoides_311913087_563101870.jpg",
+      "y_true": "hieraaetus_morphnoides",
+      "y_pred": "aquila_audax",
+      "confidence": "75.7",
+      "top3": [
+        {
+          "label": "aquila_audax",
+          "confidence": 75.7
+        },
+        {
+          "label": "hieraaetus_morphnoides",
+          "confidence": 18.9
+        },
+        {
+          "label": "lophoictinia_isura",
+          "confidence": 2.5
+        }
+      ]
+    },
+    {
+      "image_path": "dataset/processed/test/lophoictinia_isura/ala_421080f3-dc16-426f-b293-2dfe5930ce0e.jpg",
+      "y_true": "lophoictinia_isura",
+      "y_pred": "hieraaetus_morphnoides",
+      "confidence": "56.4",
+      "top3": [
+        {
+          "label": "hieraaetus_morphnoides",
+          "confidence": 56.4
+        },
+        {
+          "label": "lophoictinia_isura",
+          "confidence": 37.9
+        },
+        {
+          "label": "aquila_audax",
+          "confidence": 4.1
+        }
+      ]
+    },
+    {
+      "image_path": "dataset/processed/test/tachyspiza_fasciata/ala_4849567d-35b1-48d2-8e25-b3483dea29af.jpg",
+      "y_true": "tachyspiza_fasciata",
+      "y_pred": "hieraaetus_morphnoides",
+      "confidence": "45.6",
+      "top3": [
+        {
+          "label": "hieraaetus_morphnoides",
+          "confidence": 45.6
+        },
+        {
+          "label": "tachyspiza_fasciata",
+          "confidence": 33.2
+        },
+        {
+          "label": "falco_peregrinus",
+          "confidence": 11.1
+        }
+      ]
+    },
+    {
+      "image_path": "dataset/processed/test/tachyspiza_fasciata/ala_5588853f-cf6f-4a7b-a1fc-1710bc9e788d.jpg",
+      "y_true": "tachyspiza_fasciata",
+      "y_pred": "elanus_axillaris",
+      "confidence": "84.7",
+      "top3": [
+        {
+          "label": "elanus_axillaris",
+          "confidence": 84.7
+        },
+        {
+          "label": "tachyspiza_fasciata",
+          "confidence": 13.3
+        },
+        {
+          "label": "falco_cenchroides",
+          "confidence": 1.1
+        }
+      ]
+    },
+    {
+      "image_path": "dataset/processed/test/tachyspiza_fasciata/ala_ca5d31dd-322d-46da-81c9-fa6ca4c9b066.jpg",
+      "y_true": "tachyspiza_fasciata",
+      "y_pred": "elanus_axillaris",
+      "confidence": "96.7",
+      "top3": [
+        {
+          "label": "elanus_axillaris",
+          "confidence": 96.7
+        },
+        {
+          "label": "tachyspiza_fasciata",
+          "confidence": 2.4
+        },
+        {
+          "label": "circus_assimilis",
+          "confidence": 0.3
+        }
+      ]
+    }
+  ],
+  "per_species": {
+    "aquila_audax": {
+      "n": 34,
+      "top1_accuracy": 0.9705882352941176,
+      "top3_accuracy": 1.0
+    },
+    "circus_assimilis": {
+      "n": 32,
+      "top1_accuracy": 0.84375,
+      "top3_accuracy": 0.96875
+    },
+    "elanus_axillaris": {
+      "n": 27,
+      "top1_accuracy": 0.8888888888888888,
+      "top3_accuracy": 0.9259259259259259
+    },
+    "falco_cenchroides": {
+      "n": 22,
+      "top1_accuracy": 0.7272727272727273,
+      "top3_accuracy": 0.9090909090909091
+    },
+    "falco_peregrinus": {
+      "n": 23,
+      "top1_accuracy": 0.782608695652174,
+      "top3_accuracy": 0.8695652173913043
+    },
+    "hieraaetus_morphnoides": {
+      "n": 22,
+      "top1_accuracy": 0.7727272727272727,
+      "top3_accuracy": 0.9545454545454546
+    },
+    "lophoictinia_isura": {
+      "n": 25,
+      "top1_accuracy": 0.96,
+      "top3_accuracy": 1.0
+    },
+    "tachyspiza_fasciata": {
+      "n": 32,
+      "top1_accuracy": 0.84375,
+      "top3_accuracy": 0.9375
+    }
+  },
+  "most_common_top1_errors": [
+    {
+      "y_true": "falco_cenchroides",
+      "y_pred": "elanus_axillaris",
+      "n": 3
+    },
+    {
+      "y_true": "hieraaetus_morphnoides",
+      "y_pred": "lophoictinia_isura",
+      "n": 3
+    },
+    {
+      "y_true": "tachyspiza_fasciata",
+      "y_pred": "elanus_axillaris",
+      "n": 3
+    },
+    {
+      "y_true": "circus_assimilis",
+      "y_pred": "lophoictinia_isura",
+      "n": 2
+    },
+    {
+      "y_true": "elanus_axillaris",
+      "y_pred": "falco_peregrinus",
+      "n": 2
+    },
+    {
+      "y_true": "falco_cenchroides",
+      "y_pred": "lophoictinia_isura",
+      "n": 2
+    },
+    {
+      "y_true": "falco_peregrinus",
+      "y_pred": "circus_assimilis",
+      "n": 2
+    },
+    {
+      "y_true": "falco_peregrinus",
+      "y_pred": "elanus_axillaris",
+      "n": 2
+    },
+    {
+      "y_true": "hieraaetus_morphnoides",
+      "y_pred": "aquila_audax",
+      "n": 2
+    },
+    {
+      "y_true": "tachyspiza_fasciata",
+      "y_pred": "hieraaetus_morphnoides",
+      "n": 2
+    }
+  ]
+}

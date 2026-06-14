@@ -135,6 +135,86 @@ SIGNS: list[dict] = [
         ],
         "dur":    "1.8s",
     },
+    {
+        "key":    "falco_berigora",
+        "common": "Brown Falcon",
+        "sci":    "Falco berigora",
+        "color":  "#A04000",
+        "desc":   "Loose hand, broad lazy circular flight "
+                  "(slow soaring falcon)",
+        "kind":   "single",
+        "paths":  [
+            "M 240,200 m -80,0 a 80,50 0 1,0 160,0 a 80,50 0 1,0 -160,0",
+        ],
+        "dur":    "3.4s",
+    },
+    {
+        "key":    "haliaeetus_leucogaster",
+        "common": "White-bellied Sea-Eagle",
+        "sci":    "Haliaeetus leucogaster",
+        "color":  "#1F618D",
+        "desc":   "Both flat hands, wide steady glide "
+                  "above ocean surface",
+        "kind":   "double-spread",
+        "paths":  [
+            "M 60,210 Q 240,180 420,210",
+            "M 60,240 Q 240,260 420,240",
+        ],
+        "dur":    "3.6s",
+    },
+    {
+        "key":    "haliastur_indus",
+        "common": "Brahminy Kite",
+        "sci":    "Haliastur indus",
+        "color":  "#7B241C",
+        "desc":   "Curved hand, smooth arc with brief "
+                  "pause (coastal scavenging swoop)",
+        "kind":   "single",
+        "paths":  [
+            "M 80,140 Q 240,40 400,140 Q 240,260 80,140",
+        ],
+        "dur":    "2.8s",
+    },
+    {
+        "key":    "haliastur_sphenurus",
+        "common": "Whistling Kite",
+        "sci":    "Haliastur sphenurus",
+        "color":  "#B7950B",
+        "desc":   "Index finger drawn upward in long "
+                  "curve (mimicking ascending whistle)",
+        "kind":   "single",
+        "paths":  [
+            "M 100,280 Q 200,200 240,160 Q 280,120 380,80",
+        ],
+        "dur":    "2.2s",
+    },
+    {
+        "key":    "milvus_migrans",
+        "common": "Black Kite",
+        "sci":    "Milvus migrans",
+        "color":  "#34495E",
+        "desc":   "Forked-V hand, tail flick side-to-side "
+                  "(diagnostic forked tail)",
+        "kind":   "single",
+        "paths":  [
+            "M 240,200 L 160,160 L 240,200 L 320,160 "
+            "L 240,200 L 160,240 L 240,200 L 320,240",
+        ],
+        "dur":    "2.0s",
+    },
+    {
+        "key":    "tachyspiza_novaehollandiae",
+        "common": "Grey Goshawk",
+        "sci":    "Tachyspiza novaehollandiae",
+        "color":  "#7F8C8D",
+        "desc":   "Open pale hand, silent forward glide "
+                  "through dense forest",
+        "kind":   "single",
+        "paths":  [
+            "M 60,200 L 200,180 L 280,220 L 420,200",
+        ],
+        "dur":    "2.4s",
+    },
 ]
 
 

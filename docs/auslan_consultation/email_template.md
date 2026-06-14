@@ -13,10 +13,11 @@
    strong precedent of engagement with research projects).
 4. Deaf Australia — national peak body, `office@deafaustralia.org.au`.
 
-**When to send:** after submitting the MPhil application to UQ but
-before the formal admission decision. Mention the application status
-in the email — it signals seriousness without making the request
-contingent on admission.
+**When to send:** after submitting any Master's by Research /
+MPhil application to an Australian university (or, while still preparing
+applications, framed as exploratory). Mention the application
+status honestly in the email — it signals seriousness without
+making the request contingent on admission.
 
 ---
 
@@ -24,7 +25,7 @@ contingent on admission.
 
 ```
 Research collaboration: AUSLAN vocabulary for Australian raptors
-(MPhil project, University of Queensland)
+(research prototype; prospective MPhil applicant)
 ```
 
 ---
@@ -36,11 +37,11 @@ Dear [Title and Name],
 
 My name is Brian Fernández Báez, a Computer Systems Engineer
 (Instituto Tecnológico Nacional de México — Campus Veracruz)
-applying to a Master of Philosophy at the University of
-Queensland. My MPhil project combines convolutional neural
-networks for raptor identification with the development of a
-specialised AUSLAN vocabulary for the raptor species of
-Australia. The motivation comes from prior independent work
+preparing applications to Master of Philosophy / PhD programs in
+Australia. The research prototype I have built combines
+convolutional neural networks for raptor identification with the
+development of a specialised AUSLAN vocabulary for the raptor
+species of Australia. The motivation comes from prior independent work
 adapting deep-learning identification pipelines to biodiversity
 applications, with Australia as the focus given the Black Summer
 recovery context and the absence of accessible identification

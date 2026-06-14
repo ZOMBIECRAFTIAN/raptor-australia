@@ -1,7 +1,7 @@
 """
 Australian Raptor CNN — End-to-end retraining script
 ====================================================
-Runs the full pipeline on the *expanded* iNaturalist + ALA dataset:
+Runs the full v1.5 pipeline on the validated iNaturalist + ALA dataset:
 
   1. Discover and validate every image in ``dataset/raw/<species>/``
   2. Split 80/10/10 (stratified, seed=42) → ``dataset/processed/``
@@ -24,19 +24,8 @@ Usage (from project root):
     python notebooks/retrain.py --epochs-stage1 5 --epochs-stage2 15
     python notebooks/retrain.py --batch-size 16     # if VRAM allows
 
-    # 4-architecture comparison for the thesis (run sequentially):
-    python notebooks/retrain.py --arch efficientnet_b4   --skip-preprocess
-    python notebooks/retrain.py --arch resnet50          --skip-preprocess
-    python notebooks/retrain.py --arch mobilenet_v3_large --skip-preprocess
-    python notebooks/retrain.py --arch convnext_tiny     --skip-preprocess
-
-Each architecture writes:
-    models/best_model_<arch>.pth                (or best_model.pth for b4)
-    results/reporte_final_<arch>.json           (or reporte_final.json   for b4)
-
-Tested with: Python 3.10, PyTorch 2.x, CUDA 11.8 on RTX 3060.
-Approx wall time: ~1.5–2 h on a single GPU for the 5k-image dataset
-(per architecture; the 4-arch comparison takes one work day on GPU).
+Tested with: Python 3.13, PyTorch 2.12+cu130, CUDA-capable NVIDIA GPU.
+Approx wall time: ~1.5-2 h on a single GPU for the current dataset.
 """
 
 from __future__ import annotations
@@ -76,7 +65,7 @@ for d in (MODELS_DIR, RESULTS_DIR, METADATA_DIR):
     d.mkdir(parents=True, exist_ok=True)
 
 IMG_SIZE     = 380
-NUM_CLASSES  = 8
+PRIMARY_ARCH = "efficientnet_b4"
 TRAIN_RATIO  = 0.80
 VAL_RATIO    = 0.10
 TEST_RATIO   = 0.10
@@ -86,16 +75,16 @@ SEED         = 42
 IMAGENET_MEAN = [0.485, 0.456, 0.406]
 IMAGENET_STD  = [0.229, 0.224, 0.225]
 
-# Pretty species labels for the confusion-matrix figure
+# Pretty species labels for the confusion-matrix figure.
 SPECIES_LABELS = {
-    "aquila_audax":           "Wedge-tailed Eagle",
-    "circus_assimilis":       "Spotted Harrier",
-    "elanus_axillaris":       "Black-shouldered Kite",
-    "falco_cenchroides":      "Nankeen Kestrel",
-    "falco_peregrinus":       "Peregrine Falcon",
-    "hieraaetus_morphnoides": "Little Eagle",
-    "lophoictinia_isura":     "Square-tailed Kite",
-    "tachyspiza_fasciata":    "Brown Goshawk",
+    "aquila_audax":               "Wedge-tailed Eagle",
+    "circus_assimilis":           "Spotted Harrier",
+    "elanus_axillaris":           "Black-shouldered Kite",
+    "falco_cenchroides":          "Nankeen Kestrel",
+    "falco_peregrinus":           "Peregrine Falcon",
+    "hieraaetus_morphnoides":     "Little Eagle",
+    "lophoictinia_isura":         "Square-tailed Kite",
+    "tachyspiza_fasciata":        "Brown Goshawk",
 }
 
 
@@ -177,7 +166,7 @@ def preprocess_dataset() -> None:
 class AustralianRaptorCNN(nn.Module):
     """EfficientNetB4 architecture used by the production GUI."""
 
-    def __init__(self, num_classes: int = NUM_CLASSES,
+    def __init__(self, num_classes: int,
                  dropout_rate: float = 0.4):
         super().__init__()
         self.backbone = models.efficientnet_b4(
@@ -197,66 +186,25 @@ class AustralianRaptorCNN(nn.Module):
 
 
 # ─── Multi-architecture builder (porting Veracruz pattern) ───
-def build_model(arch: str = "efficientnet_b4",
-                num_classes: int = NUM_CLASSES) -> nn.Module:
-    """
-    Builds one of four backbones for the 4-architecture comparison
-    described in the thesis Chapter 3.4. Mirrors the pattern of the
-    author's Veracruz project (raptors-cnn).
-
-    Supported:
-        efficientnet_b4   — production default (gui/app.py)
-        resnet50          — robust baseline
-        mobilenet_v3_large — edge / mobile reference
-        convnext_tiny     — state-of-the-art 2022 reference
-    """
+def build_model(arch: str = PRIMARY_ARCH,
+                num_classes: int | None = None) -> nn.Module:
+    """Build the single production classifier: EfficientNetB4."""
     arch = arch.lower()
-    if arch == "efficientnet_b4":
-        return AustralianRaptorCNN(num_classes)
-
-    if arch == "resnet50":
-        m = models.resnet50(
-            weights=models.ResNet50_Weights.IMAGENET1K_V2)
-        m.fc = nn.Sequential(
-            nn.Dropout(0.3),
-            nn.Linear(m.fc.in_features, num_classes),
+    if arch != PRIMARY_ARCH:
+        raise ValueError(
+            "v1.5 keeps a single classifier architecture: "
+            f"{PRIMARY_ARCH}. YOLO is the detector, not a classifier."
         )
-        return m
-
-    if arch == "mobilenet_v3_large":
-        m = models.mobilenet_v3_large(
-            weights=models.MobileNet_V3_Large_Weights.IMAGENET1K_V2)
-        m.classifier[-1] = nn.Linear(
-            m.classifier[-1].in_features, num_classes)
-        return m
-
-    if arch == "convnext_tiny":
-        m = models.convnext_tiny(
-            weights=models.ConvNeXt_Tiny_Weights.IMAGENET1K_V1)
-        m.classifier[-1] = nn.Linear(
-            m.classifier[-1].in_features, num_classes)
-        return m
-
-    raise ValueError(f"Unsupported architecture: {arch}")
+    if num_classes is None:
+        raise ValueError("num_classes must be discovered from ImageFolder.")
+    return AustralianRaptorCNN(num_classes)
 
 
 def get_feature_layers(model: nn.Module, arch: str) -> list:
-    """Returns the parameter list of backbone feature layers,
-    used by the two-stage training to freeze/unfreeze.
-    """
+    """Returns EfficientNetB4 backbone feature parameters."""
     arch = arch.lower()
-    if arch == "efficientnet_b4":
+    if arch == PRIMARY_ARCH:
         return list(model.backbone.features.parameters())
-    if arch == "resnet50":
-        # Conv1 + bn1 + relu + maxpool + layer1-4
-        return (list(model.conv1.parameters()) +
-                list(model.bn1.parameters()) +
-                list(model.layer1.parameters()) +
-                list(model.layer2.parameters()) +
-                list(model.layer3.parameters()) +
-                list(model.layer4.parameters()))
-    if arch in ("mobilenet_v3_large", "convnext_tiny"):
-        return list(model.features.parameters())
     raise ValueError(f"Unsupported architecture: {arch}")
 
 
@@ -306,15 +254,45 @@ def class_weight_tensor(train_ds, device):
     return torch.FloatTensor(weights).to(device)
 
 
-def evaluate(model, loader, device, class_names):
+def evaluate(model, loader, device, class_names, samples=None):
     model.eval()
     y_true, y_pred = [], []
+    prediction_rows = []
+    cursor = 0
     with torch.no_grad():
         for x, y in loader:
             x, y = x.to(device), y.to(device)
-            preds = model(x).argmax(1)
-            y_true.extend(y.cpu().numpy())
-            y_pred.extend(preds.cpu().numpy())
+            logits = model(x)
+            probs = torch.softmax(logits, dim=1)
+            preds = probs.argmax(1)
+            y_cpu = y.cpu().numpy()
+            pred_cpu = preds.cpu().numpy()
+            probs_cpu = probs.cpu().numpy()
+            y_true.extend(y_cpu)
+            y_pred.extend(pred_cpu)
+
+            if samples is not None:
+                for i in range(len(y_cpu)):
+                    true_idx = int(y_cpu[i])
+                    pred_idx = int(pred_cpu[i])
+                    top_idx = np.argsort(probs_cpu[i])[::-1][
+                        :min(3, len(class_names))]
+                    top3 = [
+                        {
+                            "label": class_names[int(j)],
+                            "confidence": round(float(probs_cpu[i][j]) * 100, 4),
+                        }
+                        for j in top_idx
+                    ]
+                    image_path = samples[cursor + i][0]
+                    prediction_rows.append({
+                        "image_path": image_path,
+                        "y_true": class_names[true_idx],
+                        "y_pred": class_names[pred_idx],
+                        "confidence": round(float(probs_cpu[i][pred_idx]) * 100, 4),
+                        "top3": json.dumps(top3, ensure_ascii=False),
+                    })
+                cursor += len(y_cpu)
     return {
         "accuracy": accuracy_score(y_true, y_pred),
         "f1_macro": f1_score(y_true, y_pred, average="macro"),
@@ -324,12 +302,13 @@ def evaluate(model, loader, device, class_names):
             zero_division=0, output_dict=True,
         ),
         "y_true": y_true, "y_pred": y_pred,
+        "prediction_rows": prediction_rows,
     }
 
 
 def train(epochs_s1: int, epochs_s2: int, batch_size: int,
           lr_s1: float = 1e-3, lr_s2: float = 1e-4,
-          arch: str = "efficientnet_b4") -> None:
+          arch: str = PRIMARY_ARCH) -> None:
     print(f"\n=== STAGE 2 — Training ({arch}) ===\n")
     set_seed()
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -338,16 +317,14 @@ def train(epochs_s1: int, epochs_s2: int, batch_size: int,
     train_loader, val_loader, test_loader, train_ds = make_loaders(batch_size)
     class_names = train_ds.classes
 
-    model = build_model(arch, NUM_CLASSES).to(device)
+    num_classes = len(class_names)
+    model = build_model(arch, num_classes).to(device)
     weights = class_weight_tensor(train_ds, device)
     criterion = nn.CrossEntropyLoss(weight=weights, label_smoothing=0.05)
 
     history = {"epoch": [], "phase": [], "train_loss": [],
                "train_acc": [], "val_acc": [], "val_f1": []}
-    # Per-architecture checkpoint name so multiple runs don't overwrite
-    best_path = MODELS_DIR / (
-        "best_model.pth" if arch == "efficientnet_b4"
-        else f"best_model_{arch}.pth")
+    best_path = MODELS_DIR / "best_model.pth"
     best_f1 = 0.0
 
     def run_epoch(epoch_idx, phase, loader, optimizer=None):
@@ -441,9 +418,10 @@ def train(epochs_s1: int, epochs_s2: int, batch_size: int,
 
     # Final test evaluation with the best checkpoint.
     print("\n=== STAGE 3 — Final test evaluation ===")
-    ckpt = torch.load(best_path, map_location=device)
+    ckpt = torch.load(best_path, map_location=device, weights_only=True)
     model.load_state_dict(ckpt["model_state_dict"])
-    test_metrics = evaluate(model, test_loader, device, class_names)
+    test_metrics = evaluate(model, test_loader, device, class_names,
+                            samples=test_loader.dataset.samples)
 
     print(f"\n  Test accuracy : {test_metrics['accuracy']:.4f}")
     print(f"  Test F1-macro : {test_metrics['f1_macro']:.4f}")
@@ -461,19 +439,8 @@ def train(epochs_s1: int, epochs_s2: int, batch_size: int,
                 "f1":        round(block["f1-score"], 4),
                 "support":   int(block["support"]),
             }
-    # Architecture-aware report. For the default (efficientnet_b4) the
-    # file is reporte_final.json — overwrites the GUI-served metrics.
-    # For other architectures, name it reporte_final_<arch>.json so
-    # the 4-architecture comparison run produces 4 separate reports.
-    arch_label = {
-        "efficientnet_b4":    "EfficientNetB4",
-        "resnet50":           "ResNet-50",
-        "mobilenet_v3_large": "MobileNetV3-Large",
-        "convnext_tiny":      "ConvNeXt-Tiny",
-    }.get(arch, arch)
-    report_filename = (
-        "reporte_final.json" if arch == "efficientnet_b4"
-        else f"reporte_final_{arch}.json")
+    arch_label = "EfficientNetB4"
+    report_filename = "reporte_final.json"
 
     json.dump({
         "modelo": arch_label,
@@ -492,6 +459,7 @@ def train(epochs_s1: int, epochs_s2: int, batch_size: int,
         "por_especie": per_species,
         "training_config": {
             "arch": arch,
+            "class_order": class_names,
             "epochs_s1": epochs_s1, "epochs_s2": epochs_s2,
             "batch_size": batch_size,
             "lr_s1": lr_s1, "lr_s2": lr_s2, "seed": SEED,
@@ -500,6 +468,8 @@ def train(epochs_s1: int, epochs_s2: int, batch_size: int,
 
     pd.DataFrame(test_metrics["report"]).T.to_csv(
         RESULTS_DIR / "test_report.csv")
+    pd.DataFrame(test_metrics["prediction_rows"]).to_csv(
+        RESULTS_DIR / "test_predictions.csv", index=False)
 
     # Plots — confusion matrix, learning curves, per-class F1.
     try:
@@ -564,11 +534,11 @@ def parse_args():
                                 formatter_class=argparse.RawDescriptionHelpFormatter)
     p.add_argument("--skip-preprocess", action="store_true",
                    help="Skip dataset re-split; use existing dataset/processed/")
-    p.add_argument("--arch", default="efficientnet_b4",
-                   choices=["efficientnet_b4", "resnet50",
-                            "mobilenet_v3_large", "convnext_tiny"],
-                   help="Backbone to train (default: efficientnet_b4). "
-                        "Run all four for the thesis comparison.")
+    p.add_argument("--arch", default=PRIMARY_ARCH,
+                   choices=[PRIMARY_ARCH],
+                   help=("Classifier architecture. v1.5 intentionally "
+                         "keeps EfficientNetB4 as the only classifier; "
+                         "YOLO is used for detection/cropping."))
     p.add_argument("--epochs-stage1", type=int, default=10)
     p.add_argument("--epochs-stage2", type=int, default=20)
     p.add_argument("--batch-size",    type=int, default=8,
